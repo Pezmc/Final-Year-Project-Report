@@ -1,0 +1,62 @@
+\documentclass[11pt]{report}
+\usepackage[utf8]{inputenc}
+
+% Line
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+
+% pictures!
+\usepackage{graphicx}
+\graphicspath{ {images/} }
+
+% counts how many pages there are
+\usepackage{lastpage}
+
+% indent
+% \usepackage{indentfirst}
+
+% Reference in harvard
+\usepackage[style=ieee,doi=true,url=true]{biblatex}
+\bibliography{references}
+
+% maths
+\usepackage{amsmath}
+
+% \begin{verbatim} literal text
+\usepackage{verbatim}
+
+% adjust header/footer
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+
+% URL's
+\usepackage{hyperref}
+\usepackage{breakurl}
+
+% Appendix
+\usepackage{appendix} %[page, titletoc]
+
+% Glossery
+\usepackage{glossaries} % [toc,section=section]
+\makeglossaries
+
+% Todos's \todo, \listoftodos, \missingfigure
+\usepackage{todonotes}
+\newcommand{\insertref}[1]{\todo[inline,color=green!40]{#1}}
+\newcommand{\plan}[1]{\todo[inline,color=yellow!40]{#1}}
+
+% header and footer
+\rfoot{\thepage\ of \pageref{LastPage}}
+\cfoot{}
+\lfoot{}
+
+% Use wide margins, but not quite so wide as fullpage.sty
+%\marginparwidth 0.5in 
+%\oddsidemargin 0.25in 
+%\evensidemargin 0.25in 
+%\marginparsep 0.25in
+%\topmargin 0.25in 
+%\textwidth 6in \textheight 8 in
+
+\begin{document}
+\input{document.tex}
+\end{document}

@@ -1,0 +1,34 @@
+
+% title and thanks
+\include{sections/title}
+\include{sections/abstract}
+\include{sections/thanks}
+
+% define words
+\include{glossary}
+
+% start of document
+\tableofcontents
+\listoffigures
+\listoftables
+\printglossaries
+
+\clearpage
+
+% start of writing
+\include{chapters/1-introduction}
+\include{chapters/2-background}
+\include{chapters/chapter3}
+\include{chapters/chapter4}
+\include{chapters/chapter5}
+\include{chapters/chapter6}
+\include{chapters/chapter7}
+
+%% References
+% There are a number of schemes for presenting references to the reader. Most publications are very strict about their presentation and, unfortunately, there is no unanimity of format across the range of relevant publications. The recommended method, used in IET and IEEE journals, is to identify each reference with a number located at the appropriate point of the text in square brackets, e.g. [42]. This is the recommended format for project reports in Computer Science. The list of references included in your report must give all the relevant information to enable the reader to find it.
+
+% references
+\printbibliography
+
+% appendix
+\include{sections/appendix}
