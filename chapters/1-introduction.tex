@@ -15,32 +15,41 @@ Traditionally the management of personal finances is performed by viewing bank s
 This project sets out to build an online application that can be used to manage personal finances. There are two main parts of the project; firstly Users can upload  bank statements, which are displayed and navigated in an intuitive manner; secondly, once the application has enough historical data, predicting the users future outflow.
 
 \section{Motivation}
-\plan{Help make managing finances easier, basic survey of people + appendix with details, any relevant paperts}
+% \plan{Help make managing finances easier, basic survey of people + appendix with details, any relevant paperts}
+There are four main steps when producing and using a budget, recording previous expenses, sorting these into categories
+using this historical information to guess future expenditure and evaluate accuracy of these predictions and using new information to update them.
 
+Since the liquidity crisis of 2009 \cite{gore2010}, budgets have been squeezed and the average persons personal disposable income has fallen, hitting a nine-year low in 2012\cite{barnard2012households}. With experts suggesting that ``Budgets are essential for financial planning''\cite{wsj2013budget}, research suggesting that personal budgets lead to a ``positive impact on ``mental wellbeing''\cite{tlap2013budget} and guides from UCAS, the UoM SU Advice Centre and The Manchester University Crucial Guide encouraging use of budgeting, it is clear that producing a budget is of benefit.
 
-Since the liquidity crisis of 2009 \cite{gore2010}, budgets have been squeezed and the average persons personal disposable income was at a nine-year low in Q1 2012\cite{barnard2012}. With experts suggesting that ``Budgets are essential for financial planning''\cite{wsj2013budget}, research suggesting that personal budgets lead to a ``positive impact on ``mental wellbeing''\cite{tlap2013budget} and guides from UCAS, the UoM SU Advice Centre and The Manchester University Crucial Guide encouraging use of budgeting, an easier way to product a budget is of clear benefit.
+However, in an informal survey\footnote{Appendix \ref{app:budgetsurvey}} the majority of students surveyed, did not make a budget. An easier way to produce a budget can hopefully increase the amount of students relying on one.
 
 Increasing use of debit cards\cite{bbc2010debit} means that bank statements contain more and more information about where people spend their money. With access to those bank statements now provided online, with most UK banks offering the option to export \gls{transaction} history, individual users can collate a database of their personal spending habits.
 
 The increasing availability of this data, combined with more detailed transaction history makes it possible to automate the four main steps of producing a budget, and this is the idea behind the project.
 
 \section{Existing work in this area}
-\plan{Other applications, and relevant research papers that I can find, similarity to stock market, predicting the future}
 
-There are several other applications that attempt to implement the features similar to this project, most notably Lloyds TSB Money Manager \cite{lloyds2014money}, which was the first service provided by a bank in the UK to offer this style of money management application.
+\subsection{Management}
+There are several other applications implement management features found in this project, most notably Lloyds TSB Money Manager \cite{lloyds2014money}, which was the first money management application provided by a UK bank.
 
-The service is available to Lloyds TSB current account holder and offers several key features
+The service is available to Lloyds TSB current account holders as part of their online banking and offers several key features, however all of the features revolve around documenting historical spending.
 
-\begin{enumerate}
-\item Categorising your spending
+\begin{list}
+\item Categorising spending
 \item Creating spending plans per category.
 %\item View dates money came in and out in a calendar
-\item View money spent per category
-\item Track your progress.
-\end{enumerate}
+\item Viewing money spent per category
+\item Track progress of budget targets
+\end{list}
 
-\missingfigure{Figures of Lloyds money manager}
-\plan{Mention the lloyds things}
+\begin{figure}[h]
+    \centering
+    \includegraphics{moneymanager}
+    \caption{Spending Analysis on Money Manager \citet{lloyds2014money}}
+    \label{fig:moneymanager}
+\end{figure}
+
+Mint.com is a US only personal finance service that provides features similar to those provided by LLoyds. They include 
 
 
 \section{Aims and Objectives}
