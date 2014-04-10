@@ -8,11 +8,27 @@ This chapter starts to describe the student's own work. It is where the main des
 
 \plan{This section contains my PLAN of what I will do (before I started) of my app, it should be programming language independent}
 
+This chapter covers design of the system, including an overview of the architecture and descriptions of the key components. 
+
 \section{System design}
 
 \section{Deciding what features to extract}
 
 \section{Security Considerations}
+
+\subsection{Account Hijacking}
+
+
+\subsection{Password Security}
+A common way to crack into user accounts is by brute force. If an attacker knows a particular users username they can perform targeted guessing guessing of the password by enumerating through all possibilities. A websites ability to resist this kind of attack is called the `password guessing resistance'. It is for this reason that many websites, following the guidance of research such as \cite{needed} enforce password rules in an attempt to increase the number of possible combinations for a password, the entropy.
+
+Shannon Entropy can be used estimate the strength of a passwords resistance to this kind of attack. The entropy is calculated using $H(X)= - \sum_{i=1}^n{p(x_i)\log_b p(x_i)}$ where $p(x_i)$ is the probability of the value $x$ occurring \cite{burr2013electronic}.
+
+The paper suggests a predefined set of rules for estimating entropy based on Shannon's work studying English text \cite{burr2013electronic}, however other papers found that using this predefined set of rules was not a valid measure of password strength \cite{weir2010shannon}. For this reason the project uses Shannon's original equation, calculating the probability of guessing an individual character using using a formula that takes into account that using a larger character set (such as numbers and symbols) decreases the likely hood of successfully guessing the next character.
+
+As part of a brute force, an attacker may use a dictionary of popular passwords to reduce the testing space before attempting an exhaustion attack. In order to reduce the effectiveness of this kind of attack the project test's any user provided password against a dictionary of at least 50,000 common passwords sourced from password cracking resources \cite{burr2013electronic}.
+
+In addition, to limit the overall effectiveness of brute force attacks, the website rate limits login attempts. If a user attempts to login more than 5 times within one minute, they must wait a minute before they are able to login again.
 
 \section{Technical Design}
 
