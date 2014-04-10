@@ -30,24 +30,9 @@ The increasing availability of this data, combined with more detailed transactio
 \section{Existing work in this area}
 
 \subsection{Management}
-There are several other applications implement management features found in this project, most notably Lloyds TSB Money Manager \cite{lloyds2014money}, which was the first money management application provided by a UK bank.
+There are several other applications  implement management features found in this project, most notably Lloyds TSB Money Manager \cite{lloyds2014money}, which was the first money management application provided by a UK bank.
 
 The service is available to Lloyds TSB current account holders as part of their online banking and offers several key features, however all of the features revolve around documenting historical spending.
-
-\begin{itemize}
-\item Categorising spending
-\item Creating spending plans per category.
-%\item View dates money came in and out in a calendar
-\item Viewing money spent per category
-\item Track progress of budget targets
-\end{itemize}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics{moneymanagerchart}
-    \caption{Spending Analysis on Money Manager \parencite{lloyds2014money}}
-    \label{fig:moneymanager}
-\end{figure}
 
 Mint.com is a US only personal finance service that provides features similar to those provided by LLoyds. They include the ability to login to your bank account to have your statements pulled over automatically.
 
@@ -62,9 +47,9 @@ Predicting future expenditure given previous history is notoriously hard. There 
 \section{Aims and Objectives}
 \plan{Things I set out to do, designed by talking to people to get an idea of features they would like}
 
-The key objectives of this project can be split into three parts, the management of statements, making prediction using those statements and ensuring a high level of security.
+The key objectives of this project can be split into three parts, the management of statements, making predictions using those statements and ensuring a high level of security.
 
-\subsection{Statements Management}
+\subsection{Statement Management}
 Implement an intuitive way to view and manage personal finances.
 There are several key parts to this, upload and parsing of transactions from statements downloaded from a bank, resolving the references found on the statement to the transactor they represent and categorising the transactions.
     
@@ -74,7 +59,7 @@ Using
 
 \subsection{Security}
 As the application will deal with information of a sensitive nature strong security techniques are particularly important.
-The project should take this into account, considering possible attack vectors and taking steps to mitigate those attacks.
+The project takes this into account, considering possible attack vectors and taking steps to mitigate those attacks.
 
 \section{Overview of Report}
 \plan{This report covers some of the key design decisions, implementation decisions and then what the application does}
