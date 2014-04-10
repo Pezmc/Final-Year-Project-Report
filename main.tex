@@ -53,6 +53,15 @@
 \newcommand{\insertref}[1]{\todo[inline,color=green!40]{#1}}
 \newcommand{\plan}[1]{\todo[inline,color=yellow!40]{#1}}
 
+% Commas
+\usepackage[group-separator={,}]{siunitx}
+
+% Code
+\usepackage{listings}
+\newcommand*{\inlinesql}{\lstinline[{language=SQL}]}
+\newcommand*{\inlinehtml}{\lstinline[{language=HTML}]}
+\newcommand*{\inlinephp}{\lstinline[{language=PHP}]}
+
 % header and footer
 \rfoot{\thepage\ of \pageref{LastPage}}
 \cfoot{}
