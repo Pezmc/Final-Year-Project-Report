@@ -34,32 +34,47 @@ There are several other applications implement management features found in this
 
 The service is available to Lloyds TSB current account holders as part of their online banking and offers several key features, however all of the features revolve around documenting historical spending.
 
-\begin{list}
+\begin{itemize}
 \item Categorising spending
 \item Creating spending plans per category.
 %\item View dates money came in and out in a calendar
 \item Viewing money spent per category
 \item Track progress of budget targets
-\end{list}
+\end{itemize}
 
 \begin{figure}[h]
     \centering
-    \includegraphics{moneymanager}
-    \caption{Spending Analysis on Money Manager \citet{lloyds2014money}}
+    \includegraphics{moneymanagerchart}
+    \caption{Spending Analysis on Money Manager \parencite{lloyds2014money}}
     \label{fig:moneymanager}
 \end{figure}
 
-Mint.com is a US only personal finance service that provides features similar to those provided by LLoyds. They include 
+Mint.com is a US only personal finance service that provides features similar to those provided by LLoyds. They include the ability to login to your bank account to have your statements pulled over automatically.
 
+There are also many mobile apps that provide this management facility, however all those investigated when planning the project had the same drawback, the user had to manually enter all of their transactions and set categories for them \cite{spendee2014spendee,budgt2013budgt,bluetags2014pocket}.
+
+\subsection{Prediction}
+
+\todo[inline]{Make this make sense}
+Predicting future expenditure given previous history is notoriously hard. There have been several different approaches to this in the past in the context of personal finance, but by opening up to other finance predictions such as those on the stock market, there is a lot more research.
+\todo[inline]{Finish this}
 
 \section{Aims and Objectives}
 \plan{Things I set out to do, designed by talking to people to get an idea of features they would like}
 
-\subsection{Parsing Statements}
-\plan{Loading a statement into the actual system, do I mention named entity resolution here?}
+The key objectives of this project can be split into three parts, the management of statements, making prediction using those statements and ensuring a high level of security.
 
-\subsection{Predicting expenditure}
-\plan{Predicting how much money you're going to spend in the future (or next month)}
+\subsection{Statements Management}
+Implement an intuitive way to view and manage personal finances.
+There are several key parts to this, upload and parsing of transactions from statements downloaded from a bank, resolving the references found on the statement to the transactor they represent and categorising the transactions.
+    
+\subsection{Predictions}
+Make predictions of future transactions that a user will make using a model that is fitted to their spending behaviour, the application will need to predict whether or not spending will occur and how much money will be spent.
+Using
+
+\subsection{Security}
+As the application will deal with information of a sensitive nature strong security techniques are particularly important.
+The project should take this into account, considering possible attack vectors and taking steps to mitigate those attacks.
 
 \section{Overview of Report}
 \plan{This report covers some of the key design decisions, implementation decisions and then what the application does}
