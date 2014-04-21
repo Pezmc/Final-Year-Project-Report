@@ -24,8 +24,8 @@
 \usepackage{booktabs}
 
 % Reference in harvard
-\usepackage[style=ieee,doi=true,url=true]{biblatex}
-\bibliography{references}
+\usepackage[style=ieee,doi=true,url=true,backend=bibtex]{biblatex}
+\addbibresource{references.bib}
 
 % maths
 \usepackage{amsmath}
@@ -49,9 +49,25 @@
 \makeglossaries
 
 % Todos's \todo, \listoftodos, \missingfigure
-\usepackage{todonotes}
+\usepackage[textwidth=4cm]{todonotes} % disable option disables notes
+\setlength{\marginparwidth}{4cm} %wider margin
+
+% insert ref's
 \newcommand{\insertref}[1]{\todo[inline,color=green!40]{#1}}
-\newcommand{\plan}[1]{\todo[inline,color=yellow!40]{#1}}
+
+% Plan notes
+\newcounter{plancount}
+\newcommand{\plan}[1]{%
+    \refstepcounter{plancount}%
+    \todo[inline,color=yellow!40]{\textbf{P\theplancount:}~#1}%
+}
+
+% Question in margin
+\newcounter{questioncount}
+\newcommand{\question}[1]{%
+    \refstepcounter{questioncount}%
+    \todo[color=pink!40]{\textbf{Q\thequestioncount:}~#1}%
+}
 
 % Commas
 \usepackage[group-separator={,}]{siunitx}
@@ -61,6 +77,10 @@
 \newcommand*{\inlinesql}{\lstinline[{language=SQL}]}
 \newcommand*{\inlinehtml}{\lstinline[{language=HTML}]}
 \newcommand*{\inlinephp}{\lstinline[{language=PHP}]}
+
+% Graphics
+\usepackage {tikz}
+\usetikzlibrary{automata,chains}
 
 % header and footer
 \rfoot{\thepage\ of \pageref{LastPage}}
