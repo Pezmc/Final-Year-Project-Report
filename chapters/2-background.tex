@@ -9,7 +9,7 @@ This chapter should give essential background information with references to pub
 As outlined in Chapter \ref{cha:introduction} the project consists of two major parts: a financial management service, which can be used to view historical spending and gain understanding of personal finances; and a forecasting element which predicts how much spending will occur in the future. 
 \question{Include this?} \question{Technically it's spending or receiving "transaction" but this becomes very wordy?}
 
-\section{Financial Management}
+\section{Statement Management}
 There are existing applications that implement similar features to the money management aims of this project\question{Mention the current "bad" internet banking here?}, most notably Lloyds TSB Money Manager, the first and only personal money management application provided by a UK bank and Mint.com a United States (US) only personal finance service \parencite{lloyds2014moneymanager, mint2014whatismint}.
 
 \subsection{Lloyds Money Manager}
@@ -127,12 +127,11 @@ These techniques can be applied to a discrete set of numerical time series data,
 \end{figure}
 
 % Holt winters extends smoothing, to take into account trends in data
-Smoothing (and therefore prediction) can be extended to take into account trends and possible seasonal fluctiations using double and triple smoothing, respectively. A technique known as `Holt-Winters double exponential smoothing` takes into account trends in data, which single smoothing does perform accurately with, by factoring the smoothed average growth between previous time series when calculating the average for each period \parencite{kalekar2004holtwinters}. \question{A demonstration of this is in chapter X?}
-
+Smoothing (and therefore prediction) can be extended to take into account trends and possible seasonal fluctuations using double and triple smoothing, respectively. A technique known as `Holt-Winters double exponential smoothing` takes into account trends in data, which single smoothing does perform accurately with, by factoring the weighted average growth between previous the time series when calculating the average for each period \parencite{kalekar2004holtwinters}. \question{A demonstration of this is in chapter X?}
 % 
 Extending the calculation into double and triple smoothing when estimating a users future outflow was decided as a possible extension for the project. \question{Where to mention this?} 
 
 \section{Security}
-\question{Should I mention the password entropy paper here? Currently in implementation}
+\question{Should I mention the password entropy paper here? Currently in design}
 
 
