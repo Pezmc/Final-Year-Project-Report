@@ -1,0 +1,37 @@
+\begin{figure}
+\centering
+\begin{lstlisting}
+% QIF FORMAT
+!Type:Bank
+D28-06-13
+PASDA SUPERSTORE    TROWBRIDGE
+T-15.00
+^
+D28-06-13
+PPAYPAL PAYMENT
+T-12.50
+^
+\end{lstlisting}
+\caption{Two transactions in QIF format}
+
+\begin{lstlisting}
+% OFX FORMAT
+<STMTTRN>
+<TRNTYPE>POS</TRNTYPE>
+<DTPOSTED>20130628</DTPOSTED>
+<TRNAMT>-15.00</TRNAMT>
+<NAME>ASDA SUPERSTORE</NAME>
+<MEMO>TROWBRIDGE</MEMO>
+</STMTTRN>
+<STMTTRN>
+<TRNTYPE>DEBIT</TRNTYPE>
+<DTPOSTED>20130618</DTPOSTED>
+<TRNAMT>-12.50</TRNAMT>
+<NAME>PAYPAL PAYMENT</NAME>
+</STMTTRN>
+\end{lstlisting}
+\caption{Two transactions in OFX format}
+%\label{QIF compared to OFX for two identical transactions}
+\label{fig:qifofxformat}
+
+\end{figure}
