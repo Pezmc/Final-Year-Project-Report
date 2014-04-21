@@ -10,30 +10,32 @@ This chapter starts to describe the student's own work. It is where the main des
 This chapter covers design of the system, including an overview of the architecture and descriptions of the key components. 
 
 \section{Statement Management}
-The statement management features of the application were selected based on the functionality observed during the background research and conversations with potential users, asking what functionality they would find useful in such an application.
+The statement management features of the application were selected based on the functionality observed during the background research and conversations with potential users, asking what features they enjoyed from their current Internet banking and what additional features they would find useful to manage their statements
 
-The key features include; parsing of files downloaded from Internet banking, mapping transactions found in the files to real world businesses and organising transaction history by category and transactor.
+The key features include; parsing of files downloaded from Internet banking, mapping transactions found in the files to real world businesses (transactors), organising transaction history by \gls{category} or transactor and viewing all transactions at a particular transactor.
 
 \subsection{Upload}
-The first step in getting information about a users transaction history involves an upload of their historical transactions.
+To get a users transaction history they must first upload a file containing their historical transactions.
 
 The major UK banks tested\footnote{Natwest, First Direct and HSBC} provided statement downloads in Quicken, Microsoft Money or Microsoft Excel format. Further investigation revealed that the underlying formats were Quicken Interchange Format (QIF), Open Financial Exchange (OFX) and comma-separated values (CSV).
 
-As there is no pre-defined standard for bank statements in CSV format, it became clear that the banks investigated used completely different structures. It was decided the application would parse the QIF and OFX formats, following their respective specifications. Examples of QIF and OFX can be seen in Fig. \ref{fig:qifofxformat}.
+As there is no pre-defined standard for bank statements in CSV format, upon investigation, it became clear that the banks used completely different structures. It was decided the application would parse the QIF and OFX formats, following their respective specifications. Examples of QIF and OFX can be seen in Fig. \ref{fig:qifofxformat}.
 
-It was soon identified that QIF/OFX files downloaded from different banks had different structures, and in some cases different structures from the same bank. Interestingly a OFX file downloaded from First Direct was found to be in QIF format, despite an \lstinline$.ofx$ suffix.
+It was quickly identified that although the QIF/OFX files were following the same specification, depending on the bank they had different structures, and in some cases the structures even varied from the same bank, depending on the exact wording of the download. Interestingly a OFX file downloaded from First Direct was found to be in QIF format, despite an \lstinline$.ofx$ suffix.
 
-There were also discrepancies with the formatting of dates in QIF. The specification from Intuit\footnote{The developers of Quicken and QIF} doesn't specify a date format \cite{quiken2010qif}. The sample files tested included dates in D-M-Y, M-D-Y and Y-M-D format.
+Notably there were discrepancies with the formatting of dates in QIF. The specification from Intuit\footnote{The developers of Quicken and QIF} doesn't specify a date format \cite{quiken2010qif}. The sample files tested included dates in D-M-Y, M-D-Y and Y-M-D format.
 
 \input{figures/qifofxformat}
 
 To combat this three steps of resiliency were added to the design of the upload system, seen in Fig. \ref{fig:fileupload}.
+
+Having uploaded the file the system first identifies the filetype by looking inside the file and parsing its contents, ignoring the extension and rejecting the file if it matches neither format.
+
+If the file is QIF the parser parses all transactions up front and evaluates the format of the dates. If the dates are found to have the format \lstinline$\d00-00-0000$ (\lstinline$\d{1,2}[/-]\d{1,2}[/-]\d{2,4}$ in regular expression) the system needs to decide whether that's D-M-Y or M-D-Y, otherwise performing standard date parsing of the string.
 %
-Having uploaded the file the system first identifies what file type that file is by looking inside the file and parsing its contents, rejecting the file if it matches neither format.
-%
-If the file is QIF the parser then parses all transactions up front and evaluates the format of the dates. If the dates are in 00-00-0000 the system needs to decide whether that's D-M-Y or M-D-Y, else it performs standard date parsing of the string. To decide between D-M-Y or M-D-Y the application goes through all the dates and attempts to parse in both formats, if a format fails it is marked as incorrect. This leaves the application in one of four states, seen in Table \ref{table:datestates}. In the case of state 1 or 4 there is ambiguity and the application prompts the user. This ambiguity can be caused by dates that are malformed or a collection of dates falling within a range that doesn't have a day value over 12, as both formats parse correctly. 
-% 
-In provisional user testing, it was discovered that users had a tendency to upload the same file more than once or to upload statements with an overlapping date range. To account for this, before creating a new Transaction the application checks for an identical transaction for the current user in the database and if one is found, skips creating a new Transaction. For speed this is done using a stored unique value, resulting from a SHA512 hash of date posted, transaction value, transactor, memo and transaction id\footnote{If a transaction ID was provided by the bank}, which is generated when saving a Transaction to the database.
+To decide between D-M-Y or M-D-Y the application goes through all the dates and attempts to parse in both formats, if a format fails it is marked as incorrect. This leaves the application in one of the four states, seen in Table \ref{table:datestates}. In the case of state 1 or 4 there is ambiguity and the application prompts the user. This ambiguity can be caused by dates that are malformed or a collection of dates falling within a range that doesn't have a day value over 12, as both formats parse correctly. 
+
+In provisional user testing, it was discovered that users had a tendency to upload the same file more than once or to upload statements with an overlapping date range. To account for this, before creating a new Transaction the application checks for an identical transaction for the current user in the database and if one is found, skips creating a new Transaction. For speed this is done using a stored unique value, resulting from a SHA512 hash of date posted, transaction value, transactor, memo and transaction id\footnote{If a one was provided by the users bank}, which is generated when saving a Transaction to the database.
 
 \begin{figure}[h]
     \centering
@@ -46,6 +48,8 @@ In provisional user testing, it was discovered that users had a tendency to uplo
 <a>[OFX]->(Parse Transactions)->(Remove Duplicates)->(end),
 <a>[Other]->(Reject Upload)
     \end{comment}
+    
+    \todo{Recompile this figure}
 \end{figure}
 
 \begin{table}[h]
@@ -64,8 +68,7 @@ State & D-M-Y & M-D-Y \\
 % 
 
 \subsection{Named Entity Resolution}
-
-A key part of the project is mapping the text found on a bank statement that represents a business or person to a single entity in the application. After a cleanup of different suffixes that banks append it was found that transactors are often referenced using several names.
+Almost all functionality of the project relies on successfully mapping the text found on a bank statement that represents a business or person to a single entity in the application, known as a \gls{transactor} by the system. After a cleanup of different suffixes that banks append it was found that \glspl{transactor} are often referenced using several names.
 
 Seen in Table \ref{tab:sainsburys}, Sainsbury's was referred to nine different ways in the statement data uploaded by the research participants and similar results are found for most \glspl{transactor}.
 
@@ -79,7 +82,7 @@ sainsburys s/mkts    & 46          \\
 sainsburys s/mkt     & 9           \\
 sainsburys s/mkts cd & 7           \\
 js online grocery    & 2           \\
-sainsbury s/mkt      & 2           \\
+sainsbury s/mkt cd   & 2           \\
 sainsburys smkt      & 2           \\
 js online grocer     & 1           \\
 sainsburys superma   & 1           \\
@@ -90,7 +93,7 @@ sainsburys-superma   & 1           \\ \bottomrule
 \end{table}
 
 \subsubsection{Mapping to Entities}
-In consideration of this, the concept of mappings were added to the system. A mapping is a single reference to a transactor, such as `sainsbury s/mkt'. A transactor has multiple mappings. Fig. \ref{fig:mapping} shows this structure.
+In consideration of this, the concept of mappings was added to the system. A \gls{mapping} is a single \gls{reference} to a transactor, such as `sainsbury s/mkt'. A transactor has multiple mappings. Fig. \ref{fig:mapping} shows this structure.
 
 \begin{figure}[h]
     \centering
@@ -129,22 +132,23 @@ To support this the application stores two sets of mappings and transactions, Us
 \end{figure}
 
 \subsection{Suggestions}
-Having mapped references to entities, the system is able to use this knowledge to make suggestions of appropriate entities for unseen references in some cases. This is performed by taking the list of mappings and finding those with the smallest difference to the unseen reference. Difference can be calculated in several different ways, including the Levenshtein distance which calculates the number of single-character edits to transform between the two strings, details for this application are found in Section \ref{section:suggestion-implementation} \cite{levenshtein1966binary}.
+Having mapped \glspl{reference} to entities, the system is able to use this knowledge to make suggestions of appropriate entities for unseen references in some cases.
+%
+This is performed by taking the list of mappings and finding those with the smallest difference to the unseen reference. Difference can be calculated in several different ways, including the Levenshtein distance which calculates the number of single-character edits to transform between the two strings, implementation details for this project can be found in Section \ref{section:suggestion-implementation} \cite{levenshtein1966binary}.
 
 \section{Prediction}
-In order to make a prediction of how much money a user would spend in a given period two steps need to be completed, deciding whether or not each individual transaction will occur in a given month and calculating how much money would be spent.
+In order to make a prediction of how much money a user would spend in a given period two steps need to be completed, predicting whether or not each individual transaction will occur in a given month and estimating how much money would be spent.
 
-The system uses a First-order Markov chain to decide whether or not transactions will occur and weighted arithmetic means to calculate how much money will be spent.
+Drawing from the research detailed in Chapter \ref{cha:background}, the system uses a First-order Markov chain model to decide whether or not transactions will occur and weighted arithmetic means to calculate how much money will be spent.
 
 \subsection{Markov Chain}
-\plan{Why I chose first order markov chains, alternatives to that etc...}
-The probability of a transaction occurring can be calculated using Bayes' Theorem
+%\plan{Why I chose first order markov chains, alternatives to that etc...}
+%The probability of a transaction occurring can be calculated using Bayes' Theorem
 
 \todo[inline]{This subsection}
 % Probability of spend given that we didn't spend = probability of not spend given spend * probability of spend over probability of not spend.
 
-An easy way to view the markov chain is as a directed graph, as seen in Fig. \ref{fig:transition-monthly} and \ref{fig:transition-one}, where 0 is not occur, 1 is occur and the edges are labeled with the probability of that transition.
-
+An easy way to visualise the Markov Chain Models the system is creating is through a directed graph. Two frequent examples are shown in Fig. \ref{fig:transition-monthly} and \ref{fig:transition-one}, where $0$ represents a transaction not occurring, $1$ is the opposite and the edges are labelled with the probability of that transition occurring. \todo{Overuse of the word occurring}
 
 \begin{figure}[h]
 \centering
@@ -189,9 +193,9 @@ An easy way to view the markov chain is as a directed graph, as seen in Fig. \re
 \end{figure}
 
 \subsection{Weighted Arithmetic Mean}
-Having predicted whether money would be spent or not the system needed to predict how much money would be spent. To do this it needed to perform some sort of average, however initial testing in MatLab revealed that simply taking an average is affected highly by changes in spending patterns and skewed by outlers, in addition a spending pattern that suddenly changes (for example one caused by the user changing supermarked) takes too long to come into effect.
+Having predicted whether a transaction will occur or not the system needed to predict how much money would be spent. A simple way to make this prediction us taking the mean, however initial testing in MatLab revealed that simply taking an average is affected highly by changes in spending patterns and skewed by outliers, in addition a spending pattern that suddenly changes (for example one caused by the user changing supermarket) takes too long to be reflected in the prediction.
 
-The system uses weighted averages to correct this. A weighted average is similar to an average but each value is scaled in it's effect by a weighting factor, this allows the system to give a higher weight to more recent transactions.
+Supported by the background research on weighted smoothing, the system uses weighted averages to correct this. A weighted average is similar to an average but each value is scaled in it's effect by a weighting factor, this allows the system to give a higher weight to more recent transactions.
 
 An example is shown in Fig. \ref{fig:weighting} where $w(t)$ is the weighting function for time $t$, $t = 0$ for the most recent month and $t = n - 1$ for the oldest month. 
 \todo[inline]{Fix this too!}
@@ -211,10 +215,13 @@ An example is shown in Fig. \ref{fig:weighting} where $w(t)$ is the weighting fu
 \end{figure}
 
 \subsection{5 Model System}
-\todo[inline]{Improve this}
-However, there are many different ways of selecting a weighted average for a user and these will have a different suitability depending on the spending patterns of the user. It was found during innitial research due to different spending patterns of users, there is not a fit all solution. For this reason five different weighting algorithms were selected and when making a prediction the application selects the weighting algorithm most appropriate for the user.
+Using weighted averages is only half the story, the system needs to choose appropriate weights for each transaction and the weights chosen will have a different suitability depending on the spending patterns of the user.
+% 
+During initial research on weighted averages, it was observed that due to the varying spending patterns of the users due to different spending patterns of users, there is not a `one fits all' solution to weighting.
+%
+For this reason five different weighting algorithms were selected and when making a prediction the application selects the weighting algorithm most appropriate for the user.
 
-The five weighting functions were selected from a set of ten after prototyping in MatLab. They were selected for significant differences in behaviour. There are four main types: Exponential relationship $w_x = \exp{x}$, decay $w_x = {1}/{x + 1}$, power $w_x = x^1 $, static $w_x = 1$, one exponential, power and static were selected, and two decay with a different variable to affect the speed of the decay. 
+The five weighting functions were selected from a set of ten after prototyping in MatLab. They were selected for significant differences in behaviour. There are four main types: Exponential relationship $w_x = e^{x}$, decay $w_x = {1}/{x + 1}$, power $w_x = x^1 $, static $w_x = 1$, one exponential, power and static were selected, and two decay with a different variable to affect the speed of the decay. 
 \todo[inline]{This could be extended further by fitting to just one (or many functions) and adjusting a decay constant}
 
 \todo[inline]{This is done by category rather than by user for a better fit}
