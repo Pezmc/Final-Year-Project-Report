@@ -219,20 +219,29 @@ Using weighted averages is only half the story, the system needs to choose appro
 % 
 During initial research on weighted averages, it was observed that due to the varying spending patterns of the users due to different spending patterns of users, there is not a `one fits all' solution to weighting.
 %
-For this reason five different weighting algorithms were selected and when making a prediction the application selects the weighting algorithm most appropriate for the user.
+For this reason five different weighting functions were selected and when making a prediction the application selects the weighting algorithm most appropriate for the user.
 
-The five weighting functions were selected from a set of ten after prototyping in MatLab. They were selected for significant differences in behaviour. There are four main types: Exponential relationship $w_x = e^{x}$, decay $w_x = {1}/{x + 1}$, power $w_x = x^1 $, static $w_x = 1$, one exponential, power and static were selected, and two decay with a different variable to affect the speed of the decay. 
-\todo[inline]{This could be extended further by fitting to just one (or many functions) and adjusting a decay constant}
+The five weighting functions were selected from a set of eight (shown in Fig. \ref{fig:weightedaveragegraph}) after experimentation with personal finance data in MatLab. They were selected for significant differences in behaviour.
+%
+There are four main function types: Exponential relationship $w_x = e^{x}$, decay $w_x = {1}/{x + 1}$, power $w_x = x^1 $, static $w_x = 1$, one exponential, power and static were selected, and two decay with a different variable to affect the speed of the decay. 
+\todo{This could be extended further by fitting to just one (or many functions) and adjusting a decay constant}
 
-\todo[inline]{This is done by category rather than by user for a better fit}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{design/weightedaveragesgraph}
+    \caption{The original eight prototype weighting functions}
+    \label{fig:weightedaveragegraph}
+\end{figure}
 
-The system splits the historical data for complete months for the user into two parts, training contains 75\% of the previous months and 25\% is for testing. If there are less than four months available the most recent month is used for testing and any remaining for training. In the case where between zero and two months are available the application \todo[inline]{What does it do? I can't remember}
+To select the best fit weighting function for each user, the system splits the users transaction history complete months \footnote{Months that have passed fully} into two parts. Training contains 75\% of the previous months and the remaining 25\% is used for testing.
+%
+If less than four months is available the most recent month is used for testing and the remainder for training. In the case where between zero and two months are available the application falls back to a simple average.
 
-Having split the data the application goes through all the weighting functions and chooses the one with the least absolute error. This gives us a model that is best fir to the users overall spending pattern, however the system must not overfit to a particular user, this is discussed further in SECTION NUMBER.
+Having split the data the application goes through all the weighting functions and chooses the one with the least absolute error. This gives us a model that is best for to the users overall spending pattern, however the system must not overfit to a particular user, this is discussed further in SECTION NUMBER.
 
-\todo[inline]{Figure showing how the one with the least error is selected}
+In testing it was discovered that users spending money in the similar categories had the same weighting model, with further investigation it was discovered that by fitting the best weighting model per category a on average the absolute error was less.
 
-\plan{How was is a model chosen for the user?}
+\missingfigure{Showing how the one with the least error is selected}
 
 \section{Security Considerations}
 \todo[inline]{Make this section make sense}
