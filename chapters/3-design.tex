@@ -1,28 +1,70 @@
 \chapter{Design}
-%\label{cha:part3}
+\label{cha:design}
 
 \begin{comment}
 Chapter 3: Design
 This chapter starts to describe the student's own work. It is where the main design aspects of the project are described. The style of presentation may reflect the life cycle of the project, for example commencing with the Requirements Analysis, but it should not read like a diary. The design should be clearly and precisely described with supporting diagrams. The presentation should be at a fairly high level without excessive detail. This chapter is a suitable place to justify your choice of architecture, implementation technologies and APIs used.
-\end{comment}
-
 \plan{This section contains my PLAN of what I will do (before I started) of my app, it should be programming language independent}
+\end{comment}
 
 This chapter covers design of the system, including an overview of the architecture and descriptions of the key components. 
 
 \section{Statement Management}
 The statement management features of the application were selected based on the functionality observed during the background research and conversations with potential users, asking what functionality they would find useful in such an application.
 
-The key features are; parsing of files downloaded from Internet banking, mapping transactions found in the files to real world businesses and 
+The key features include; parsing of files downloaded from Internet banking, mapping transactions found in the files to real world businesses and organising transaction history by category and transactor.
 
 \subsection{Upload}
-\plan{Parsing QIF/OFX, dates being bitches etc...}
+The first step in getting information about a users transaction history involves an upload of their historical transactions.
+
+The major UK banks tested\footnote{Natwest, First Direct and HSBC} provided statement downloads in Quicken, Microsoft Money or Microsoft Excel format. Further investigation revealed that the underlying formats were Quicken Interchange Format (QIF), Open Financial Exchange (OFX) and comma-separated values (CSV).
+
+As there is no pre-defined standard for bank statements in CSV format, it became clear that the banks investigated used completely different structures. It was decided the application would parse the QIF and OFX formats, following their respective specifications. Examples of QIF and OFX can be seen in Fig. \ref{fig:qifofxformat}.
+
+It was soon identified that QIF/OFX files downloaded from different banks had different structures, and in some cases different structures from the same bank. Interestingly a OFX file downloaded from First Direct was found to be in QIF format, despite an \lstinline$.ofx$ suffix.
+
+There were also discrepancies with the formatting of dates in QIF. The specification from Intuit\footnote{The developers of Quicken and QIF} doesn't specify a date format \cite{quiken2010qif}. The sample files tested included dates in D-M-Y, M-D-Y and Y-M-D format.
+
+\input{figures/qifofxformat}
+
+To combat this three steps of resiliency were added to the design of the upload system, seen in Fig. \ref{fig:fileupload}.
+%
+Having uploaded the file the system first identifies what file type that file is by looking inside the file and parsing its contents, rejecting the file if it matches neither format.
+%
+If the file is QIF the parser then parses all transactions up front and evaluates the format of the dates. If the dates are in 00-00-0000 the system needs to decide whether that's D-M-Y or M-D-Y, else it performs standard date parsing of the string. To decide between D-M-Y or M-D-Y the application goes through all the dates and attempts to parse in both formats, if a format fails it is marked as incorrect. This leaves the application in one of four states, seen in Table \ref{table:datestates}. In the case of state 1 or 4 there is ambiguity and the application prompts the user. This ambiguity can be caused by dates that are malformed or a collection of dates falling within a range that doesn't have a day value over 12, as both formats parse correctly. 
+% 
+In provisional user testing, it was discovered that users had a tendency to upload the same file more than once or to upload statements with an overlapping date range. To account for this, before creating a new Transaction the application checks for an identical transaction for the current user in the database and if one is found, skips creating a new Transaction. For speed this is done using a stored unique value, resulting from a SHA512 hash of date posted, transaction value, transactor, memo and transaction id\footnote{If a transaction ID was provided by the bank}, which is generated when saving a Transaction to the database.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{design/upload-activity}
+    \caption{Activity diagram for statement uploads}
+    \label{fig:fileupload}
+    
+    \begin{comment}
+(start)->(Upload File)->(Identify File Format)-><a>[QIF]->(Identify Date Format)->(Parse Transactions),
+<a>[OFX]->(Parse Transactions)->(Remove Duplicates)->(end),
+<a>[Other]->(Reject Upload)
+    \end{comment}
+\end{figure}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lll}
+State & D-M-Y & M-D-Y \\
+1     & true  & true  \\
+2     & true  & false \\
+3     & false & true  \\
+4     & false & false
+\end{tabular}
+\caption{Possible states following evaluation of transaction dates}
+\label{table:datestates}
+\end{table}
+
+% 
 
 \subsection{Named Entity Resolution}
 
-\plan{Must mention what  are}
-
-\subsubsection{Mapping to Entities}
 A key part of the project is mapping the text found on a bank statement that represents a business or person to a single entity in the application. After a cleanup of different suffixes that banks append it was found that transactors are often referenced using several names.
 
 Seen in Table \ref{tab:sainsburys}, Sainsbury's was referred to nine different ways in the statement data uploaded by the research participants and similar results are found for most \glspl{transactor}.
@@ -43,15 +85,16 @@ js online grocer     & 1           \\
 sainsburys superma   & 1           \\
 sainsburys-superma   & 1           \\ \bottomrule
 \end{tabular}
-\caption{References to the same entity `Sainsbury's' found in participant data}
+\caption{References to the entity `Sainsbury's' found in participant data}
 \label{tab:sainsburys}
 \end{table}
 
+\subsubsection{Mapping to Entities}
 In consideration of this, the concept of mappings were added to the system. A mapping is a single reference to a transactor, such as `sainsbury s/mkt'. A transactor has multiple mappings. Fig. \ref{fig:mapping} shows this structure.
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=\textwidth]{simple-mappings}
+    \includegraphics[width=\textwidth]{design/simple-mappings}
     \caption{Overview of Mappings}
     \label{fig:mapping}
     
@@ -70,7 +113,7 @@ To support this the application stores two sets of mappings and transactions, Us
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=\textwidth]{mappings}
+    \includegraphics[width=\textwidth]{design/mappings}
     \caption{Overview of User Mappings}
     \label{fig:transactormappings}
     
@@ -85,27 +128,103 @@ To support this the application stores two sets of mappings and transactions, Us
     \end{comment}
 \end{figure}
 
-
-
-\plan{Use of MySQL to find similar, how that works, alternatives}
-
 \subsection{Suggestions}
-\plan{How it uses the above, how the whole user/global thing works}
+Having mapped references to entities, the system is able to use this knowledge to make suggestions of appropriate entities for unseen references in some cases. This is performed by taking the list of mappings and finding those with the smallest difference to the unseen reference. Difference can be calculated in several different ways, including the Levenshtein distance which calculates the number of single-character edits to transform between the two strings, details for this application are found in Section \ref{section:suggestion-implementation} \cite{levenshtein1966binary}.
 
 \section{Prediction}
+In order to make a prediction of how much money a user would spend in a given period two steps need to be completed, deciding whether or not each individual transaction will occur in a given month and calculating how much money would be spent.
 
-
-
-\subsection{Prediction}
-\plan{All the steps that were needed for the prediction}
+The system uses a First-order Markov chain to decide whether or not transactions will occur and weighted arithmetic means to calculate how much money will be spent.
 
 \subsection{Markov Chain}
 \plan{Why I chose first order markov chains, alternatives to that etc...}
+The probability of a transaction occurring can be calculated using Bayes' Theorem
 
-\subsection{Weighted Averages}
-\plan{How does that work, why is it good?}
+\todo[inline]{This subsection}
+% Probability of spend given that we didn't spend = probability of not spend given spend * probability of spend over probability of not spend.
+
+An easy way to view the markov chain is as a directed graph, as seen in Fig. \ref{fig:transition-monthly} and \ref{fig:transition-one}, where 0 is not occur, 1 is occur and the edges are labeled with the probability of that transition.
+
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[start chain=going right]
+\node[state, on chain]                 (0) {0};
+\node[state, on chain]                 (1) {1};
+\
+\draw[
+    >=latex,
+    auto=right,                      % or
+    loop above/.style={out=75,in=105,loop},
+    every loop,
+    ]
+     (1) 	edge[loop above]    node {0.86}   (1)
+      		edge[bend left]  node {0.14}   (0)
+     (0)	edge[loop above]    node {0.8}   (0)
+     		edge[bend left=40]  node {0.2}   (1);
+\end{tikzpicture}
+\caption{Transition graph for a monthly pay check}
+\label{fig:transition-monthly}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[start chain=going right]
+\node[state, on chain]                 (0) {0};
+\node[state, on chain]                 (1) {1};
+\
+\draw[
+    >=latex,
+    auto=right,                      % or
+    loop above/.style={out=75,in=105,loop},
+    every loop,
+    ]
+     (1) 	edge[loop above]    node {0}   (1)
+      		edge[bend left=40]  node {1}   (0)
+     (0)	edge[loop above]    node {0.91}   (0)
+     		edge[bend left=40]  node {0.09}   (1);
+\end{tikzpicture}
+\caption{Transition graph for a one off purchase}
+\label{fig:transition-one}
+\end{figure}
+
+\subsection{Weighted Arithmetic Mean}
+Having predicted whether money would be spent or not the system needed to predict how much money would be spent. To do this it needed to perform some sort of average, however initial testing in MatLab revealed that simply taking an average is affected highly by changes in spending patterns and skewed by outlers, in addition a spending pattern that suddenly changes (for example one caused by the user changing supermarked) takes too long to come into effect.
+
+The system uses weighted averages to correct this. A weighted average is similar to an average but each value is scaled in it's effect by a weighting factor, this allows the system to give a higher weight to more recent transactions.
+
+An example is shown in Fig. \ref{fig:weighting} where $w(t)$ is the weighting function for time $t$, $t = 0$ for the most recent month and $t = n - 1$ for the oldest month. 
+\todo[inline]{Fix this too!}
+
+\begin{figure}[h]
+    \centering
+    \[
+        \bar{x} = 
+        \frac{
+                \sum\limits^{n-1}_{t=0}{w(t) \times x_t}
+            }{
+                \sum\limits_{t=0}^{n-1}{w(t)}
+        } 
+    \]
+    \caption{Weighted arithmetic mean}
+    \label{fig:weighting}
+\end{figure}
 
 \subsection{5 Model System}
+\todo[inline]{Improve this}
+However, there are many different ways of selecting a weighted average for a user and these will have a different suitability depending on the spending patterns of the user. It was found during innitial research due to different spending patterns of users, there is not a fit all solution. For this reason five different weighting algorithms were selected and when making a prediction the application selects the weighting algorithm most appropriate for the user.
+
+The five weighting functions were selected from a set of ten after prototyping in MatLab. They were selected for significant differences in behaviour. There are four main types: Exponential relationship $w_x = \exp{x}$, decay $w_x = {1}/{x + 1}$, power $w_x = x^1 $, static $w_x = 1$, one exponential, power and static were selected, and two decay with a different variable to affect the speed of the decay. 
+\todo[inline]{This could be extended further by fitting to just one (or many functions) and adjusting a decay constant}
+
+\todo[inline]{This is done by category rather than by user for a better fit}
+
+The system splits the historical data for complete months for the user into two parts, training contains 75\% of the previous months and 25\% is for testing. If there are less than four months available the most recent month is used for testing and any remaining for training. In the case where between zero and two months are available the application \todo[inline]{What does it do? I can't remember}
+
+Having split the data the application goes through all the weighting functions and chooses the one with the least absolute error. This gives us a model that is best fir to the users overall spending pattern, however the system must not overfit to a particular user, this is discussed further in SECTION NUMBER.
+
+\todo[inline]{Figure showing how the one with the least error is selected}
+
 \plan{How was is a model chosen for the user?}
 
 \section{Security Considerations}
@@ -131,7 +250,7 @@ For this reason all of the application uses HTTPS, and redirects users to the HT
 
 A common way to crack into user accounts is by brute force. If an attacker knows a particular users username they can perform targeted guessing guessing of the password by enumerating through all possibilities. A websites ability to resist this kind of attack is called the `password guessing resistance'. It is for this reason that many websites, following the guidance of research such as \cite{needed} enforce password rules in an attempt to increase the number of possible combinations for a password, the entropy.
 
-Shannon Entropy can be used estimate the strength of a passwords resistance to this kind of attack. The entropy is calculated using $H(X)= - \sum_{i=1}^n{p(x_i)\log_b p(x_i)}$ where $p(x_i)$ is the probability of the value $x$ occurring \cite{burr2013electronic}.
+Shannon Entropy can be used estimate the strength of a passwords resistance to this kind of attack. The entropy is calculated using $H(X)= -\sum_{i=1}^n{p(x_i)\log_b p(x_i)}$ where $p(x_i)$ is the probability of the value $x$ occurring \cite{burr2013electronic}.
 
 The paper suggests a predefined set of rules for estimating entropy based on Shannon's work studying English text \cite{burr2013electronic}, however other papers found that using this predefined set of rules was not a valid measure of password strength \cite{weir2010shannon}.
 % 
@@ -173,8 +292,6 @@ BLOWFISH & 17      & 0                   & $\pm 0$                    \\
 \caption{Average number of hashes completed per second on a 2.7Ghz i7 }
 \end{table}
 
-\section{Technical Design}
-
 \subsubsection{Personally Identifiable Data}
 Of equal concern is other personally identifiable data being leaked, in an attempt to avoid this the application encrypts all information stored in the user table, that is needed at a later date using the AES128 encryption standard. This standard was selected for the project as was endorsed by the U.S. National Institute of Standards and Technology, when outlined by NIST in 2001 and has become the ``encryption standard for commercial transactions in the private sector'' \cite{nist2010aes, stair2009informationsystems}.
 
@@ -182,7 +299,7 @@ Of equal concern is other personally identifiable data being leaked, in an attem
 In addition to the above the username of each user is also hashed so it is only known to the person using that account. In the rare case that any of the passwords were brute forced, the relevant username would also need to be brute forced in order to attempt to login or use the details on another website.
 
 \subsection{Other}
-Other attack vectors inclung SQL injection and cross-site scripting (XSS) were also considered.
+Other attack vectors including SQL injection and cross-site scripting (XSS) were also considered.
 
 It was decided that the project would use a prepared statements to reduce the risk of SQL injection. By sending the query followed by the parameters as literal values the database server would not interpret them as an executable portion of SQL and attacks, relying on escaping SQL such as \inlinesql$' OR 1$ are prevented.
 
@@ -197,8 +314,6 @@ In order to mitigate the possiblity of XSS the project will need escape all cont
 \subsection{UI Design}
 
 \todo[inline]{Add photos showing the evolution of the UI}
-
-
 
 \subsection{Database Class}
 
