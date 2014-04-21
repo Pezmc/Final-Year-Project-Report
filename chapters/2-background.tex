@@ -6,13 +6,16 @@ Chapter 2: Background and literature survey
 This chapter should give essential background information with references to published material in research papers, books, URLs, magazine articles and even newspapers. Expand on any references to other work that have been mentioned in Chapter 1. Refer to the notes on references (below) for the preferred way of referencing publications. The reader, stimulated by the presentation of ideas in this section, may be led to consult some or all of the referenced publications. This section will be useful for any student in a subsequent year who wishes to take the project further.
 \end{comment}
 
+As outlined in Chapter \ref{cha:introduction} the project consists of two major parts: a financial management service, which can be used to view historical spending and gain understanding of personal finances; and a forecasting element which predicts how much spending will occur in the future. 
+\question{Include this?} \question{Technically it's spending or receiving "transaction" but this becomes very wordy?}
+
 \section{Financial Management}
-There are several other applications that implement money management features found in this project, most notably Lloyds TSB Money Manager, the first personal money management application provided by a UK bank and Mint.com a US only personal finance service \parencite{lloyds2014moneymanager, mint2014whatismint}.
+There are existing applications that implement similar features to the money management aims of this project\question{Mention the current "bad" internet banking here?}, most notably Lloyds TSB Money Manager, the first and only personal money management application provided by a UK bank and Mint.com a United States (US) only personal finance service \parencite{lloyds2014moneymanager, mint2014whatismint}.
 
 \subsection{Lloyds Money Manager}
-The service is available to Lloyds TSB current account holders as part of their online banking and it's features revolve around documenting historical spending.
+The service is available to Lloyds TSB current account holders as part of their online banking and it's features revolve around documenting historical spending \parencite{lloyds2014money}.
 
-The key features are as follows \parencite{lloyds2014money}:
+The key features include:
 \begin{itemize}
 \item Categorising spending
 \item Creating spending plans per category
@@ -21,41 +24,39 @@ The key features are as follows \parencite{lloyds2014money}:
 \item Track progress of budget targets
 \end{itemize}
 
+Customer reviews of the service highlight the usefulness of spending analysis screen, which includes a breakdown of spending in each category (Fig. \ref{fig:moneymanager}, as well as the spending calendar, which displays money spent in a day by day format.
+%
+The reviews, however, also highlight some shortcomings, noting that changes to categories are not reflected immediately, categories are often incorrect and that it's not possible to override the category for a single transaction, for example food bought at a petrol station is placed in the Car category and cannot be moved \cite{moneywatch2011lloyds, moneysupermarket2011lloyds}.
+
 \begin{figure}[h]
     \centering
     \includegraphics{background/moneymanagerchart}
-    \caption{Spending Analysis on Money Manager \parencite{lloyds2014money}}
+    \caption{Spending Analysis by category on Money Manager \parencite{lloyds2014money}}
     \label{fig:moneymanager}
 \end{figure}
 
-Customer reviews of the product highlight how useful the spending analysis screen, which includes a breakdown of spending in each category is as well as the spending calendar, which displays money spent in a calendar format. The reviews, however also suggest some shortcomings, noting that changes to categories are not reflected immediately and that it's unable to override the category for a single spend (e.g. food bought at a petrol station is placed in the Car category) \cite{moneywatch2011lloyds}.
-
-A key advantage of the money manager is that Lloyds already have all their customer data, so there is no data entry or upload step, which could potentially be confusing users.
+A key advantage of the money manager is that Lloyds already have access to their customer data, so there is no data entry or upload required, which could be confusing and off-putting to potential users.
 
 \subsection{Mint.com}
-Mint.com offers very similar features to LLoyds but it limited to the US. However, Mint automatically logs into the users online bank account and downloads their statements authenticating with their banking username and password, it is believed that this feature relies on API's at each bank which Intuit (the company behind Mint) have negotiated access to individually, though Intuit provide no information on this \cite{stackoverflow2012bankingapi, stackoverflow2012bankingapi2}. Although this feature is clearly useful and saves time for the users, it does make Mint responsible for storing their customers Internet banking passwords and presumably involves fee payments to the banks providing these API's. For these reasons was decided that automatic statement downloading is outside of the scope of this project.
-
-\plan{More detail on what mint/lloyds do?}
+Mint.com offers very similar features to LLoyds but it limited to the US. However, Mint automatically logs into the users online bank account and downloads their statements authenticating with their banking username and password. It's reported that this feature relies on the use of application programming interface's (API) at each bank which Intuit (the company behind Mint) have negotiated access individually, though Intuit have published no information to support or dispute this \cite{stackoverflow2012bankingapi, stackoverflow2012bankingapi2}.
+% 
+Although this feature is clearly useful and saves time for the users, it does make Mint responsible for storing their customers Internet banking passwords and presumably involves fee payments to the banks providing these API's. \question{Should I have more detail on what mint/lloyds do?}
+%
+For these reasons it was decided that automatic statement uploading was outside of the budget and scope of this project, however, the project should support manual upload of statements to avoid date entry of users. \question{Does this need backing up?}
 
 \subsection{Mobile Apps}
-Mobile applications or `apps' as they are commonly known have seen a surge in popularity since the release of startphones and are a common target for small pieces of software, such as financial organisation.
+Mobile applications or `apps' as they are commonly known have seen a surge in popularity since the release of startphones and are a common target for small pieces of software, such as financial organisation \parencite{purcell2011half}.
 
-The three most popular iPhone personal financial applications \cite{itunes2013topapps}, at the time of planning the project, all offered features very similar to those found in the Lloyds Money Manager and Mint. The most popular features being grouping money by category and graphs of spending history. However, they all had the same drawback, the user had to manually enter all of their transactions and set categories for them, which appears time consuming and error prone, particularly on a mobile app \cite{spendee2014spendee,budgt2013budgt,bluetags2014pocket}.
+The three most popular iPhone personal financial applications \cite{itunes2013topapps}, at the time of planning the project, all offered features very similar to those found in the Lloyds Money Manager and Mint. The most popular features being grouping money by category and graphs of spending history.
+% 
+However, they all had the same drawback, the user had to manually enter all of their transactions and set categories for them, which appears time consuming and error prone, particularly on a mobile app \cite{spendee2014spendee,budgt2013budgt,bluetags2014pocket}.
 
-The increase of mobile usage however should be considered when planning the features of the project, with the project ensuring mobile compatibility.
+The increase of mobile usage should be considered when planning the features of the project, with the project ensuring mobile compatibility and if possible, avoiding manual data entry. \plan{This needs improving}
 
 \section{Prediction}
-
-\todo[inline]{Make this make sense}
-Predicting future expenditure given previous history is notoriously hard. There have been several different approaches to this in the past in the context of personal finance, but by opening up to other finance predictions such as those on the stock market, there is a lot more research.
-\todo[inline]{Finish this}
-
 %\plan{Ways other people try to predict the future expenditure (in stocks etc...)}
 
-There are various approaches to making predictions of financial spending, each with their own advantages and disadvantages. Predicting future transactions before they occur is technically similar to the work done by investors on the stock market, where the objective is to predict whether the value of a stock will fall or increase in order to make buy/sell decisions.
-
-\plan{I need at least two more papers, preferably some using Markov Chains}
-
+There are various approaches to making predictions of financial spending, each with their own advantages and disadvantages \question{Not sure if this is relevant}. Predicting future transactions before they occur is technically similar to the work done by investors on the stock market, where the objective is to predict whether the value of a stock will fall or increase in order to make buy/sell decisions.
 
 Preifer and Carraway demonstrated that Markov Chain Models can be used to model customer relationships with a business and predict the expected value of a marketing engagement with an individual customer. By creating a transition matrix of a particular customer transitioning from not spending to spending and visa versa over five periods\footnote{An `illustration' assuming a customer will never return after 5 months of not spending}, they were able to estimate the likely-hood of a spend occurring in a given period, Fig. \ref{fig:preifermarkovchain} shows a graphical representation of the model that was produced, the states represent the five periods, where $p_{i}$ is the probability of the transition occurring during period $i$ \cite{pfeifer2000modeling}.
 % 
@@ -66,21 +67,50 @@ They demonstrate applying Markov Chain Models to a larger dataset, calculating t
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=\textwidth]{background/markovchain}
-    \caption{Markov Chain Model for a particular customer over five periods \parencite[Fig. 1]{pfeifer2000modeling}}
+    %\includegraphics[width=\textwidth]{background/markovchain}
+    \begin{tikzpicture}[start chain=going right]
+    \node[state, on chain]                 (1) {1};
+    \node[state, on chain]                 (2) {2};
+    \node[state, on chain]                 (3) {3};
+    \node[state, on chain]                 (4) {4};
+    \node[state, on chain]                 (5) {5};
+    \
+    \draw[
+        >=latex,
+    %   every node/.style={above,midway},% either
+        auto=right,                      % or
+        loop above/.style={out=75,in=105,loop},
+        every loop,
+        ]
+     (1) 	edge[bend left] node [above]{$1 - p_{1}$}   (2)
+      		edge[out=145,in=220,loop,looseness=6]             node {$p_{1}$}   (1)
+     (2) 	edge[bend left] node[above]{$1 - p_{2}$}   (3)
+      		edge[bend left=90,,in=120]             node {$p_{2}$}   (1)
+     (3) 	edge[bend left] node[above] {$1 - p_{2}$}   (4)
+     		edge[bend left=90,in=105,]             node {$p_{3}$}   (1)
+     (4) 	edge[bend left] node [above]{$1 - p_{2}$}   (5)
+     		edge[bend left=90,in=90]             node {$p_{4}$}   (1)
+     (5) 	edge[out=40, in=320,loop,looseness=6] node[right]{$1.0$}   (5);
+    
+    
+    % The \draw path is like the one above.
+    \end{tikzpicture}
+    \caption[Markov Chain Model of customer spending]{Markov Chain Model for a particular customer over five periods \parencite[Adapted from Fig. 1]{pfeifer2000modeling}}
     \label{fig:preifermarkovchain}
 \end{figure}
 
+% OTHER PREDICTION
 Research by Singh et al., from the Massachusetts Institute of Technology, studied the spending behaviour of 52 adults and investigated the impact of social interactions, including text messages, phone calls and face-to-face meetings, on the participants spending in order to predict their spending behaviour. Using a Na\"{i}ve Bayes classifier and selecting a subset of their available features using an Information Gain approach, choosing those with most relevance to each classification task, they were able to correctly classify whether the participant would overspend, explore a diverse range of businesses and remain loyal to a business with 72\% overall accuracy. They concluded that social factors, were better ``predictors of spending behaviour'' than personality traits, which had been previously studied \parencite{singh2013spendingbehaviour}.
 %
 Although this paper did not study the affects of the participants previous transactions on spending, they were able to predict the users spending behaviour, highlighting that factors other than the transaction history may be of importance when trying to predict a users future outflow. However, the paper does not attempt to make a prediction of the amount spent or how many transactions occur.
 
+% AVERAGES
 Smoothing is typically applied to financial market data, for example the value of a particular stock on the FTSE 100. The most common techniques are simple, weighted and exponential moving averages, which all reduce the noise found in the data potentially revealing an orderly process, by removing outliers found in the data. The result of this effect can be seen in Fig \ref{fig:dashweightedaverages} \parencite{dash2012movingaverages}.
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{background/movingaverages}
-    \caption{Simple Moving Average (MA) [blue], Weighted MA [red] and Exponential MA of the S\&P500 \protect\footnotemark \parencite[Fig. 5]{dash2012movingaverages}}
+    \caption[SMA, WMA and EMA of the S\&P500]{Simple Moving Average (MA) [blue], Weighted MA [red] and Exponential MA [black] of the S\&P500 \protect\footnotemark \parencite[Fig. 5]{dash2012movingaverages}}
     \label{fig:dashweightedaverages}
 \end{figure}
 \footnotetext{A stock market index of 500 American companies, the US equivalent of the FTSE 500}
