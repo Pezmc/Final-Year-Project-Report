@@ -11,7 +11,7 @@ This chapter puts the work into context. Having read it, the reader should be le
  - It is common to end this chapter with a brief overview of each of the subsequent chapters of the report.
 \end{comment}
 
-Traditionally the management of personal finances is performed by viewing bank statements provided by the users bank. In the modern age of `internet banking', banks offer a limited set of tools that mimic the paper statements seen historically.
+Traditionally the management of personal finances is performed by viewing bank statements provided by the users bank. In the modern age of `Internet banking', banks offer a limited set of tools that mimic the paper statements seen historically.
 
 This project sets out to build an online application that can be used to manage personal finances. There are two main parts of the project; firstly users can upload bank statements, which are displayed and navigated in an intuitive manner; secondly, once the application has enough historical data, predicting the users future outflow.
 
@@ -24,7 +24,7 @@ In an informal survey\footnote{Appendix \ref{app:budgetsurvey}} by the researche
 
 Increasing use of debit cards \parencite{bbc2010debit} means that bank statements contain more and more information about where people spend their money. With access to those bank statements now provided online, with most UK banks offering the option to export \gls{transaction} history, individual users can collate a database of their personal spending habits.
 
-The increasing availability of this data, combined with more detailed transaction history makes it potentially possible to automate the four main steps of producing a budget, and this is the main objective of the project.
+The increasing availability of this data, combined with more detailed \gls{transaction} history makes it potentially possible to automate the four main steps of producing a budget, and this is the main objective of the project.
 
 \section{Aims and Objectives}
 %\plan{Things I set out to do, designed by talking to people to get an idea of features they would like}
@@ -33,10 +33,10 @@ The key objectives of this project can be split into three parts, the management
 \subsection{Statement Management}
 Implement an intuitive way to view and manage personal finances.
 %
-There are several key parts to this, upload and parsing of transactions from statements downloaded from a bank, resolving the references found on the statement to the real world business they represent and categorising the individual transactions to make them easier to understand. \question{Is it clear what categorising is?}
+There are several key parts to this, upload and parsing of \glspl{transaction} from statements downloaded from a bank, resolving the \glspl{reference} found on the statement to the real world business they represent and categorising the individual \glspl{transaction} to make them easier to understand. \question{Is it clear what categorising is?}
     
 \subsection{Prediction}
-Accurately predicting the future transactions that a user will based on their transaction history.
+Accurately predicting the future \glspl{transaction} that a user will based on their \glspl{transaction} history.
 %
 The prediction should be made using a model that is fitted each users individual spending patterns, and evaluated in order to improve the model.
 %
@@ -53,6 +53,6 @@ The project should take this into account, considering possible attack vectors a
 \plan{This report covers some of the key design decisions, implementation decisions and then what the application does}
 
 Chapter \ref{cha:background}: Background 
-An review of existing products in the market and an introducion to techniques used in the project.
+An review of existing products in the market and an introducing to techniques used in the project.
 
 \todo{This needs to be completed}

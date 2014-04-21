@@ -24,9 +24,9 @@ The key features include:
 \item Track progress of budget targets
 \end{itemize}
 
-Customer reviews of the service highlight the usefulness of spending analysis screen, which includes a breakdown of spending in each category (Fig. \ref{fig:moneymanager}, as well as the spending calendar, which displays money spent in a day by day format.
+Customer reviews of the service highlight the usefulness of spending analysis screen, which includes a breakdown of spending in each \gls{category} (Fig. \ref{fig:moneymanager}, as well as the spending calendar, which displays money spent in a day by day format.
 %
-The reviews, however, also highlight some shortcomings, noting that changes to categories are not reflected immediately, categories are often incorrect and that it's not possible to override the category for a single transaction, for example food bought at a petrol station is placed in the Car category and cannot be moved \cite{moneywatch2011lloyds, moneysupermarket2011lloyds}.
+The reviews, however, also highlight some shortcomings, noting that changes to categories are not reflected immediately, categories are often incorrect and that it's not possible to override the \gls{category} for a single transaction, for example food bought at a petrol station is placed in the Car \gls{category} and cannot be moved \cite{moneywatch2011lloyds, moneysupermarket2011lloyds}.
 
 \begin{figure}[h]
     \centering
@@ -47,7 +47,7 @@ For these reasons it was decided that automatic statement uploading was outside 
 \subsection{Mobile Apps}
 Mobile applications or `apps' as they are commonly known have seen a surge in popularity since the release of startphones and are a common target for small pieces of software, such as financial organisation \parencite{purcell2011half}.
 
-The three most popular iPhone personal financial applications \cite{itunes2013topapps}, at the time of planning the project, all offered features very similar to those found in the Lloyds Money Manager and Mint. The most popular features being grouping money by category and graphs of spending history.
+The three most popular iPhone personal financial applications \cite{itunes2013topapps}, at the time of planning the project, all offered features very similar to those found in the Lloyds Money Manager and Mint. The most popular features being grouping money by \gls{category} and graphs of spending history.
 % 
 However, they all had the same drawback, the user had to manually enter all of their transactions and set categories for them, which appears time consuming and error prone, particularly on a mobile app \cite{spendee2014spendee,budgt2013budgt,bluetags2014pocket}.
 
@@ -115,7 +115,7 @@ Smoothing is typically applied to financial market data, for example the value o
 \end{figure}
 \footnotetext{A stock market index of 500 American companies, the US equivalent of the FTSE 500}
 
-These techniques can be applied to a discrete set of numerical time series data, such as personal expenditure over time in order to make an estimate of what the next value in the series will be \parencite{filliben2003nist}. A prediction can be made using the formula in Fig. \ref{fig:weightedmeanforumla}, where $w_{i}$ is the weight and $x_i$ is the value at time period $i$. Simple smoothing is the equivalent of $w_i = 1$, while exponential smoothing is based around a negative exponential law such as $w_i = \exp(-n+i)$, both are examples of weighted smoothing and the weights can be decided in different ways depending on what is being predicted. Time periods with a higher weight have a greater affect on the mean, so in order to make a future prediction, the most recent time period would have a higher weight. \question{The chosen implementation details in the design section}
+These techniques can be applied to a discrete set of numerical time series data, such as personal expenditure over time in order to make an estimate of what the next value in the series will be \parencite{filliben2003nist}. A prediction can be made using the formula in Fig. \ref{fig:weightedmeanforumla}, where $w_{i}$ is the weight and $x_i$ is the value at time period $i$. Simple smoothing is the equivalent of $w_i = 1$, while exponential smoothing is based around a negative exponential law such as $w_i = e^{-n+i}$, both are examples of weighted smoothing and the weights can be decided in different ways depending on what is being predicted. Time periods with a higher weight have a greater affect on the mean, so in order to make a future prediction, the most recent time period would have a higher weight. \question{The chosen implementation details in the design section}
 
 \begin{figure}[h]
     \centering
