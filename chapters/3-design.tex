@@ -27,15 +27,7 @@ Notably there were discrepancies with the formatting of dates in QIF. The specif
 
 \input{figures/qifofxformat}
 
-To combat this three steps of resiliency were added to the design of the upload system, seen in Fig. \ref{fig:fileupload}.
-
-Having uploaded the file the system first identifies the filetype by looking inside the file and parsing its contents, ignoring the extension and rejecting the file if it matches neither format.
-
-If the file is QIF the parser parses all transactions up front and evaluates the format of the dates. If the dates are found to have the format \lstinline$\d00-00-0000$ (\lstinline$\d{1,2}[/-]\d{1,2}[/-]\d{2,4}$ in regular expression) the system needs to decide whether that's D-M-Y or M-D-Y, otherwise performing standard date parsing of the string.
-%
-To decide between D-M-Y or M-D-Y the application goes through all the dates and attempts to parse in both formats, if a format fails it is marked as incorrect. This leaves the application in one of the four states, seen in Table \ref{table:datestates}. In the case of state 1 or 4 there is ambiguity and the application prompts the user. This ambiguity can be caused by dates that are malformed or a collection of dates falling within a range that doesn't have a day value over 12, as both formats parse correctly. 
-
-In provisional user testing, it was discovered that users had a tendency to upload the same file more than once or to upload statements with an overlapping date range. To account for this, before creating a new Transaction the application checks for an identical transaction for the current user in the database and if one is found, skips creating a new Transaction. For speed this is done using a stored unique value, resulting from a SHA512 hash of date posted, transaction value, transactor, memo and transaction id\footnote{If a one was provided by the users bank}, which is generated when saving a Transaction to the database.
+To combat this three steps of resiliency were added to the design of the upload system, seen in Fig. \ref{fig:fileupload} \todo{Recompile this figure}.
 
 \begin{figure}[h]
     \centering
@@ -48,9 +40,15 @@ In provisional user testing, it was discovered that users had a tendency to uplo
 <a>[OFX]->(Parse Transactions)->(Remove Duplicates)->(end),
 <a>[Other]->(Reject Upload)
     \end{comment}
-    
-    \todo{Recompile this figure}
 \end{figure}
+
+Having uploaded the file the system first identifies the filetype by looking inside the file and parsing its contents, ignoring the extension and rejecting the file if it matches neither format.
+
+If the file is QIF the parser parses all transactions up front and evaluates the format of the dates. If the dates are found to have the format \lstinline$\d00-00-0000$ (\lstinline$\d{1,2}[/-]\d{1,2}[/-]\d{2,4}$ in regular expression) the system needs to decide whether that's D-M-Y or M-D-Y, otherwise performing standard date parsing of the string.
+%
+To decide between D-M-Y or M-D-Y the application goes through all the dates and attempts to parse in both formats, if a format fails it is marked as incorrect. This leaves the application in one of the four states, seen in Table \ref{table:datestates}. In the case of state 1 or 4 there is ambiguity and the application prompts the user. This ambiguity can be caused by dates that are malformed or a collection of dates falling within a range that doesn't have a day value over 12, as both formats parse correctly. 
+
+In provisional user testing, it was discovered that users had a tendency to upload the same file more than once or to upload statements with an overlapping date range. To account for this, before creating a new Transaction the application checks for an identical transaction for the current user in the database and if one is found, skips creating a new Transaction. For speed this is done using a stored unique value, resulting from a SHA512 hash of date posted, transaction value, transactor, memo and transaction id\footnote{If a one was provided by the users bank}, which is generated when saving a Transaction to the database.
 
 \begin{table}[h]
 \centering
@@ -241,6 +239,9 @@ Having split the data the application goes through all the weighting functions a
 
 In testing it was discovered that users spending money in the similar categories had the same weighting model, with further investigation it was discovered that by fitting the best weighting model per category a on average the absolute error was less.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\todo[inline]{I am here in proof read 1}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \missingfigure{Showing how the one with the least error is selected}
 
 \section{Security Considerations}
