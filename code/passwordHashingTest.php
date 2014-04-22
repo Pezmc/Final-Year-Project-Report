@@ -5,16 +5,16 @@ ini_set('memory_limit', '-1');
 
 $strings = array();
 for($i = 0; $i < 3000000; $i++) {
-	$strings[$i] = randomString(16);
+  $strings[$i] = randomString(16);
 }
 
 $hashingFunctions = array('MD5', 'SHA1', 'BCRYPT');
 
 foreach($hashingFunctions as $hash) {
   for($i = 0; $i < 10; $i++) {
-  	$start = microtime(true);
-  	$count = 0;
-  	do {
+    $start = microtime(true);
+    $count = 0;
+    do {
       $count++;
       
       if($hash == $hashingFunctions[0])
@@ -27,8 +27,8 @@ foreach($hashingFunctions as $hash) {
         echo "ERROR: Unknown function";
     
       $end = microtime(true);
-  	} while (($end - $start) < $timeTarget);
-  	echo "$hash\t$count\n";
+    } while (($end - $start) < $timeTarget);
+    echo "$hash\t$count\n";
   }
 }
 
