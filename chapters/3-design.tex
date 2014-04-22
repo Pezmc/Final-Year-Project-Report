@@ -239,7 +239,7 @@ In testing it was discovered that users spending money in similar categories oft
     \[
         \mathrm{MAE} = \frac{1}{n}\sum_{i=1}^n \left| f_i-y_i\right| 
     \]
-    \caption{Mean Absolute Error where $f_i$ is the prediction and $y_i$ is the true value}
+    \caption[Mean absolute error formula]{Mean absolute error where $f_i$ is the prediction and $y_i$ is the true value}
     \label{fig:absoluteerror}
 \end{figure}
 
@@ -279,7 +279,7 @@ If a website falls back to HTTP following authentication, the risk of unauthoris
 %
 In order to identify to the server which user the browser is authenticated as the browser sends their session cookie to the remote server with each request. 
 %
-Although the attacker can't observe the username and password, the session cookie is being sent in plain text with every request, and the attacker can perform a session hijack by downloading the content of that cookie to their local machine (Fig. \ref{fig:securitysniffing}) and then sending it to the remote server with their HTTP request `proving' they are the user and gaining access to their account (Fig. \ref{fig:securityhihacking}) \parencite{owasp2011sessionhihacking}.
+Although the attacker can't observe the username and password, the session cookie is being sent in plain text with every request, and the attacker can perform a session hijack by downloading the content of that cookie to their local machine (Fig. \ref{fig:securitysniffing}) and then sending it to the remote server with their HTTP request `proving' they are the user and gaining access to their account (Fig. \ref{fig:securityhijacking}) \parencite{owasp2011sessionhihacking}.
 % 
 Firesheep was a proof of concept plugin for Firefox released in 2010 that demonstrated this vulnerability, showing that session hijacking could be performed on popular sites including Google, Facebook, Twitter, Dropbox and Flickr, which until recently were not using sitewide SSL to protect their cookies \parencite{butler2010firesheep, butler2014firesheep}. 
 %http://codebutler.com/firesheep/ FireSheet mention, http://codebutler.github.io/firesheep/
@@ -292,14 +292,14 @@ In addition cookies are marked at HttpOnly, ensuring access via non-HTTPS method
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=\textwidth]{design/security/sniffing}
+    \includegraphics[width=0.75\textwidth]{design/security/sniffing}
     \caption[Obtaining a users cookie using a MitM attack or sniffing]{Obtaining a users cookie using a MitM attack or Sniffing \parencite{owasp2011sessionhihacking}}
     \label{fig:securitysniffing}
 \end{figure}
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=\textwidth]{design/security/hijacking}
+    \includegraphics[width=0.75\textwidth]{design/security/hijacking}
     \caption{Performing a session hijack using another users cookie \parencite{owasp2011sessionhihacking}}
     \label{fig:securityhijacking}
 \end{figure}
@@ -375,10 +375,18 @@ By escaping all content before displaying it to the user a maliciously crafted p
 
 
 \section{Technical Design}
-\question{Do I actually need a technical design section? The plan was to include some class diagrams of the project. Leaving this for now. }
+\question{Do I actually need a technical design section? The plan was to include some class diagrams of the project. Leaving this for now.}
 \subsection{Object Orientation}
+\plan{Patterns used}
 \subsection{Domain Class}
+\plan{Diagram and list of ALL the objects}
 \subsection{UI Design}
-\todo[inline]{Add photos showing the evolution of the UI}
+\plan{Add photos showing the evolution of the UI}
 \subsection{Database Class}
+\plan{Diagram of database}
 \subsection{External Software and Frameworks}
+\plan{What frameworks were used}
+\subsection{Platform}
+\plan{I decided to use a browser based web application instead of a desktop application}
+
+
