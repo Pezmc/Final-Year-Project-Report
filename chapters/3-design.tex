@@ -279,7 +279,7 @@ If a website falls back to HTTP following authentication, the risk of unauthoris
 %
 In order to identify to the server which user the browser is authenticated as the browser sends their session cookie to the remote server with each request. 
 %
-Although the attacker couldn't observe the username and password, the cookie is being sent in plain text, and the attacker can perform a session hijack by downloading the content of that cookie to their local machine and then sending it to the remote server with their HTTP request `proving' they are the user and gaining access to their account.
+Although the attacker can't observe the username and password, the session cookie is being sent in plain text with every request, and the attacker can perform a session hijack by downloading the content of that cookie to their local machine (Fig. \ref{fig:securitysniffing}) and then sending it to the remote server with their HTTP request `proving' they are the user and gaining access to their account (Fig. \ref{fig:securityhihacking}) \parencite{owasp2011sessionhihacking}.
 % 
 Firesheep was a proof of concept plugin for Firefox released in 2010 that demonstrated this vulnerability, showing that session hijacking could be performed on popular sites including Google, Facebook, Twitter, Dropbox and Flickr, which until recently were not using sitewide SSL to protect their cookies \parencite{butler2010firesheep, butler2014firesheep}. 
 %http://codebutler.com/firesheep/ FireSheet mention, http://codebutler.github.io/firesheep/
@@ -290,37 +290,59 @@ For this reason all of the project uses HTTPS, marks cookies as HTTPS only\footn
 %
 In addition cookies are marked at HttpOnly, ensuring access via non-HTTPS methods such as client side javascript is not possible. This means that even if a users browser is infected with a malicious script for example using XSS (see \ref{subsection:securityother}), the contents of the cookie cannot be read.
 
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{design/security/sniffing}
+    \caption[Obtaining a users cookie using a MitM attack or sniffing]{Obtaining a users cookie using a MitM attack or Sniffing \parencite{owasp2011sessionhihacking}}
+    \label{fig:securitysniffing}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{design/security/hijacking}
+    \caption{Performing a session hijack using another users cookie \parencite{owasp2011sessionhihacking}}
+    \label{fig:securityhijacking}
+\end{figure}
+
 \subsection{Password Security}
 
-A common way to crack into user accounts is by brute force. If an attacker knows a particular users username they can perform targeted guessing guessing of the password by enumerating through all possibilities. A websites ability to resist this kind of attack is called the `password guessing resistance'. It is for this reason that many websites, following the guidance of research such as \cite{needed} enforce password rules in an attempt to increase the number of possible combinations for a password, the entropy.
+A common cracking technique used to gain unauthorised access to a user account is a known as a brute force attack. If an attacker knows a particular users username they can perform targeted guessing guessing of the password by enumerating through all possibilities. A websites ability to resist this kind of attack is called the `password guessing resistance'. It is for this reason that many websites, enforce password rules in an attempt to increase the number of possible combinations for a password, or the entropy \cite{helkala2008authentication}.
 
 Shannon Entropy can be used estimate the strength of a passwords resistance to this kind of attack. The entropy is calculated using $H(X)= -\sum_{i=1}^n{p(x_i)\log_b p(x_i)}$ where $p(x_i)$ is the probability of the value $x$ occurring \cite{burr2013electronic}.
+%
+The paper suggests a predefined set of rules for estimating entropy based on Shannon's work studying English text, however other papers found that using this predefined set of rules was not a valid measure of password strength \cite{weir2010shannon}.
+ 
+The project uses Shannon's original equation, calculating the probability of guessing each individual character using a formula that takes into account using a larger character set (such as numbers and symbols) decreases the likely hood of successfully guessing the next character and rejecting a password if it falls below a predefined entropy.
+%
+Enforcing an entropy threshold rather than enforcing a set of restricting `password rules', was preferred as it gives the user more flexibility hopefully avoiding the annoyance of rules and increases the search space of the passwords. A very long alphanumeric password such as `correct horse battery staple' would be just as valid as a short password containing numbers and symbols such as `6?@7a?Y5R='.
 
-The paper suggests a predefined set of rules for estimating entropy based on Shannon's work studying English text \cite{burr2013electronic}, however other papers found that using this predefined set of rules was not a valid measure of password strength \cite{weir2010shannon}.
-% 
-The project uses Shannon's original equation, calculating the probability of guessing an individual character using a formula that takes into account that using a larger character set (such as numbers and symbols) decreases the likely hood of successfully guessing the next character.
+As part of a brute force attack, the attacker may use a dictionary of popular passwords to reduce the testing space before attempting an exhaustion attack.
+%
+In order to reduce the effectiveness of this kind of attack the project test's any user provided password against a dictionary of at least 50,000 common passwords sourced from password cracking resources \cite{burr2013electronic}.
 
-As part of a brute force, an attacker may use a dictionary of popular passwords to reduce the testing space before attempting an exhaustion attack. In order to reduce the effectiveness of this kind of attack the project test's any user provided password against a dictionary of at least 50,000 common passwords sourced from password cracking resources \cite{burr2013electronic}.
-
-In addition, to limit the overall effectiveness of brute force attacks, the website rate limits login attempts. If a user attempts to login more than 5 times within one minute, they must wait a minute before they are able to login again.
+In addition, to limit the overall effectiveness of brute force attacks, the website rate limits login attempts. If a user attempts to login more than 5 times within one minute, they must wait thirty seconds before they are able to attempt to login again.
+%
+Rate limiting was chosen over CAPCHA\footnote{Completely Automated Public Turing test to tell Computers and Humans Apart} found on many websites as CAPCHA's slow down users, are often illegible and visual CAPCHA's can prevent visually impaired users from accessing the website \parencite{matt2005inaccessibility, hegarty2012onlinesecurity}. Additionally CAPCHA's can now be solved automatically with a very high success rate using computer vision techniques, and these techniques are already being integrated into brute force software available online \parencite{goodfellow2013neuralnetwork, 9kweu2014captchasolver, danchev2014captcha, savinkin2012captchasolvers}. 
 
 \subsection{Database Storage}
-Unfortunately, it's common for the contents of a websites database to be leaked, whether by an administrator of the website or using other techniques such as SQL injection. It's important to think about the security of the data held within the database, as well as the security of the front end.
+Unfortunately, it's common for the contents of a websites database to be leaked, whether by an administrator of the website or using other techniques such as SQL injection \parencite{bbc2012linkedinpasswords,chechik2013passwords}. It's important to think about the security of the data held within the database, as well as the security of the front end.
 
-pegFinance uses three main techniques to help ensure the security of the users information in the database.
+This project uses three main techniques to help ensure the security of the users information stored in the database.
 
 \subsubsection{Passwords}
-A users password should never be kept in a reversable state, whether that is plain text\footnote{Unfortunately still very common} or encrypted\footnote{Also common}. If a database of encrypted or plain text passwords is leaked, it is simply a case of finding the encryption key and all the data can be accessed in plain text.
+If a users password is stored in a reversible state, whether that is plain text or encrypted and the database is leaked that users account can be accessed and in addition, the data can be to attack other websites and compromise users using the same username and password.
+%
+Encryption is equivalent to plain text in that, it is simply a case of finding the encryption key, which is very possible using brute force and all the data is in plain text. 
+%
+This is why standard security practice is to hash passwords. The only way to `decrypt' a hash is to guess the original input by brute force and see if that matches the output.
+%
+However crackers often make use of Rainbow tables, collections of precalculated hashes and the input used to create them, allowing an attacker to simply lookup a hash in their database to get the result rather than enumerating all the possibilities \parencite{jorgensen2012}.
+%
+To reduce the effectiveness of this attack method, `salting' is commonly used. Salting involves adding a random collection of numbers and letters to each password. This means that the generated hash is dependent on both the users password and the salt, and therefore a Rainbow Table would need to be generated for each user, cancelling out the advantage of precalculation and making the tables useless.
 
-This is why standard security practice is to hash (one-way) passwords. The only way to decrypt a one-way hash is to guess the original input by brute force and see if that matches the output.
-
-However attackers often use of Rainbow tables, collections of precalculated hashes and the input used to create them, allowing an attacker to simply lookup a hash in their database to get the result.
-
-For this reason salting is used, which involves adding a random collection of numbers and letters to each password. This means that the generated hash is dependent on both the users password and the salt and means a Rainbow Table would need to be generated for each user, mitigating the effect.
-
-There is a final step and that's what hashing schema should be used to hash passwords. Traditionally functions such as MD5, SHA1 and SHA256 were used to perform the hashing, however due to advances in modern computer equipment it is possible to generate these at an incredibly fast rate, reducing the time taken to brute force a hash.
-
-Using a deliberately slow hashing function is designed avoid this problem. Blowfish written by Schneier is commonly suggested, as it is designed as a computationally expensive operation. This was demonstrated with a simple test, calculating as many hashes per possible in one second. Table \ref{tab:hashspeed}, shows the results, which found that on average Blowfish took significantly longer to generate each hash.
+Having decided to hash and salt passwords, different hashing functions were investigated. Traditionally functions such as MD5, SHA1 and SHA256 are used to perform the hashing, however due to advances in modern computer equipment it is possible to generate these at an incredibly fast rate, reducing the time taken to brute force a hash.
+%
+Using a deliberately slow hashing function is designed avoid this problem. Blowfish written by Bruce Schneier is commonly suggested, as it is designed as a computationally expensive operation \parencite{schneier1994description} . This was evaluated with a simple test, calculating as many hashes per possible in one second on the server hosting the project. Table \ref{tab:hashspeed}, shows the results, which found that on average Blowfish took significantly longer to generate each hash\footnote{The code used to perform the test can be found in Appendix \ref{app:hashingtest}}.
 
 For this reason the project salts all passwords and hashes them using Blowfish.
 
@@ -328,37 +350,35 @@ For this reason the project salts all passwords and hashes them using Blowfish.
 \begin{tabular}{llll}
          & \multicolumn{3}{l}{Hashes Per Second}                   \\
          & Average & Standard Deviation & 95\% Confidence Interval \\
-MD5      & \num{2296667} & \num{12923}              & $\pm 8010$                 \\
-SHA1     & \num{1869725} & \num{14783}             & $\pm 9162$                 \\
-BLOWFISH & 17      & 0                   & $\pm 0$                    \\
+MD5      & \num{2296667} & \num{12923}  & $\pm 8010$   \\
+SHA1     & \num{1869725} & \num{14783}  & $\pm 9162$    \\
+BLOWFISH & 17            & 0            & $\pm 0$                 \\
 \end{tabular}
 \label{tab:hashspeed}
-\caption{Average number of hashes completed per second on a 2.7Ghz i7 }
+\caption{Average number of hashes completed per second on a 2.7Ghz i7}
 \end{table}
 
 \subsubsection{Personally Identifiable Data}
-Of equal concern is other personally identifiable data being leaked, in an attempt to avoid this the application encrypts all information stored in the user table, that is needed at a later date using the AES128 encryption standard. This standard was selected for the project as was endorsed by the U.S. National Institute of Standards and Technology, when outlined by NIST in 2001 and has become the ``encryption standard for commercial transactions in the private sector'' \cite{nist2010aes, stair2009informationsystems}.
+Another concern is personally identifiable data being leaked. In an attempt to avoid this the application encrypts all information stored in the user table, that is needed at a later date using the AES128 encryption standard. This standard was selected for the project as was endorsed by the U.S. National Institute of Standards and Technology, when outlined by NIST in 2001 and has become the ``encryption standard for commercial transactions in the private sector'' \cite{nist2010aes, stair2009informationsystems}.
 
-\subsubsection{Hashing of Username}
-In addition to the above the username of each user is also hashed so it is only known to the person using that account. In the rare case that any of the passwords were brute forced, the relevant username would also need to be brute forced in order to attempt to login or use the details on another website.
+\subsubsection{Hashing of Usernames}
+In addition to the encrypting data needed at a later date the username of each user is hashed so it is only known to the person using that account. In the rare case that any of the passwords were brute forced, the relevant username would also need to be brute forced in order to attempt a login or use the details on another website.
 
 \subsection{Other} \label{subsection:securityother}
 Other attack vectors including SQL injection and cross-site scripting (XSS) were also considered.
 
 It was decided that the project would use a prepared statements to reduce the risk of SQL injection. By sending the query followed by the parameters as literal values the database server would not interpret them as an executable portion of SQL and attacks, relying on escaping SQL such as \inlinesql$' OR 1$ are prevented.
 
-In order to mitigate the possiblity of XSS the project will need escape all content before displaying it to the user or saving to the database. It was decided that the project would use a templating language that escaped output by default, requiring the output be explicitly marked to avoid escaping. By escaping all content before displaying it to the user a maliciously crafted piece of text such as \inlinehtml$<script>alert(1);</script>$ would be sent to the users browser as \inlinehtml$&lt;script&gt;alert(1);&lt;/script&gt;$ and not interpreted as a script.
+In order to mitigate the possibility of XSS the project will need escape all content before displaying it to the user or saving to the database. It was decided that the project would use a templating language that escaped output by default, requiring the output be explicitly marked to avoid escaping.
+%
+By escaping all content before displaying it to the user a maliciously crafted piece of text such as \inlinehtml$<script>alert(1);</script>$ would be sent to the users browser as \inlinehtml$&lt;script&gt;alert(1);&lt;/script&gt;$ and not interpreted as a script.
+
 
 \section{Technical Design}
-
+\question{Do I actually need a technical design section? The plan was to include some class diagrams of the project. Leaving this for now. }
 \subsection{Object Orientation}
-
 \subsection{Domain Class}
-
 \subsection{UI Design}
-
 \todo[inline]{Add photos showing the evolution of the UI}
-
 \subsection{Database Class}
-
 \subsection{External Software and Frameworks}
