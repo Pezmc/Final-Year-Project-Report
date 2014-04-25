@@ -7,7 +7,98 @@ The implementation details should be confined to the important, difficult or int
 
 \plan{Limited to programming languages only}
 
-\section{Security}
+\begin{comment}
+Statement Management 
+Upload
+NamedEntityResolution
+Suggestions ........................ 19
+
+Prediction
+MarkovChain
+WeightedArithmeticMean
+FiveModelSystem
+Confidence
+
+Security Considerations
+AccountHijacking
+PasswordSecurity
+Database Security
+Other
+\end{comment}
+
+This section is focused on particularly interesting or troublesome parts of implementing the design and any usage of external libraries. As it was decided the project would be a web application\todo{Should probably mention this in design} the user interface was written in HTML \& CSS, with the interactive elements such as the graphs in JavaScript, the server side language used to process the user requests was PHP and MySQL was used for the database.
+
+PHP was selected as the server side language because the author had extensive experience in the language, it's original intended use was web development and it is well supported. It's intention of web development means it's well coupled with HTML and provides many libraries to handle it, giving the language a significant advantage over languages such as Python and Java which can be adapted for web use. A key disadvantage of PHP is that is it weak typed which lead to some issues during development where objects of the wrong type were passed into functions. This disadvantage was considered and it was decided the advantages outweighed the disadvantages.
+
+The project uses a PHP Framework, written by the author \todo{This doesn't make sense} called pegFramework. Using a framework has several key advantages over writing the whole system.
+
+Frameworks:
+Provide standardised code and file organisation - pegFramework has a well defined code structure, code is organised in a predefined way and split into modules
+MVC - Model View Controller - using the MVC pattern with a framework ensures models (data structures), views (page contnet) and controllers are separate, improving cohesiveness and decreasing coupling.
+Utilities and libraries - frameworks handle all the standard web design code, including routing, security, controllers, rendering the template and caching.
+
+MySQL was selected as the database language because it's well supported by PHP and because it provides Natural Language Searching out of the box, which supports free-text queries and can calculate the relevance of a record in the database to a search term. This is used to power the suggestions section of the website and for user entered searches.
+
+Server Side Libraries:
+
+Twig - a template engine that takes collections of PHP objects and following a provided .html template build the output sent to the browser. In addition it provides caching of the generated templates and output, leading to significant speed increases for the end user.
+
+Propel - an object relational mapping (ORM) library for PHP. Propel takes a database schema defined in XML and generates PHP objects that represent the schema which can be saved to and loaded from the database.
+
+Less - CSS pre-processor that extends CSS, adding additional features and inheritance. `.less` files compile to `.css`
+
+Front End
+
+Bootstrap - framework for CSS development that provides grid and stuff
+
+jQuery - javascript development framework that abstracts differences in browser behaviour and provides shorthands to common tasks such as ajax requests
+
+Pines Nofity - alerts
+
+Chosen - javascript libray to make dropdown boxes better
+
+Highcharts - charting library for the UI
+
+QIF \/ OFX Parsing
+
+OFX Parsing
+OFX is an XML like format called SGML. PHP has inbuilt libraries for parsing XML called SimpleXML simplexml\_load\_string loads an XML file from a string. To parse the OFX, PHP attempts to parse it as an XML file and captures any exceptions. If exeptions are found it attempts to convert the SGML XML so it can be pased by PHP as per 
+
+%http://stackoverflow.com/questions/15735330/how-to-parse-a-ofx-version-1-0-2-file-in-php and http://www.hanselman.com/blog/PostprocessingAutoClosedSGMLTagsWithTheSGMLReader.aspx
+
+\todo{Comparison of SGML and XML}
+
+For each line of the SGML it trims whitespace including (x,y,z), converts the charset ot UTF-8 so it's valid in PHP and if no closing tag is found, appends a closing tag
+
+\lstset{style=phpcolor}
+\begin{lstlisting}
+foreach(preg_split("/((\r?\n)|(\r\n?))/", $this->OFXContent) as $line){
+        		
+        	// Trim whitespace
+        	$line = trim($line);
+        	if ($line === '') continue;
+        
+        	// Convert charset to UTF-8
+        	$line = iconv($charset, 'UTF-8', $line);
+        	if (substr($line, -1, 1) !== '>') {
+        		list($tag) = explode('>', $line, 2);
+        		$line .= '</' . substr($tag, 1) . '>';
+        	}
+        	$buffer .= $line ."\n";
+}
+\end{lstlisting}
+
+Having parsed the SGML into objects it can just be navigated following the specification and converted to arrays of information for each transaction, refered to as movements. These movements look like XYZ; and can then be convered into the Transaction objects most of the fields are handled automatically but dates need to be handled specifically.
+
+QIF is handled in a different manor as there are no native libraries to parse it's format. As shown in section X the file consists of movements, marked with \^'s and then each field related to that movement prefixed with the letter explaining what it's related to.
+
+% ^ end of items, D date, T amount, C cleared, P payee, M memo, A address, L category, S cartegory split, E memo split, $ amount split
+
+\section{Statement Management}
+
+\section{Upload}
+
+\section{Trans}
 
 \section{Prediction}
 \plan{All the steps that were needed for the prediction}
