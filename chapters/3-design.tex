@@ -366,7 +366,7 @@ Another concern is personally identifiable data being leaked. In an attempt to a
 In addition to the encrypting data needed at a later date the username of each user is hashed so it is only known to the person using that account. In the rare case that any of the passwords were brute forced, the relevant username would also need to be brute forced in order to attempt a login or use the details on another website.
 
 \subsection{Other} \label{subsection:securityother}
-Other attack vectors including SQL injection\footnote{A code injection technique that uses maliciously crafted statements to modify the SQL executed} and cross-site scripting\foonote{Inserting client-side scripts to a websites HTML to customise it's logic} (XSS) were also considered.
+Other attack vectors including SQL injection\footnote{A code injection technique that uses maliciously crafted statements to modify the SQL executed} and cross-site scripting\footnote{Inserting client-side scripts to a websites HTML to customise it's logic} (XSS) were also considered.
 
 It was decided that the project would use a prepared statements to reduce the risk of SQL injection. By sending the query followed by the parameters as literal values the database server would not interpret them as an executable portion of SQL and attacks, relying on escaping SQL such as \inlinesql$' OR 1$ are prevented.
 
