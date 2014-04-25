@@ -16,7 +16,7 @@ Traditionally the management of personal finances is performed by viewing bank s
 This project sets out to build an online application that can be used to manage personal finances. There are two main parts of the project; firstly users can upload bank statements, which are displayed and navigated in an intuitive manner; secondly, once the application has enough historical data, predicting the users future outflow.
 
 \section{Motivation}
-There are four main steps when producing and using a budget: recording previous expenses, sorting these into categories, using this historical information to estimate future expenditure, and evaluating the accuracy of predictions new information and adjusting accordingly.
+There are four main steps when producing and using a budget: recording previous expenses, sorting these into categories, using this historical information to estimate future expenditure, and evaluating the accuracy of predictions based on the new information and adjusting accordingly.
 
 Since the liquidity crisis of 2009 \parencite{gore2010}, budgets have been squeezed and the average persons personal disposable income has fallen signifiantly , hitting a nine-year low in 2012 \parencite{barnard2012households}. With experts suggesting that ``Budgets are essential for financial planning'' \parencite{wsj2013budget}, research suggesting that personal budgets lead to a ``positive impact'' on ``mental wellbeing'' \parencite{tlap2013budget} and guides from UCAS, the UoM SU Advice Centre and The Manchester University Crucial Guide encouraging use of budgeting, it is clear that producing a budget is of benefit. \question{Refrences inline, or in a block at the end of the paragraph?} \gavin{References inline}
 
@@ -36,9 +36,9 @@ Implement an intuitive way to view and manage personal finances.
 There are several key parts to this, upload and parsing of \glspl{transaction} from statements downloaded from a bank, resolving the \glspl{reference} found on the statement to the real world business they represent and categorising the individual \glspl{transaction} to make them easier to understand. \question{Is it clear what categorising is?} \gavin{yes}
     
 \subsection{Prediction}
-Accurately predicting the future \glspl{transaction} that a user will based on their \glspl{transaction} history.
+Accurately predicting the future \glspl{transaction} that a user will be based on their \glspl{transaction} history.
 %
-The prediction should be made using a model that is fitted each users individual spending patterns, and evaluated in order to improve the model.
+The prediction should be made using a model that is fitted to each users individual spending patterns, and is evaluated in order to improve the model.
 %
 The application will need to predict whether or not spending will occur and how much money will be spent.
 

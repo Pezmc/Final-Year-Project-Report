@@ -14,7 +14,7 @@ The statement management features of the application were selected based on the 
 
 The key features include; parsing of files downloaded from Internet banking, mapping transactions found in the files to real world businesses (transactors), organising transaction history by \gls{category} or transactor and viewing all transactions at a particular transactor.
 
-\subsection{Upload}
+\subsection{Upload} \label{subsection:upload}
 To get a users transaction history they must first upload a file containing their historical transactions.
 
 The major UK banks tested\footnote{Natwest, First Direct and HSBC} provided statement downloads in Quicken, Microsoft Money or Microsoft Excel format. Further investigation revealed that the underlying formats were Quicken Interchange Format (QIF), Open Financial Exchange (OFX) and comma-separated values (CSV).
@@ -44,7 +44,8 @@ To combat this three steps of resiliency were added to the design of the upload 
 
 Having uploaded the file the system first identifies the filetype by looking inside the file and parsing its contents, ignoring the extension and rejecting the file if it matches neither format.
 
-If the file is QIF the parser parses all transactions up front and evaluates the format of the dates. If the dates are found to have the format \lstinline$\d00-00-0000$ (\lstinline$\d{1,2}[/-]\d{1,2}[/-]\d{2,4}$ in regular expression) the system needs to decide whether that's D-M-Y or M-D-Y, otherwise performing standard date parsing of the string.
+If the file is QIF the parser parses all transactions up front and evaluates the format of the dates. If the dates are found to have the format \lstinline$\d00-00-0000$ the system needs to decide whether that's D-M-Y or M-D-Y, otherwise performing standard date parsing of the string.
+%(\lstinline$\d{1,2}[/-]\d{1,2}[/-]\d{2,4}$ in regular expression)
 %
 To decide between D-M-Y or M-D-Y the application goes through all the dates and attempts to parse in both formats, if a format fails it is marked as incorrect. This leaves the application in one of the four states, seen in Table \ref{table:datestates}. In the case of state 1 or 4 there is ambiguity and the application prompts the user. This ambiguity can be caused by dates that are malformed or a collection of dates falling within a range that doesn't have a day value over 12, as both formats parse correctly. 
 
@@ -188,7 +189,7 @@ An easy way to visualise the Markov Chain Models the system is creating is throu
 \end{figure}
 
 \subsection{Weighted Arithmetic Mean}
-Having predicted whether a transaction will occur or not the system needed to predict how much money would be spent. A simple way to make this prediction us taking the mean, however initial testing in MatLab revealed that simply taking an average is affected highly by changes in spending patterns and skewed by outliers, in addition a spending pattern that suddenly changes (for example one caused by the user changing supermarket) takes too long to be reflected in the prediction.
+Having predicted whether a transaction will occur or not the system needs to predict how much money would be spent. A simple way to make this prediction is taking the mean, however initial testing in MatLab revealed that simply taking an average is affected highly by changes in spending patterns and skewed by outliers, in addition a spending pattern that suddenly changes (for example one caused by the user changing supermarket) takes too long to be reflected in the prediction.
 
 Supported by the background research on weighted smoothing, the system uses weighted averages to account for this. A weighted average is similar to an average but each value is scaled in it's effect by a weighting factor, this allows the system to give a higher weight to more recent transactions.
 
@@ -209,7 +210,7 @@ The weighted average calculation used is shown in Fig. \ref{fig:weighting} where
 \end{figure}
 
 \subsection{Five Model System}
-Using weighted averages is only half the story, the system needs to choose appropriate weights for each transaction and the weights chosen will have a different suitability depending on the spending patterns of the user.
+Using weighted averages is part of the story, the system needs to choose appropriate weights for each transaction and the weights chosen will have a different suitability depending on the spending patterns of the user.
 % 
 During initial research on weighted averages, it was observed that due to the variety of spending patterns caused by users different spending habits, there was not a `one fits all' solution to weighting.
 %
@@ -271,13 +272,13 @@ Strong security is expected of this project, the design considers possible attac
 
 Over HTTP information sent between the users web browser and the remote server in plain text and can easily be read using a man-in-the-middle attack. This risk is compounded if accessing the Internet via an an unencrypted WiFi connection\footnote{Common at Coffee Shops and Universities} which would allow anyone in the local area to `sniff' the information by simply scanning for capturing the transmitted packet.
 
-If a website involves authentication, this becomes a serious security risk. Authentication is usually performed by sending the username and password in plain text to a remote server, which is validated and if issuing the user with a session cookie.
+If a website involves authentication, this becomes a serious security risk. Authentication is usually performed by sending the username and password in plain text to a remote server which is validated, and if valid issuing the user with a session cookie.
 %
 A potential attacker could observe and store these usernames and passwords, which is why commonly websites such as Facebook use HTTPS for the login, ensuring the usernames and passwords are sent encrypted to the server.
 
 If a website falls back to HTTP following authentication, the risk of unauthorised account access is still prevalent.
 %
-In order to identify to the server which user the browser is authenticated as the browser sends their session cookie to the remote server with each request. 
+In order to identify which user the browser is authenticated as it sends a session cookie to the remote server with each request. 
 %
 Although the attacker can't observe the username and password, the session cookie is being sent in plain text with every request, and the attacker can perform a session hijack by downloading the content of that cookie to their local machine (Fig. \ref{fig:securitysniffing}) and then sending it to the remote server with their HTTP request `proving' they are the user and gaining access to their account (Fig. \ref{fig:securityhijacking}) \parencite{owasp2011sessionhihacking}.
 % 
@@ -286,7 +287,7 @@ Firesheep was a proof of concept plugin for Firefox released in 2010 that demons
 %
 More recently `WhatsApp Sniffer', available on Google Play until May 2012 was able to display messages addressed to other WhatsApp users connected to the same network using this technique \parencite{thehsecurity2012whatsapp}.
 
-For this reason all of the project uses HTTPS, marks cookies as HTTPS only\footnote{Using the Secure attribute}, and force redirects users to the HTTPS version if they attempt to access via HTTP. This ensures user data is sent encrypted end to end and cannot be intercepted, preventing access to their authentication details or session cookie.
+For this reason all of the project uses HTTPS, marks cookies as HTTPS only\footnote{Using the Secure attribute}, and redirects users to the HTTPS version if they attempt to access via HTTP. This ensures user data is sent encrypted end to end and cannot be intercepted, preventing access to their authentication details or session cookie.
 %
 In addition cookies are marked at HttpOnly, ensuring access via non-HTTPS methods such as client side javascript is not possible. This means that even if a users browser is infected with a malicious script for example using XSS (see \ref{subsection:securityother}), the contents of the cookie cannot be read.
 
@@ -306,7 +307,7 @@ In addition cookies are marked at HttpOnly, ensuring access via non-HTTPS method
 
 \subsection{Password Security}
 
-A common cracking technique used to gain unauthorised access to a user account is a known as a brute force attack. If an attacker knows a particular users username they can perform targeted guessing guessing of the password by enumerating through all possibilities. A websites ability to resist this kind of attack is called the `password guessing resistance'. It is for this reason that many websites, enforce password rules in an attempt to increase the number of possible combinations for a password, or the entropy \cite{helkala2008authentication}.
+A common cracking technique used to gain unauthorised access to a user account is a known as a brute force attack. If an attacker knows a particular users username they can perform targeted guessing of the password by enumerating through all possibilities. A websites ability to resist this kind of attack is called the `password guessing resistance'. It is for this reason that many websites, enforce password rules in an attempt to increase the number of possible combinations for a password, or the entropy \cite{helkala2008authentication}.
 
 Shannon Entropy can be used estimate the strength of a passwords resistance to this kind of attack. The entropy is calculated using $H(X)= -\sum_{i=1}^n{p(x_i)\log_b p(x_i)}$ where $p(x_i)$ is the probability of the value $x$ occurring \cite{burr2013electronic}.
 %
@@ -318,19 +319,19 @@ Enforcing an entropy threshold rather than enforcing a set of restricting `passw
 
 As part of a brute force attack, the attacker may use a dictionary of popular passwords to reduce the testing space before attempting an exhaustion attack.
 %
-In order to reduce the effectiveness of this kind of attack the project test's any user provided password against a dictionary of at least 50,000 common passwords sourced from password cracking resources \cite{burr2013electronic}.
+In order to reduce the effectiveness of this kind of attack the project tests any user provided password against a dictionary of at least 50,000 common passwords sourced from password cracking resources \cite{burr2013electronic}.
 
 In addition, to limit the overall effectiveness of brute force attacks, the website rate limits login attempts. If a user attempts to login more than 5 times within one minute, they must wait thirty seconds before they are able to attempt to login again.
 %
 Rate limiting was chosen over CAPCHA\footnote{Completely Automated Public Turing test to tell Computers and Humans Apart} found on many websites as CAPCHA's slow down users, are often illegible and visual CAPCHA's can prevent visually impaired users from accessing the website \parencite{matt2005inaccessibility, hegarty2012onlinesecurity}. Additionally CAPCHA's can now be solved automatically with a very high success rate using computer vision techniques, and these techniques are already being integrated into brute force software available online \parencite{goodfellow2013neuralnetwork, 9kweu2014captchasolver, danchev2014captcha, savinkin2012captchasolvers}. 
 
 \subsection{Database Storage}
-Unfortunately, it's common for the contents of a websites database to be leaked, whether by an administrator of the website or using other techniques such as SQL injection \parencite{bbc2012linkedinpasswords,chechik2013passwords}. It's important to think about the security of the data held within the database, as well as the security of the front end.
+Unfortunately, it is common for the contents of a websites database to be leaked, whether by an administrator of the website or using other techniques such as SQL injection \parencite{bbc2012linkedinpasswords,chechik2013passwords}. It's important to think about the security of the data held within the database, as well as the security of the front end.
 
 This project uses three main techniques to help ensure the security of the users information stored in the database.
 
 \subsubsection{Passwords}
-If a users password is stored in a reversible state, whether that is plain text or encrypted and the database is leaked that users account can be accessed and in addition, the data can be to attack other websites and compromise users using the same username and password.
+If a users password is stored in a reversible state, whether that is plain text or encrypted and the database is leaked, not only can that users account can be accessed on the original website, but the data can be used attack other websites and compromise the users account there, if using the same username and password.
 %
 Encryption is equivalent to plain text in that, it is simply a case of finding the encryption key, which is very possible using brute force and all the data is in plain text. 
 %
@@ -365,7 +366,7 @@ Another concern is personally identifiable data being leaked. In an attempt to a
 In addition to the encrypting data needed at a later date the username of each user is hashed so it is only known to the person using that account. In the rare case that any of the passwords were brute forced, the relevant username would also need to be brute forced in order to attempt a login or use the details on another website.
 
 \subsection{Other} \label{subsection:securityother}
-Other attack vectors including SQL injection and cross-site scripting (XSS) were also considered.
+Other attack vectors including SQL injection\foonote{A code injection technique that uses maliciously crafted statements to modify the SQL executed} and cross-site scripting\foonote{Inserting client-side scripts to a websites HTML to customise it's logic} (XSS) were also considered.
 
 It was decided that the project would use a prepared statements to reduce the risk of SQL injection. By sending the query followed by the parameters as literal values the database server would not interpret them as an executable portion of SQL and attacks, relying on escaping SQL such as \inlinesql$' OR 1$ are prevented.
 
