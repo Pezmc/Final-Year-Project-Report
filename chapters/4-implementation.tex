@@ -90,16 +90,24 @@ foreach(preg_split("/((\r?\n)|(\r\n?))/", $this->OFXContent) as $line){
 
 Having parsed the SGML into objects it can just be navigated following the specification and converted to arrays of information for each transaction, refered to as movements. These movements look like XYZ; and can then be convered into the Transaction objects most of the fields are handled automatically but dates need to be handled specifically.
 
-QIF is handled in a different manor as there are no native libraries to parse it's format. As shown in section X the file consists of movements, marked with \^'s and each field related to that movement is prefixed with a letter explaining what it's type.
+QIF is handled in a different manor as there are no native libraries to parse it's format. As per the Fig. \ref{fig:qifofxformat} shown in section \ref{subsection:upload} shown in  the format is a list of individual movements, with each terminated a \^. Each field associated with an individual movement is identified with a letter, explaining the contents of that line.
+% 
+The field types that the project was interested in and parses are shown in Table \ref{table:qiffields}.
 
-D	Date
-T	Amount
-C	Cleared status
-P	Payee
-M	Memo
-^	End of entry
+\begin{table}[h]
+\begin{tabular}{ll}
+D                  & Date           \\
+T                  & Amount         \\
+C                  & Cleared status \\
+P                  & Payee          \\
+M                  & Memo           \\
+\\textasciicircum  & End of entry  
+\end{tabular}
+\caption{QIF fields parsed by the project}
+\label{table:qiffields}
+\end{table}
 
-Like the SGML the application loops though all the lines found in the file, switching on the prefix and sorting the information into the appropriate pieces of an array.
+In a similar manor to parsing the OFX files, the application loops though all the lines found in the file, switching on the identifier and sorting the information into an array representing that movement. 
 
 \lstset{style=phpcolor}
 \begin{lstlisting}
@@ -131,7 +139,7 @@ switch ($id) {
 	// etc ...
 \end{lstlisting}
 
-As outlined in section \ref{subsection:upload} the conversion from array to Transaction is slightly more involved, this due to unknown date format. To implement this in PHP, all movements are tested against two regular expressions, representing the formats of the dates, visualised as graphs in Fig. \ref{regex-dmy} and \ref{regex-mdy}.
+As outlined in section \ref{subsection:upload} the conversion from the array to a Transaction object is slightly more involved due to unknown date format. To implement this in PHP, before begining the conversion, all movements are tested against two regular expressions, representing the possible formats of the dates, which are visualised as graphs in Fig. \ref{regex-dmy} and \ref{regex-mdy}. 
 
 \begin{lstlisting}
 $dmy = true;
@@ -142,12 +150,6 @@ foreach($this->getMovements() as $movement)
 	
 	if(!preg_match('#(0[1-9]|1[012])[-/](0[1-9]|[12][0-9]|3[01])[-/](19|20|21)?\d\d#', $date))
 		$mdy = false;
-...
-
-if($dmy && $mdy || !$dmy && !$mdy)
-	// ... prompt the user
-else
-    // ... continue to parse the file in the detected format
 \end{lstlisting}
 
 \begin{figure}[h]
@@ -162,6 +164,22 @@ else
     \includegraphics[width=0.70\textwidth]{implementation/regex-mdy}
     \caption{Regular expression used to match the date format m-d-Y}
     \label{fig:regex-mdy}
+\end{figure}
+
+Having considered all the movements found in the file, the application has either decided on one of the date formats or prompts the user to decide the appropriate format, as seen in Fig. \ref{fig:dateformat-prompt}.
+
+\begin{listlisting}
+if($dmy && $mdy || !$dmy && !$mdy)
+	// ... prompt the user
+else
+    // ... continue to parse the file in the detected format
+\end{lstlisting}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.70\textwidth]{implementation/dateformat-prompt}
+    \caption{Prompt UI when the application is unable to decide on the upload's date format}
+    \label{fig:dateformat-prompt}
 \end{figure}
 
 \section{Trans}
