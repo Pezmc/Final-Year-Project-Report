@@ -31,6 +31,9 @@
 % maths
 \usepackage{amsmath}
 
+% custom float settings
+\usepackage{float}
+
 % \begin{verbatim} literal text
 \usepackage{verbatim}
 
@@ -95,7 +98,7 @@
 % PHP code style
 \lstdefinestyle{phpcolor}{
   language        = php,
-  basicstyle      = \small\ttfamily,
+  basicstyle      = \footnotesize\ttfamily,
   keywordstyle    = \color{keyword},
   stringstyle     = \color{string},
   identifierstyle = \color{default},
@@ -105,11 +108,12 @@
   emph            =[2]{if,and,or,else},
   emphstyle       =[2]\color{keyword},
   breaklines=true,
-  upquote=true
+  upquote=true,
+  float=H
 }
 
 % Graphics
-\usepackage {tikz}
+\usepackage{tikz}
 \usetikzlibrary{automata,chains}
 
 % header and footer
