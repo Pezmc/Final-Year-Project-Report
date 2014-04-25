@@ -7,10 +7,10 @@ This chapter should give essential background information with references to pub
 \end{comment}
 
 As outlined in Chapter \ref{cha:introduction} the project consists of two major parts: a financial management service, which can be used to view historical spending and gain understanding of personal finances; and a forecasting element which predicts how much spending will occur in the future. 
-\question{Include this?} \question{Technically it's spending or receiving "transaction" but this becomes very wordy?}
+\question{Include this?} \gavin{yes} \question{Technically it's spending or receiving "transaction" but this becomes very wordy?} \gavin{It's fine}
 
 \section{Statement Management}
-There are existing applications that implement similar features to the money management aims of this project\question{Mention the current "bad" internet banking here?}, most notably Lloyds TSB Money Manager, the first and only personal money management application provided by a UK bank and Mint.com a United States (US) only personal finance service \parencite{lloyds2014moneymanager, mint2014whatismint}.
+There are existing applications that implement similar features to the money management aims of this project\question{Mention the current "bad" internet banking here?} \gavin{Yes}, most notably Lloyds TSB Money Manager, the first and only personal money management application provided by a UK bank and Mint.com a United States (US) only personal finance service \parencite{lloyds2014moneymanager, mint2014whatismint}.
 
 \subsection{Lloyds Money Manager}
 The service is available to Lloyds TSB current account holders as part of their online banking and it's features revolve around documenting historical spending \parencite{lloyds2014money}.
@@ -40,9 +40,9 @@ A key advantage of the money manager is that Lloyds already have access to their
 \subsection{Mint.com}
 Mint.com offers very similar features to LLoyds but it limited to the US. However, Mint automatically logs into the users online bank account and downloads their statements authenticating with their banking username and password. It's reported that this feature relies on the use of application programming interface's (API) at each bank which Intuit (the company behind Mint) have negotiated access individually, though Intuit have published no information to support or dispute this \cite{stackoverflow2012bankingapi, stackoverflow2012bankingapi2}.
 % 
-Although this feature is clearly useful and saves time for the users, it does make Mint responsible for storing their customers Internet banking passwords and presumably involves fee payments to the banks providing these API's. \question{Should I have more detail on what mint/lloyds do?}
+Although this feature is clearly useful and saves time for the users, it does make Mint responsible for storing their customers Internet banking passwords and presumably involves fee payments to the banks providing these API's. \question{Should I have more detail on what mint/lloyds do?} \gavin{No}
 %
-For these reasons it was decided that automatic statement uploading was outside of the budget and scope of this project, however, the project should support manual upload of statements to avoid date entry of users. \question{Does this need backing up?}
+For these reasons it was decided that automatic statement uploading was outside of the budget and scope of this project, however, the project should support manual upload of statements to avoid date entry of users. \question{Does this need backing up?} \gavin{No}
 
 \subsection{Mobile Apps}
 Mobile applications or `apps' as they are commonly known have seen a surge in popularity since the release of startphones and are a common target for small pieces of software, such as financial organisation \parencite{purcell2011half}.
@@ -63,7 +63,7 @@ Preifer and Carraway demonstrated that Markov Chain Models can be used to model 
 The paper is able to calculate the expected loan to value ratio (LTV) for the customer over the periods, by taking a matrix costs and gains associated with a purchase in each period and multiplying that by the probability of a purchase occurring taken from the transition matrix. This gives the expected present value for each period, which can be used to decide when to end a relationship with a customer (preventing the costs).
 %
 They demonstrate applying Markov Chain Models to a larger dataset, calculating the optimal policy for ending relationships with customers depending on varying costs concluding that the use of MCM's is an effective way of making customer relationship decisions. However, this paper assumes the company performing these predictions already knows how much money a customer will spent during each interactions and is focussed around calculating the probability of a spend occurring. An implementation applied to the personal spending space will require a way to predict the value of the future transaction.
-\question{Mention what HMM's are here?}
+\question{Mention what MCM's are here?} \gavin{Yes, expand on CMC's}
 
 \begin{figure}[h]
     \centering
@@ -110,12 +110,12 @@ Smoothing is typically applied to financial market data, for example the value o
 \begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{background/movingaverages}
-    \caption[SMA, WMA and EMA of the S\&P500]{Simple Moving Average (MA) [blue], Weighted MA [red] and Exponential MA [black] of the S\&P500 \protect\footnotemark \parencite[Fig. 5]{dash2012movingaverages}}
+    \caption[SMA, WMA and EMA of the S\&P500]{Simple Moving Average (MA) [blue], Weighted MA [red] and Exponential MA [black] of the S\&P500\protect\footnotemark  \parencite[Fig. 5]{dash2012movingaverages}}
     \label{fig:dashweightedaverages}
 \end{figure}
 \footnotetext{A stock market index of 500 American companies, the US equivalent of the FTSE 500}
 
-These techniques can be applied to a discrete set of numerical time series data, such as personal expenditure over time in order to make an estimate of what the next value in the series will be \parencite{filliben2003nist}. A prediction can be made using the formula in Fig. \ref{fig:weightedmeanforumla}, where $w_{i}$ is the weight and $x_i$ is the value at time period $i$. Simple smoothing is the equivalent of $w_i = 1$, while exponential smoothing is based around a negative exponential law such as $w_i = e^{-n+i}$, both are examples of weighted smoothing and the weights can be decided in different ways depending on what is being predicted. Time periods with a higher weight have a greater affect on the mean, so in order to make a future prediction, the most recent time period would have a higher weight. \question{The chosen implementation details in the design section}
+These techniques can be applied to a discrete set of numerical time series data, such as personal expenditure over time in order to make an estimate of what the next value in the series will be \parencite{filliben2003nist}. A prediction can be made using the formula in Fig. \ref{fig:weightedmeanforumla}, where $w_{i}$ is the weight and $x_i$ is the value at time period $i$. Simple smoothing is the equivalent of $w_i = 1$, while exponential smoothing is based around a negative exponential law such as $w_i = e^{-n+i}$, both are examples of weighted smoothing and the weights can be decided in different ways depending on what is being predicted. Time periods with a higher weight have a greater affect on the mean, so in order to make a future prediction, the most recent time period would have a higher weight. \question{The chosen implementation details in the design section} \gavin{Not a question}
 
 \begin{figure}[h]
     \centering
@@ -127,11 +127,11 @@ These techniques can be applied to a discrete set of numerical time series data,
 \end{figure}
 
 % Holt winters extends smoothing, to take into account trends in data
-Smoothing (and therefore prediction) can be extended to take into account trends and possible seasonal fluctuations using double and triple smoothing, respectively. A technique known as `Holt-Winters double exponential smoothing` takes into account trends in data, which single smoothing does perform accurately with, by factoring the weighted average growth between previous the time series when calculating the average for each period \parencite{kalekar2004holtwinters}. \question{A demonstration of this is in chapter X?}
+Smoothing (and therefore prediction) can be extended to take into account trends and possible seasonal fluctuations using double and triple smoothing, respectively. A technique known as `Holt-Winters double exponential smoothing` takes into account trends in data, which single smoothing does perform accurately with, by factoring the weighted average growth between previous the time series when calculating the average for each period \parencite{kalekar2004holtwinters}. \question{A demonstration of this is in chapter X?} \gavin{Yes}
 % 
 Extending the calculation into double and triple smoothing when estimating a users future outflow was decided as a possible extension for the project. \question{Where to mention this?} 
 
 \section{Security}
-\question{Should I mention the password entropy paper here? Currently in design}
+\question{Should I mention the password entropy paper here? Currently in design} \gavin{Yes}
 
 

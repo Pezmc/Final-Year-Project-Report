@@ -243,7 +243,7 @@ In testing it was discovered that users spending money in similar categories oft
     \label{fig:absoluteerror}
 \end{figure}
 
-\question{Show how the one with the least error is selected?}
+\question{Show how the one with the least error is selected?} \gavin{Yes definately}
 
 \subsection{Confidence}
 As the prediction from the Markov Chain Model is based on probabilities it is unstable. To account for this, when making a prediction the application repeats the process of reading from the MCM up to $10,000$ times in one second. The repetition of the reading is used to produce a confidence level of the final prediction once all the results are combined, which is displayed to the user. The confidence level is displayed as a plus/minus value next to the prediction and gives an indication of how sure the application is. 
@@ -292,14 +292,14 @@ In addition cookies are marked at HttpOnly, ensuring access via non-HTTPS method
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.75\textwidth]{design/security/sniffing}
+    \includegraphics[width=0.70\textwidth]{design/security/sniffing}
     \caption[Obtaining a users cookie using a MitM attack or sniffing]{Obtaining a users cookie using a MitM attack or Sniffing \parencite{owasp2011sessionhihacking}}
     \label{fig:securitysniffing}
 \end{figure}
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.75\textwidth]{design/security/hijacking}
+    \includegraphics[width=0.70\textwidth]{design/security/hijacking}
     \caption{Performing a session hijack using another users cookie \parencite{owasp2011sessionhihacking}}
     \label{fig:securityhijacking}
 \end{figure}
@@ -376,6 +376,7 @@ By escaping all content before displaying it to the user a maliciously crafted p
 
 \section{Technical Design}
 \question{Do I actually need a technical design section? The plan was to include some class diagrams of the project. Leaving this for now.}
+\gavin{Yes, some detail, ~2 pages}
 \subsection{Object Orientation}
 \plan{Patterns used}
 \subsection{Domain Class}
