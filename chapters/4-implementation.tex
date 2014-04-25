@@ -139,8 +139,9 @@ switch ($id) {
 	// etc ...
 \end{lstlisting}
 
-As outlined in section \ref{subsection:upload} the conversion from the array to a Transaction object is slightly more involved due to unknown date format. To implement this in PHP, before begining the conversion, all movements are tested against two regular expressions, representing the possible formats of the dates, which are visualised as graphs in Fig. \ref{regex-dmy} and \ref{regex-mdy}. 
+As outlined in section \ref{subsection:upload} the conversion from the array to a Transaction object is slightly more involved due to unknown date format. To implement this in PHP, before begining the conversion, all movements are tested against two regular expressions (regex), representing the possible formats of the dates, which are visualised as graphs in Fig. \ref{fig:regex-dmy} and \ref{fig:regex-mdy}. 
 
+\lstset{style=phpcolor}
 \begin{lstlisting}
 $dmy = true;
 $mdy = true;
@@ -155,34 +156,121 @@ foreach($this->getMovements() as $movement)
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.70\textwidth]{implementation/regex-dmy}
-    \caption{Regular expression used to match the date format d-m-Y}
+    \caption{Railroad diagram of the regex used to match the date format d-m-Y}
     \label{fig:regex-dmy}
 \end{figure}
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.70\textwidth]{implementation/regex-mdy}
-    \caption{Regular expression used to match the date format m-d-Y}
+    \caption{Railroad diagram of the regex used to match the date format m-d-Y}
     \label{fig:regex-mdy}
 \end{figure}
 
 Having considered all the movements found in the file, the application has either decided on one of the date formats or prompts the user to decide the appropriate format, as seen in Fig. \ref{fig:dateformat-prompt}.
 
-\begin{listlisting}
+\lstset{style=phpcolor}
+\begin{lstlisting}
 if($dmy && $mdy || !$dmy && !$mdy)
-	// ... prompt the user
+    // ... prompt the user
 else
-    // ... continue to parse the file in the detected format
+    // ... continue the conversion using the detected month format
 \end{lstlisting}
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.70\textwidth]{implementation/dateformat-prompt}
-    \caption{Prompt UI when the application is unable to decide on the upload's date format}
+    \caption{Prompt UI when the application is unable to decide on the upload\'s date format}
     \label{fig:dateformat-prompt}
 \end{figure}
 
-\section{Trans}
+\subsection{Named Entity Resolution}
+The implemented the mapping architecture outlined in the design, the bulk of the named entity resolution is done in the \lstinline#setTransactor($name)# method of the Transaction object, which is called when setting the name of transactor for a each transaction found in the uploaded file.   
+% 
+The method performs three key actions, tidying the string, removing common notation added by banking institutions and checking the database for known user and global transactors, otherwise creating a new one.
+% 
+To avoid unnecessary duplication in the mappings table the \gls{transactor} names are cleaned before checking for an existing name, this cleaning was added to combat the various different ways which banks store the transactor name after testing found that transactor names often include modifications including: padding with spaces, replacing spaces with underscores/tabs, or including non alphanumeric letters); some examples are shown in Table \ref{table:cleaningstrings}.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{ll}
+Raw Transactor Name & Occurrences \\
+\sqlinline{TESCO STORES 5128}   & 87         \\
+\sqlinline{TESCO STORES 2977}   & 68         \\
+\sqlinline{TESCO_STORES}        & 14         \\
+\sqlinline{SACAT MARKS AND}     & 33         \\
+\sqlinline{SACAT MARKS  AND}    & 16         \\
+\sqlinline{WILKINSON }          & 22         \\
+\sqlinline{WILKINSON}           & 8         
+\end{tabular}
+\caption{Examples of the raw transactor names found on uploaded statements}
+\label{table:cleaningstrings}
+\end{table}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.70\textwidth]{implementation/dateformat-prompt}
+    \caption{Prompt UI when the application is unable to decide on the upload\'s date format}
+    \label{fig:dateformat-prompt}
+\end{figure}
+
+\lstset{style=phpcolor}
+\begin{lstlisting}[float,floatplacement=H]
+/**
+ * Set the transactor with a string
+ * Checks whether a transactor mapping exists, if not creates a new one
+ * @var $name The raw transactor string
+ */
+public function setTransactor($name) {
+	
+	$currentUser = pegContext::GetInstance()->getUserSession()->getUser();
+	
+	// Trim off extra whitespace
+	$name = trim($name);
+	
+	// Record the original name
+	$this->setRawTransactor($name);
+	
+	// Tidy the name
+	$name = preg_replace('/\s_/', ' ', $name); // swap any space with ' '
+	$name = preg_replace('/\s+/', ' ', $name); // remove extra spaces
+	$name = preg_replace('#[^\w\s/\\-.]#', '', $name); // remove unneeded chars
+	$name = trim($name, '-./\ '); // trim off any padding
+	
+	// If last 2+ characters are numbers and at least 2+ letters before that were letters or spaces
+	$matches = array();
+	if(preg_match('#(?:[A-z]|\s){2,}(?:[\s]+)?(\d{2,}))$#', $name, $matches, PREG_OFFSET_CAPTURE)) {
+		if($matches[1][0]) {
+			$this->setNumber($matches[1][0]);
+			$name = trim(substr($name, 0, $matches[1][1]));
+		}
+	}
+
+	// Existing global transactor mapping?
+	$globalTransactorMapping = GlobalTransactorMappingQuery::findOneByTransactorName($name);
+	if($globalTransactorMapping) {
+		return $this->setGlobalTransactorMapping($globalTransactorMapping);
+	}
+	// Create a new user mapping and persist it
+	else {
+		$userMapping = UserTransactorMappingQuery::findOneByTransactorNameAndUser($name, $currentUser);
+		
+		// No existing mapping
+		if(empty($userMapping) && !empty($name)) {	
+			$userMapping = new UserTransactorMapping();
+			$userMapping->setName($name);
+			$userMapping->setUser($currentUser);
+			$userMapping->save();
+		}
+		
+		$this->setUserTransactorMapping($userMapping);
+	}
+}
+\end{lstlisting}
+
+the key part of named entity resolution was how to identify 
+
+\subsection{Suggestions}
 
 \section{Prediction}
 \plan{All the steps that were needed for the prediction}
