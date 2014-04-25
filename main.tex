@@ -56,6 +56,9 @@
 % insert ref's
 \newcommand{\insertref}[1]{\todo[inline,color=green!40]{#1}}
 
+% gavin notes
+\newcommand{\gavin}[1]{\todo[color=green!40]{\textbf{G:}~#1}}
+
 % Plan notes
 \newcounter{plancount}
 \newcommand{\plan}[1]{%
@@ -82,6 +85,28 @@
 \newcommand*{\inlinesql}{\lstinline[{language=SQL}]}
 \newcommand*{\inlinehtml}{\lstinline[{language=HTML}]}
 \newcommand*{\inlinephp}{\lstinline[{language=PHP}]}
+
+% Colors
+\definecolor{string}{HTML}{DD0000}
+\definecolor{comment}{HTML}{FF8000}
+\definecolor{keyword}{HTML}{007700}
+\definecolor{default}{HTML}{0000BB}
+
+% PHP code style
+\lstdefinestyle{phpcolor}{
+  language        = php,
+  basicstyle      = \small\ttfamily,
+  keywordstyle    = \color{keyword},
+  stringstyle     = \color{string},
+  identifierstyle = \color{default},
+  commentstyle    = \color{comment},
+  emph            =[1]{php},
+  emphstyle       =[1]\color{red},
+  emph            =[2]{if,and,or,else},
+  emphstyle       =[2]\color{keyword},
+  breaklines=true,
+  upquote=true
+}
 
 % Graphics
 \usepackage {tikz}
