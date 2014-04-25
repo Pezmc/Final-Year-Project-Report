@@ -26,7 +26,7 @@ Database Security
 Other
 \end{comment}
 
-This section is focused on particularly interesting or troublesome parts of implementing the design and any usage of external libraries. As it was decided the project would be a web application\todo{Should probably mention this in design} the user interface was written in HTML \& CSS, with the interactive elements such as the graphs in JavaScript, the server side language used to process the user requests was PHP and MySQL was used for the database.
+This section is focused on particularly interesting or troublesome parts of implementing the design outlined in \ref{cha:design} and any usage of external libraries. As it was decided the project would be a web application\todo{Should probably mention this in design} the user interface was written in HTML \& CSS, with the interactive elements such as the graphs in JavaScript. PHP was chosen as the server side language used to process the user and the database was implemented using MySQL.
 
 PHP was selected as the server side language because the author had extensive experience in the language, it's original intended use was web development and it is well supported. It's intention of web development means it's well coupled with HTML and provides many libraries to handle it, giving the language a significant advantage over languages such as Python and Java which can be adapted for web use. A key disadvantage of PHP is that is it weak typed which lead to some issues during development where objects of the wrong type were passed into functions. This disadvantage was considered and it was decided the advantages outweighed the disadvantages.
 
@@ -59,9 +59,9 @@ Chosen - javascript libray to make dropdown boxes better
 
 Highcharts - charting library for the UI
 
-QIF \/ OFX Parsing
+\section{Statement Management}
 
-OFX Parsing
+\subsection{Upload}
 OFX is an XML like format called SGML. PHP has inbuilt libraries for parsing XML called SimpleXML simplexml\_load\_string loads an XML file from a string. To parse the OFX, PHP attempts to parse it as an XML file and captures any exceptions. If exeptions are found it attempts to convert the SGML XML so it can be pased by PHP as per 
 
 %http://stackoverflow.com/questions/15735330/how-to-parse-a-ofx-version-1-0-2-file-in-php and http://www.hanselman.com/blog/PostprocessingAutoClosedSGMLTagsWithTheSGMLReader.aspx
@@ -90,13 +90,79 @@ foreach(preg_split("/((\r?\n)|(\r\n?))/", $this->OFXContent) as $line){
 
 Having parsed the SGML into objects it can just be navigated following the specification and converted to arrays of information for each transaction, refered to as movements. These movements look like XYZ; and can then be convered into the Transaction objects most of the fields are handled automatically but dates need to be handled specifically.
 
-QIF is handled in a different manor as there are no native libraries to parse it's format. As shown in section X the file consists of movements, marked with \^'s and then each field related to that movement prefixed with the letter explaining what it's related to.
+QIF is handled in a different manor as there are no native libraries to parse it's format. As shown in section X the file consists of movements, marked with \^'s and each field related to that movement is prefixed with a letter explaining what it's type.
 
-% ^ end of items, D date, T amount, C cleared, P payee, M memo, A address, L category, S cartegory split, E memo split, $ amount split
+D	Date
+T	Amount
+C	Cleared status
+P	Payee
+M	Memo
+^	End of entry
 
-\section{Statement Management}
+Like the SGML the application loops though all the lines found in the file, switching on the prefix and sorting the information into the appropriate pieces of an array.
 
-\section{Upload}
+\lstset{style=phpcolor}
+\begin{lstlisting}
+
+// QIF line identifier
+$id = substr($line, 0, 1);
+
+// Rest of the line
+$content = trim(substr($line, 1, strlen($line)));
+
+switch ($id) {
+	// End of entry
+	case '^':
+		// Completed transaction append to our list and reset
+		$this->movements[] = $newMovement;
+		$newMovement = array();
+		break;
+		
+	// Amount
+	case 'T':
+		$newMovement["value"] = floatval(preg_replace("/[^0-9.-]/", "", $content));
+		break;
+		
+	// Date
+	case 'D':
+		$newMovement["date"] = $content;
+		break;
+		
+	// etc ...
+\end{lstlisting}
+
+As outlined in section \ref{subsection:upload} the conversion from array to Transaction is slightly more involved, this due to unknown date format. To implement this in PHP, all movements are tested against two regular expressions, representing the formats of the dates, visualised as graphs in Fig. \ref{regex-dmy} and \ref{regex-mdy}.
+
+\begin{lstlisting}
+$dmy = true;
+$mdy = true;
+foreach($this->getMovements() as $movement)
+	if(!preg_match('#(0[1-9]|[12][0-9]|3[01])[-/](0[1-9]|1[012])[-/](19|20|21)?\d\d#', $date))
+		$dmy = false;
+	
+	if(!preg_match('#(0[1-9]|1[012])[-/](0[1-9]|[12][0-9]|3[01])[-/](19|20|21)?\d\d#', $date))
+		$mdy = false;
+...
+
+if($dmy && $mdy || !$dmy && !$mdy)
+	// ... prompt the user
+else
+    // ... continue to parse the file in the detected format
+\end{lstlisting}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.70\textwidth]{implementation/regex-dmy}
+    \caption{Regular expression used to match the date format d-m-Y}
+    \label{fig:regex-dmy}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.70\textwidth]{implementation/regex-mdy}
+    \caption{Regular expression used to match the date format m-d-Y}
+    \label{fig:regex-mdy}
+\end{figure}
 
 \section{Trans}
 
