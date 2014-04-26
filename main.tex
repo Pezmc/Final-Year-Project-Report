@@ -85,9 +85,10 @@
 
 % Code
 \usepackage{listings}
-\newcommand*{\inlinesql}{\lstinline[{language=SQL}]}
-\newcommand*{\inlinehtml}{\lstinline[{language=HTML}]}
-\newcommand*{\inlinephp}{\lstinline[{language=PHP}]}
+\newcommand*{\inlinesql}{\lstinline[language=SQL]}
+\newcommand*{\inlinehtml}{\lstinline[language=HTML]}
+\newcommand*{\inlinephp}{\lstinline[language=PHP]}
+\newcommand*{\inlinetext}{\lstinline[language=textwithspaces]}
 
 % Colors
 \definecolor{string}{HTML}{DD0000}
@@ -108,7 +109,23 @@
   emph            =[2]{if,and,or,else},
   emphstyle       =[2]\color{keyword},
   breaklines=true,
-  upquote=true
+  upquote=true,
+  tabsize=2
+}
+
+\lstdefinestyle{showspaces}{
+  basicstyle      = \footnotesize\ttfamily,
+  breaklines=true,
+  upquote=true,
+  showstringspaces=true,
+  showspaces=true
+}
+
+\lstdefinelanguage{textwithspaces}{
+    alsoletter={0,1,2,3,4,5,6,7,8,9,.,/,:},
+    showstringspaces=true,
+    style=showspaces,
+    morestring=[b]|
 }
 
 % Graphics
