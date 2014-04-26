@@ -379,7 +379,7 @@ Considering whether or not a transaction occurred in the previous month, a sampl
 
 \begin{table}[!htb]
 
-    \begin{minipage}{.5\linewidth}
+    \begin{minipage}{0.4\linewidth}
       \centering
         \begin{tabular}{lll}
         \#           & Didn't Occur & Occurred \\
@@ -389,7 +389,7 @@ Considering whether or not a transaction occurred in the previous month, a sampl
         \caption{Transition table for a one off purchase}
     \end{minipage} 
 
-    \begin{minipage}{.5\linewidth}
+    \begin{minipage}{0.4\linewidth}
       \centering
         \begin{tabular}{lll}
         \#           & Didn't Occur & Occurred \\
@@ -408,6 +408,7 @@ Having decided whether or not a transaction will occur the Budget class uses an 
 Combining the output of the MCM's and the weighted average calculator the produces the systems expenditure prediction for the considered category, Table \ref{fig:predictions-combined}. This is calculated for each sample taken from the MCM and the results are passed to an instance of the PredictionEvaluator to produce an average and confidence interval, which is ultimately displayed on the UI.
 
 \begin{table}[h]
+\centering
 \begin{tabular}{llll}
 Transactor  & Prediction & Weighted Average                   & Total        \\
 Tesco       & No         & £33                                & £0           \\
@@ -418,20 +419,11 @@ Argos       & No         & £17                                & £0           \
 \end{tabular}
 
 \label{fig:predictions-combined}
+\caption{Combination of the samples from the MCM and the weighted averages}
 \end{table}
 
-\subsection{Markov Chain Models}
-\plan{Use of MySQL to find similar, how that works, alternatives}
-
-\subsection{Weighted Arithmetic Mean}
-\label{section:suggestion-implementation}
-\plan{How it uses the above, how the whole user/global thing works}
-
-\subsection{Five Model System}
-\plan{Why I chose first order markov chains, alternatives to that etc...}
-
 \section{Security Considerations}
-\plan{How does that work, why is it good?}
+\plan{How did I prevent hijacking etc...}
 
 \subsection{Hijacking}
 \plan{How was is a model chosen for the user?}
@@ -439,7 +431,9 @@ Argos       & No         & £17                                & £0           \
 \subsection{Password Security}
 \plan{How was is a model chosen for the user?}
 
-\subsection{Hijacking}
+\subsection{Database Storage}
 \plan{Database storage}
+
+\subsection{Other}
 
 
