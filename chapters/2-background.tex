@@ -134,4 +134,41 @@ Extending the calculation into double and triple smoothing when estimating a use
 \section{Security}
 \question{Should I mention the password entropy paper here? Currently in design} \gavin{Yes}
 
+\subsection{Account Hijacking} \label{subsection:account-hijacking}
+Over HTTP information sent between the users web browser and the remote server in plain text and can easily be read using a man-in-the-middle attack. This risk is compounded if accessing the Internet via an an unencrypted WiFi connection\footnote{Common at Coffee Shops and Universities} which would allow anyone in the local area to `sniff' the information by simply scanning for capturing the transmitted packet.
 
+If a website involves authentication, this becomes a serious security risk. Authentication is usually performed by sending the username and password in plain text to a remote server which is validated, and if valid issuing the user with a session cookie.
+%
+A potential attacker could observe and store these usernames and passwords, which is why commonly websites such as Facebook use HTTPS for the login, ensuring the usernames and passwords are sent encrypted to the server.
+
+If a website falls back to HTTP following authentication, the risk of unauthorised account access is still prevalent.
+%
+In order to identify which user the browser is authenticated as it sends a session cookie to the remote server with each request. 
+%
+Although the attacker can't observe the username and password, the session cookie is being sent in plain text with every request, and the attacker can perform a session hijack by downloading the content of that cookie to their local machine (Fig. \ref{fig:securitysniffing}) and then sending it to the remote server with their HTTP request `proving' they are the user and gaining access to their account (Fig. \ref{fig:securityhijacking}) \parencite{owasp2011sessionhihacking}.
+% 
+Firesheep was a proof of concept plugin for Firefox released in 2010 that demonstrated this vulnerability, showing that session hijacking could be performed on popular sites including Google, Facebook, Twitter, Dropbox and Flickr, which until recently were not using sitewide SSL to protect their cookies \parencite{butler2010firesheep, butler2014firesheep}. 
+%http://codebutler.com/firesheep/ FireSheet mention, http://codebutler.github.io/firesheep/
+%
+More recently `WhatsApp Sniffer', available on Google Play until May 2012 was able to display messages addressed to other WhatsApp users connected to the same network using this technique \parencite{thehsecurity2012whatsapp}.
+
+\subsection{Password Security}
+
+A common cracking technique used to gain unauthorised access to a user account is a known as a brute force attack. If an attacker knows a particular users username they can perform targeted guessing of the password by enumerating through all possibilities. A websites ability to resist this kind of attack is called the `password guessing resistance'. It is for this reason that many websites, enforce password rules in an attempt to increase the number of possible combinations for a password, or the entropy \cite{helkala2008authentication}.
+
+Shannon Entropy can be used estimate the strength of a passwords resistance to this kind of attack. The entropy is calculated using $H(X)= -\sum_{i=1}^n{p(x_i)\log_b p(x_i)}$ where $p(x_i)$ is the probability of the value $x$ occurring \cite{burr2013electronic}.
+%
+The paper suggests a predefined set of rules for estimating entropy based on Shannon's work studying English text, however other papers found that using this predefined set of rules was not a valid measure of password strength \cite{weir2010shannon}.
+
+\subsection{Database Storage} \label{subsection:databasestorage}
+Unfortunately, it is common for the contents of a websites database to be leaked, whether by an administrator of the website or using other techniques such as SQL injection \parencite{bbc2012linkedinpasswords,chechik2013passwords}. It's important to think about the security of the data held within the database, as well as the security of the front end.
+
+If a users password is stored in a reversible state, whether that is plain text or encrypted and the database is leaked, not only can that users account can be accessed on the original website, but the data can be used attack other websites and compromise the users account there, if using the same username and password.
+%
+Encryption is equivalent to plain text in that, it is simply a case of finding the encryption key, which is very possible using brute force and all the data is in plain text. 
+%
+This is why standard security practice is to hash passwords. The only way to `decrypt' a hash is to guess the original input by brute force and see if that matches the output.
+%
+However crackers often make use of Rainbow tables, collections of precalculated hashes and the input used to create them, allowing an attacker to simply lookup a hash in their database to get the result rather than enumerating all the possibilities \parencite{jorgensen2012}.
+%
+To reduce the effectiveness of this attack method, `salting' is commonly used. Salting involves adding a random collection of numbers and letters to each password. This means that the generated hash is dependent on both the users password and the salt, and therefore a Rainbow Table would need to be generated for each user, cancelling out the advantage of precalculation and making the tables useless.
