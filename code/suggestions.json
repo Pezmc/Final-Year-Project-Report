@@ -1,0 +1,41 @@
+{"status":0,
+   "result":[
+       { "mapping":{
+            "id":449,
+            "name":"edf energy",
+            "transactorName":"Edf Energy"
+         },
+         "exampleTransactions":[
+            {
+               "id":1552,
+               "value":"-169.00",
+               "date":"2014-03-24",
+               "memo":null
+            }
+            ... etc
+         ],
+         "suggestions": [
+             "globalMappings":[
+                {
+                   "id":134,
+                   "name":"e.on energy",
+                   "transactorName":"E.ON"
+                },
+                {
+                   "id":222,
+                   "name":"edf energy-dom",
+                   "transactorName":"EDF Energy"
+                },
+                ... etc
+             ],
+             "globalTransactors":[{
+                   "id":149,
+                   "name":"EDF Energy"
+             }]
+         ]
+         "suggestionCount":1,
+         "position":14
+       },
+       ... etc 
+   ]
+}

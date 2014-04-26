@@ -260,7 +260,7 @@ The suggestion wizard (Fig \ref{fig:suggestion-wizard}) was added to the project
 
 The wizard was designed to streamline and speed up this process as well as making it easier for the user to follow. Each unmapped transactor is displayed in turn, starting with the one with the most transactions (encouraging the user to map the ones they shop at more often first). On each step, the user can; follow the suggestions, manually map the reference to an existing transactor, create a new transactor or ignore the reference for now. A step-by-step view of this process is shown in section \ref{subsection:suggestion-wizard-walkthrough}.
 
-During the process feedback is displayed to the user using notifications that appear over the wizard and are coloured according to validation style convention, with red warning of an error and green confirming success (Fig. \ref{suggestion-notification}). 
+During the process feedback is displayed to the user using notifications that appear over the wizard and are coloured according to validation style convention, with red warning of an error and green confirming success (Fig. \ref{fig:suggestion-notification}). 
 
 \begin{figure}[h]
     \centering
@@ -268,6 +268,8 @@ During the process feedback is displayed to the user using notifications that ap
     \caption{Notifications shown during the suggestion wizard}
     \label{fig:suggestion-notification}
 \end{figure}
+
+By following the wizard users are able to quickly map the majority of their transactions in an easy to follow way, as can be shown by the activity diagram in Fig. \ref{fig:suggestion-wizard-activity}.
 
 \begin{figure}[h]
     \centering
@@ -281,23 +283,77 @@ During the process feedback is displayed to the user using notifications that ap
     \end{comment}
 \end{figure}
 
-By following the wizard users are able to quickly map the majority of their transactions, following a more simple activty diagram (Fig. \ref{suggestion-wizard-activity}.
+The wizard itself is powered by Ajax\footnote{Asynchronous JavaScript and XML}, which sends requests to a backend RESTful API which proves access to the unmapped transactors found for the user. The requests and responses are sent as JSON\footnote{JavaScript Object Notation} which is supported natively by both PHP and JavaScript. A GET request to \lstinline{/ajax/transactor/suggestions} returns a collection of unmapped transactors including associated examples which are then added to the UI using JavaScript.
+%
+Mapping (including following a suggestion) and creating a new transactor are both handled by POST requests to the same API. Mapping sends a request to \lstinline{/ajax/transactor/map} containing the ID of the user mapping and global mapping  and creation sends a request to \lstinline{/ajax/transactor/create} including the user mapping ID to associate with the new transactor. 
+%
+Examples of the JSON communication are shown in Fig. \ref{fig:json-examples}.
+
+\begin{figure}
+    \begin{subfigure}[a]{\textwidth}
+        \lstinputlisting[language=json]{code/suggestions.json}
+        \caption{GET request sent \lstinline{/ajax/transactor/suggestions}}
+    \end{subfigure}
+    
+    \begin{subfigure}[b]{\textwidth}
+        \lstinputlisting[language=json]{code/map.json}
+        \caption{POST request sent to \lstinline{/ajax/transactor/map}}
+    \end{subfigure}
+    
+    \begin{subfigure}[c]{\textwidth}
+        \lstinputlisting[language=json]{code/create.json}
+        \caption{POST request sent to \lstinline{/ajax/transactor/create}}
+    \end{subfigure}
+    
+    \begin{subfigure}[d]{\textwidth}
+        \lstinputlisting[language=json]{code/reply.json}
+        \caption{Response from API following a successful map or create}
+    \end{subfigure}    
+
+    \caption{JSON encoded requests to the RESTful API}
+    \label{fig:json-examples}
+\end{figure}
+
+On the backend, all JSON serialisation is handled by implementing the \inlinephp{JsonSerializable} interface on all objects that need to be JSON encoded. This allows the native function \inlinephp{json_encode($object)} to correctly encode the object into JSON using the data returned by the abstract method `jsonSerialize` defined in the interface. The final inheritance diagram for the mapping, transactor and transaction objects is shown in Fig. \ref{fig:mapping-inheritance-diagram}.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{implementation/json-serializable}
+    \caption{Inheritance diagram of JsonSerializable objects}
+    \label{fig:mapping-inheritance-diagram}
+    
+    \begin{comment}
+[<<Interface>> JsonSerializable]^-[<<Abstract>> Transactor]
+[<<Interface>> JsonSerializable]^-[<<Abstract>> TransactorMapping]
+[<<Interface>> JsonSerializable]^-[Transaction]
+[<<Abstract>> TransactorMapping]^-[UserTransactorMapping]
+[<<Abstract>> TransactorMapping]^-[GlobalTransactorMapping]
+[<<Abstract>> Transactor]^-[UserTransactor]
+[<<Abstract>> Transactor]^-[GlobalTransactor]
+    \end{comment}
+\end{figure}
 
 \section{Prediction}
 \plan{All the steps that were needed for the prediction}
 
-\subsection{Named Entity Resolution}
+\subsection{Markov Chain Models}
 \plan{Use of MySQL to find similar, how that works, alternatives}
 
-\subsection{Suggestions}
+\subsection{Weighted Arithmetic Mean}
 \label{section:suggestion-implementation}
 \plan{How it uses the above, how the whole user/global thing works}
 
-\subsection{Markov Chain}
+\subsection{Five Model System}
 \plan{Why I chose first order markov chains, alternatives to that etc...}
 
-\subsection{Weighted Averages}
+\section{Security Considerations}
 \plan{How does that work, why is it good?}
 
-\subsection{5 Model System}
+\subsection{Hijacking}
 \plan{How was is a model chosen for the user?}
+
+\subsection{Password Security}
+\plan{How was is a model chosen for the user?}
+
+\subsection{Hijacking}
+\plan{Database storage}
