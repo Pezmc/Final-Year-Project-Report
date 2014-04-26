@@ -321,8 +321,41 @@ LIMIT 5
 \end{figure}
 
 \section{Prediction}
-The key difficulty of implementing the prediction functionality was designing a data structure that allowed predictions to be read by column or by row in order to generate the table output shown in Fig. \ref{}. Ordinarily a multidimensional array or a dictionary of dictionaries would be used, however in this case it must be possible to access the data by subcategory as well as by month or date
+The key difficulty of implementing the prediction functionality was designing a data structure that allowed predictions to be read by column or by row in order to generate the table output shown in Fig. \ref{fig:imp-categories-overview}. Ordinarily a multidimensional array or a dictionary of dictionaries would be used, however in this case it must be possible to access the data by subcategory as well as by month or date.
+%
+In order to allow accessing the data by month, category and subcategory as well as being able to generate totals the data structure shown in Fig. \ref{fig:prediction-inheritance-diagram} was used. The TransactionCollection interface defines three methods, \phpinline{getTotalValue()}, \phpinline{getTransactions()} and \phpinline{addTransaction(Transaction)}. Using this interface means that each level of the data structure can be treated in exactly the same way and has the advantage that the entire PersonalBudget object can be passed to the template engine with no controller logic or pre-calculation. Transactions are added to the PersonalBudget object and at each layer of the data structure organised into the correct collection automatically. When getting the transactions from any collection, the object calls the get \phpinline{getTransactions()} method on any sub-collection instances it holds and returns an intersection of the results.
 
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.75\textwidth]{implementation/categories-overview-2}
+    \caption{Activity diagram for mapping transactors using the suggestion wizard}
+    \label{fig:imp-categories-overview}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.75\textwidth]{implementation/prediction-inheritance-diagram}
+    \caption{Data structure for storing a Personal Budget by date and (sub)category}
+    \label{fig:prediction-inheritance-diagram}
+    
+    \begin{comment}
+[PersonalBudget]<>1-2>[Budget]
+[<<Abstract>> CategoryCollection]^-[Budget]
+[<<Interface>>;TransactionCollection]^-[Budget]
+[<<Abstract>>;CategoryCollection]^-[TransactionDateCollection]
+[<<Interface>>;TransactionCollection]^-[TransactionDateCollection]
+[Budget]<>1-0..*>[TransactionDateCollection]
+[<<Abstract>>;CategoryCollection]^-[TransactionCategoryCollection]
+[<<Interface>>;TransactionCollection]^-[TransactionCategoryCollection]
+[TransactionDateCollection]<>1-0..*>[TransactionCategoryCollection]
+[<<Abstract>>;CategoryCollection]^-[TransactionSubCategoryCollection]
+[<<Interface>>;TransactionCollection]^-[TransactionSubCategoryCollection]
+[TransactionCategoryCollection]<>1-0..*>[TransactionSubCategoryCollection]
+[TransactionSubCategoryCollection]<>1-0..*>[Transaction]
+    \end{comment}
+\end{figure}
+
+The Budget object (representing expenditure or income) provides the `getCategoryPredictions`
 \subsection{Markov Chain Models}
 \plan{Use of MySQL to find similar, how that works, alternatives}
 
