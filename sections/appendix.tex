@@ -35,4 +35,44 @@ Implemented in PHP, test was run on a 2.7 Ghz Intel Core i7 with 16Gb of 1600Mhz
 
 \lstinputlisting[style=phpcolor]{code/passwordHashingTest.php}
 
+\chapter{PHP Code} \todo{Needs a better name}
+
+\begin{figure}
+\lstinputlisting[style=phpcolor]{code/setTransactorMethod.php}
+\label{fig:settransactor}
+\caption{PHP Transaction->setTransactor(\$name) method source code}
+\end{figure}
+
+\chapter{Suggestion Wizard JSON}
+
+The suggestion wizard is powered by AJAX, which makes JSON requests to a RESTful API on the backend, Fig. \ref{fig:json-examples} outlines an example set of communication.
+
+\begin{figure}
+    \begin{subfigure}[a]{\textwidth}
+        \lstinputlisting[language=json]{code/suggestions.json}
+        \caption{GET request sent \lstinline{/ajax/transactor/suggestions}}
+    \end{subfigure}
+    
+    \begin{subfigure}[b]{\textwidth}
+        \lstinputlisting[language=json]{code/map.json}
+        \caption{POST request sent to \lstinline{/ajax/transactor/map}}
+    \end{subfigure}
+\end{figure}
+
+\begin{figure}
+    \ContinuedFloat   
+    \begin{subfigure}[c]{\textwidth}
+        \lstinputlisting[language=json]{code/create.json}
+        \caption{POST request sent to \lstinline{/ajax/transactor/create}}
+    \end{subfigure}
+    
+    \begin{subfigure}[d]{\textwidth}
+        \lstinputlisting[language=json]{code/reply.json}
+        \caption{Response from API following a successful map or create}
+    \end{subfigure}    
+
+    \caption{JSON encoded requests to the RESTful API}
+    \label{fig:json-examples}
+\end{figure}
+
 \end{appendices}

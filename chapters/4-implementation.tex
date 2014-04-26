@@ -185,7 +185,7 @@ else
 \end{figure}
 
 \subsection{Named Entity Resolution}
-The implemented the mapping architecture outlined in the design, the bulk of the named entity resolution is done in the \lstinline{setTransactor($name)} method of the Transaction object, which is called when setting the name of transactor for a each transaction found in the uploaded file.   
+The implemented the mapping architecture outlined in the design, the majority of the named entity resolution is done in the \lstinline{setTransactor} method of the Transaction object, which is called when setting the name of transactor for a each transaction found in the uploaded file.   
 % 
 The method performs three key actions, tidying the string, removing common notation added by banking institutions and checking the database for known user and global transactors, otherwise creating a new one.
 % 
@@ -220,12 +220,6 @@ Raw Transactor Name & Occurrences \\
     \includegraphics[width=\textwidth]{implementation/regex-transactor}
     \caption[Regular expression used to match the transactor name]{Railroad diagram of the regex used to tidy the transactor name}
     \label{fig:regex-transactor}
-\end{figure}
-
-\begin{figure}
-\lstinputlisting[style=phpcolor]{code/setTransactorMethod.php}
-\label{fig:settransactor}
-\caption{PHP Transaction->setTransactor(\$name) method source code}
 \end{figure}
 
 \subsection{Suggestion Wizard}
@@ -273,7 +267,7 @@ By following the wizard users are able to quickly map the majority of their tran
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=\textwidth]{implementation/suggestion-wizard-activity}
+    \includegraphics[width=0.6\textwidth]{implementation/suggestion-wizard-activity}
     \caption{Activity diagram for mapping transactors using the suggestion wizard}
     \label{fig:suggestion-wizard-activity}
     
@@ -289,32 +283,7 @@ Mapping (including following a suggestion) and creating a new transactor are bot
 %
 Examples of the JSON communication are shown in Fig. \ref{fig:json-examples}.
 
-\begin{figure}
-    \begin{subfigure}[a]{\textwidth}
-        \lstinputlisting[language=json]{code/suggestions.json}
-        \caption{GET request sent \lstinline{/ajax/transactor/suggestions}}
-    \end{subfigure}
-    
-    \begin{subfigure}[b]{\textwidth}
-        \lstinputlisting[language=json]{code/map.json}
-        \caption{POST request sent to \lstinline{/ajax/transactor/map}}
-    \end{subfigure}
-    
-    \begin{subfigure}[c]{\textwidth}
-        \lstinputlisting[language=json]{code/create.json}
-        \caption{POST request sent to \lstinline{/ajax/transactor/create}}
-    \end{subfigure}
-    
-    \begin{subfigure}[d]{\textwidth}
-        \lstinputlisting[language=json]{code/reply.json}
-        \caption{Response from API following a successful map or create}
-    \end{subfigure}    
-
-    \caption{JSON encoded requests to the RESTful API}
-    \label{fig:json-examples}
-\end{figure}
-
-On the backend, all JSON serialisation is handled by implementing the \inlinephp{JsonSerializable} interface on all objects that need to be JSON encoded. This allows the native function \inlinephp{json_encode($object)} to correctly encode the object into JSON using the data returned by the abstract method `jsonSerialize` defined in the interface. The final inheritance diagram for the mapping, transactor and transaction objects is shown in Fig. \ref{fig:mapping-inheritance-diagram}.
+On the backend, all JSON serialisation is handled by implementing the \inlinephp{JsonSerializable} interface on all objects that need to be JSON encoded. This allows the native function \inlinephp{json_encode(\$object)} to correctly encode the object into JSON using the data returned by the abstract method `jsonSerialize` defined in the interface. The final inheritance diagram for the mapping, transactor and transaction objects is shown in Fig. \ref{fig:mapping-inheritance-diagram}.
 
 \begin{figure}[h]
     \centering
@@ -333,8 +302,26 @@ On the backend, all JSON serialisation is handled by implementing the \inlinephp
     \end{comment}
 \end{figure}
 
+The suggestions themselves are made by searching for known global mappings, user mappings, global transactors and user transactors\footnote{In the order of preference} that are similar to the reference name a suggestion is being made for. This is done using the Natural Language Full-Text Search functions provided by MySQL. These functions, including \inlinesql$MATCH$, use a Vector Space Model to rank the relevance of a field relative to the input and signify this relevance using a decimal number, which means it can be treated as a standard field by the database and used to order the results.  \parencite{mysql2014searches}. 
+
+When searching for suggestions the application finds the five most relevant mappings or transactors, according to full text search, loads those objects from the database using the ORM. As the ORM tool uses doesn't have support for full text search a raw SQL query was written that uses PDO's\footnote{PHP Data Objects extension for accessing databases} prepared statements functionality to send the parameters to the database server, avoiding SQL injection. The query for finding global transactor mappings as part of the \inlinephp{GetCloseTransactorMappings} method in the GlobalTransactorMappingPeer class is shown in Fig. \ref{fig:sql-match-query}, where \inlinesql{:identifier} is replaced by the server with the passed parameters.
+
+\begin{figure}
+\centering
+\begin{lstinline}[language=sql]
+SELECT *, MATCH(:nameColumn) AGAINST (:name) AS 'score'
+FROM :tableName
+	WHERE :transactorID IS NOT NULL
+	HAVING `score` > :minScore OR :nameColumn = :name
+ORDER BY `score` DESC
+LIMIT 5
+\end{lstinline}
+\caption{SQL Query for selecting similar mappings or transactors using PDO}
+\label{fig:sql-match-query}
+\end{figure}
+
 \section{Prediction}
-\plan{All the steps that were needed for the prediction}
+The main difficulty of implementing the prediction functionality 
 
 \subsection{Markov Chain Models}
 \plan{Use of MySQL to find similar, how that works, alternatives}
@@ -357,3 +344,5 @@ On the backend, all JSON serialisation is handled by implementing the \inlinephp
 
 \subsection{Hijacking}
 \plan{Database storage}
+
+
