@@ -355,7 +355,71 @@ In order to allow accessing the data by month, category and subcategory as well 
     \end{comment}
 \end{figure}
 
-The Budget object (representing expenditure or income) provides the `getCategoryPredictions`
+The Budget object (representing expenditure or income) provides the \inlinephp{getCategoryPrediction()} method which takes a month and a category and returns the systems prediction for that month. It's this method that builds and samples from the Markov Chain Models, calculates the Weighted Arithmetic Mean, and chooses the Weighting Model which provides the least absolute error for the historical data in order to make the prediction. The class also calculates the confidence interval which is displayed in the UI.
+
+The logic for these steps is split into separate classes to improve cohesion and the overall process is shown in Fig \ref{fig:prediction-activity}. \todo{Fix}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{implementation/prediction-activity}
+    \caption{System activity diagram when calculating the prediction a given category in a future month}
+    \label{fig:prediction-activity}
+    
+    \begin{comment}
+(start)->|a|
+|a|->[Markov Chain]->(Build MCMs)->(Sample from MCMs)->|b|
+|a|->[Weighted Average Calculator]->(Select Weighting Model)->(Calculate Weighted Averages)->|b|
+|b|->[Prediction Evaluator]->(Calculate Average and Confidence)->(end)
+    \end{comment}
+\end{figure}
+
+In order to build the Markov Chain Model the TransactionMarkovChain object takes an list of Transaction objects and counts the months where a transaction occurs, storing this in an assosiative array. This matrix is read to generate a transition table which represents the amount of time a transaction as transitioned from occurring to not occurring and visa-versa. This transition table can be converted to a transition matrix which represents the probability of such a transition occurring. An example transition table and matrix for a one of purchase are shown in Table \ref{fig:transition-matrix}.
+%
+Considering whether or not a transaction occurred in the previous month, a sample is taken from the matrix. For example, if example event occurred last month for the probability of the event occurring next month given that it occurred last month is $0.00$ and so there is a 0\% chance the system will predict the event will occur next month. This process of sampling is repeated up to $10,000$ times for each transaction in under one second and the list of predictions is returned to the Budget class.
+
+\begin{table}[!htb]
+
+    \begin{minipage}{.5\linewidth}
+      \centering
+        \begin{tabular}{lll}
+        \#           & Didn't Occur & Occurred \\
+        Didn't Occur & 10           & 1       \\
+        Occurred     & 1            & 0      
+        \end{tabular}
+        \caption{Transition table for a one off purchase}
+    \end{minipage} 
+
+    \begin{minipage}{.5\linewidth}
+      \centering
+        \begin{tabular}{lll}
+        \#           & Didn't Occur & Occurred \\
+        Didn't Occur & 0.91         & 0.09       \\
+        Occurred     & 1.00         & 0.00     
+        \end{tabular}
+        \caption{Transition matrix for a one off purchase}
+    \end{minipage}
+    
+    \label{fig:transition-matrix}
+    
+\end{table}
+
+Having decided whether or not a transaction will occur the Budget class uses an instance of \phpinline{TransactionWeightedAverageCalculator} to estimate how much money would be transferred if a transaction occurs. The weighted average calculator takes a list of Transaction objects and returns an associative array containing the weighted average for each transactor. To calculate the weighted averages the calculator first selects the best weighting model for the users spending pattern in the specified category and uses the selected function to calculated the averages for each transactor in the category. \todo{Needs fixing}.
+
+Combining the output of the MCM's and the weighted average calculator the produces the systems expenditure prediction for the considered category, Table \ref{fig:predictions-combined}. This is calculated for each sample taken from the MCM and the results are passed to an instance of the PredictionEvaluator to produce an average and confidence interval, which is ultimately displayed on the UI.
+
+\begin{table}[h]
+\begin{tabular}{llll}
+Transactor  & Prediction & Weighted Average                   & Total        \\
+Tesco       & No         & £33                                & £0           \\
+Sainsbury's & Yes        & £65                                & £65          \\
+Amazon      & No         & £3                                 & £0           \\
+Argos       & No         & £17                                & £0           \\
+            &            & \multicolumn{1}{r}{\textbf{Total}} & \textbf{£65}
+\end{tabular}
+
+\label{fig:predictions-combined}
+\end{table}
+
 \subsection{Markov Chain Models}
 \plan{Use of MySQL to find similar, how that works, alternatives}
 
