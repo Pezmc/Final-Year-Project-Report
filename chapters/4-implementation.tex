@@ -185,13 +185,13 @@ else
 \end{figure}
 
 \subsection{Named Entity Resolution}
-The implemented the mapping architecture outlined in the design, the bulk of the named entity resolution is done in the \lstinline|setTransactor($name)| method of the Transaction object, which is called when setting the name of transactor for a each transaction found in the uploaded file.   
+The implemented the mapping architecture outlined in the design, the bulk of the named entity resolution is done in the \lstinline{setTransactor($name)} method of the Transaction object, which is called when setting the name of transactor for a each transaction found in the uploaded file.   
 % 
 The method performs three key actions, tidying the string, removing common notation added by banking institutions and checking the database for known user and global transactors, otherwise creating a new one.
 % 
 To avoid unnecessary duplication in the mappings table the \gls{transactor} names are normalised before checking for an existing name, this normalisation was added to combat the various different ways which banks store the transactor names which were discovered during testing. The modifications included: padding with spaces, replacing spaces with underscores/tabs, or including non alphanumeric letters; some examples are shown in Table \ref{table:cleaningstrings}.
 %
-Having normalised the input, the next step was to remove any numeric identifiers which had been added and move that detail to another field. Examples of such identifiers included store id's for shops with multiple outlets and account numbers for transfers between accounts, if this detail wasn't removed a separate mapping would be created for transactions referencing the same entity, leading to unnecessary duplication. The identifiers were removed using a regex, expressed in Fig. \ref{fig:regex-transactor} which only captures numbers found at the end of the string requiring at least two digits, these additional constraints were added to preserve \gls{transactors} with numbers in their name, such as \inlinetext$H3G$ and \inlinetext$SUPERMERCADO 3$.
+Having normalised the input, the next step was to remove any numeric identifiers which had been added and move that detail to another field. Examples of such identifiers included store id's for shops with multiple outlets and account numbers for transfers between accounts, if this detail wasn't removed a separate mapping would be created for transactions referencing the same entity, leading to unnecessary duplication. The identifiers were removed using a regex, expressed in Fig. \ref{fig:regex-transactor} which only captures numbers found at the end of the string requiring at least two digits, these additional constraints were added to preserve \glspl{transactor} with numbers in their name, such as \inlinetext$H3G$ and \inlinetext$SUPERMERCADO 3$.
 %
 The final step checks for existing \glslink{globaltransactor}{GlobalMapping} or \glslink{usertransactor}{UserMapping} objects in the database and if found associates that mapping with this transaction. If neither mapping's are found a new \glslink{usertransactor}{UserMapping} object is created, persisted and associated with the transaction. Differing from the original plan, fuzzy matching\footnote{ Finding strings that approximately rather than exactly match} of the transactor name when searching for existing transactors is not performed as this functionality was moved to the suggestion wizard.
 %
@@ -205,10 +205,10 @@ Raw Transactor Name & Occurrences \\
 \inlinetext$TESCO STORES 5128$   & 87         \\
 \inlinetext$TESCO STORES 2977$   & 68         \\
 \inlinetext$TESCO_STORES$        & 14         \\
-\inlinetext$SACAT MARKS    AND$     & 33         \\
+\inlinetext$SACAT MARKS    AND$  & 33         \\
 \inlinetext$SACAT MARKS  AND$    & 16         \\
 \inlinetext$WILKINSON $          & 22         \\
-\inlinetext$WILKINSON$           & 8  
+\inlinetext$WILKINSON$           & 8          \\        
 \inlinetext$TO A/C 00000000$\footnote{Account number removed} & 2  
 \end{tabular}
 \caption{Examples of the raw transactor names found on uploaded statements}
@@ -225,15 +225,23 @@ Raw Transactor Name & Occurrences \\
 \begin{figure}
 \lstinputlisting[style=phpcolor]{code/setTransactorMethod.php}
 \label{fig:settransactor}
-\caption{PHP Transaction->setTransactor($name) method source code}
+\caption{PHP Transaction->setTransactor(\$name) method source code}
 \end{figure}
 
-\subsection{Suggestions}
-The suggestion wizard became part of the project following observations during lab usability testing. Originally the suggestions were only found on each unmapped transactors page (Fig. HERHEHERH).  Users appeared to spend a lot of time manually categorising each individual transactor by searching their statement for an unknown transactor, opening that transactors details and then filling in the form, following an activity diagram similar to Fig. \ref{fig:transactor-mapping-activity}.
+\subsection{Suggestion Wizard}
+The suggestion wizard (Fig \ref{fig:suggestion-wizard}) was added to the project in response to observations during lab usability testing. Originally the suggestions were only found on each unmapped transactors page (Fig. \ref{fig:view-reference-suggestions}) to speed up the process of mapping a reference to an existing transactor.  Users appeared to spend a lot of time manually categorising each individual transactor by searching their statement for an unknown transactor, opening that transactors details and then filling in the appropriate forms or clicking on a suggestion, following an activity diagram similar to Fig. \ref{fig:transactor-mapping-activity}.
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=\textwidth]{design/transactor-mapping-activity}
+    \includegraphics[width=\textwidth]{implementation/suggestion-wizard}
+    \caption[Suggestion wizard UI]{Suggestion wizard UI\protect\footnotemark}
+    \label{fig:suggestion-wizard}
+\end{figure}
+\footnotetext{Potentially personally identifiable information removed}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{implementation/transactor-mapping-activity}
     \caption{Activity diagram for mapping individual transactors}
     \label{fig:transactor-mapping-activity}
     
@@ -242,6 +250,38 @@ The suggestion wizard became part of the project following observations during l
 <a>->(Open Transactor)->(Map Transactor)->(Open Statement)
     \end{comment}
 \end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{implementation/view-reference-suggestions}
+    \caption{Suggestions shown on the Transactor (reference) page}
+    \label{fig:view-reference-suggestions}
+\end{figure}
+
+The wizard was designed to streamline and speed up this process as well as making it easier for the user to follow. Each unmapped transactor is displayed in turn, starting with the one with the most transactions (encouraging the user to map the ones they shop at more often first). On each step, the user can; follow the suggestions, manually map the reference to an existing transactor, create a new transactor or ignore the reference for now. A step-by-step view of this process is shown in section \ref{subsection:suggestion-wizard-walkthrough}.
+
+During the process feedback is displayed to the user using notifications that appear over the wizard and are coloured according to validation style convention, with red warning of an error and green confirming success (Fig. \ref{suggestion-notification}). 
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{implementation/suggestion-notification}
+    \caption{Notifications shown during the suggestion wizard}
+    \label{fig:suggestion-notification}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{implementation/suggestion-wizard-activity}
+    \caption{Activity diagram for mapping transactors using the suggestion wizard}
+    \label{fig:suggestion-wizard-activity}
+    
+    \begin{comment}
+(start)->(Map Transactor)-><a>->(end)
+<a>->(Map Transactor)
+    \end{comment}
+\end{figure}
+
+By following the wizard users are able to quickly map the majority of their transactions, following a more simple activty diagram (Fig. \ref{suggestion-wizard-activity}.
 
 \section{Prediction}
 \plan{All the steps that were needed for the prediction}
