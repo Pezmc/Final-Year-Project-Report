@@ -180,7 +180,7 @@ else
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.70\textwidth]{implementation/dateformat-prompt}
-    \caption{Prompt UI when the application is unable to decide on the upload's date format}
+    \caption{UI Prompt when the application is unable to decide an upload's date format}
     \label{fig:dateformat-prompt}
 \end{figure}
 
@@ -189,7 +189,13 @@ The implemented the mapping architecture outlined in the design, the bulk of the
 % 
 The method performs three key actions, tidying the string, removing common notation added by banking institutions and checking the database for known user and global transactors, otherwise creating a new one.
 % 
-To avoid unnecessary duplication in the mappings table the \gls{transactor} names are normalised before checking for an existing name, this normalisation was added to combat the various different ways which banks store the transactor name after testing found that transactor names often include modifications including: padding with spaces, replacing spaces with underscores/tabs, or including non alphanumeric letters); some examples are shown in Table \ref{table:cleaningstrings}.
+To avoid unnecessary duplication in the mappings table the \gls{transactor} names are normalised before checking for an existing name, this normalisation was added to combat the various different ways which banks store the transactor names which were discovered during testing. The modifications included: padding with spaces, replacing spaces with underscores/tabs, or including non alphanumeric letters; some examples are shown in Table \ref{table:cleaningstrings}.
+%
+Having normalised the input, the next step was to remove any numeric identifiers which had been added and move that detail to another field. Examples of such identifiers included store id's for shops with multiple outlets and account numbers for transfers between accounts, if this detail wasn't removed a separate mapping would be created for transactions referencing the same entity, leading to unnecessary duplication. The identifiers were removed using a regex, expressed in Fig. \ref{fig:regex-transactor} which only captures numbers found at the end of the string requiring at least two digits, these additional constraints were added to preserve \gls{transactors} with numbers in their name, such as \inlinetext$H3G$ and \inlinetext$SUPERMERCADO 3$.
+%
+The final step checks for existing \glslink{globaltransactor}{GlobalMapping} or \glslink{usertransactor}{UserMapping} objects in the database and if found associates that mapping with this transaction. If neither mapping's are found a new \glslink{usertransactor}{UserMapping} object is created, persisted and associated with the transaction.
+%
+The full code for the `setTransactor` method is shown in Fig. \ref{fig:settransactor}.
 
 \lstset{language=textwithspaces,style=showspaces}
 \begin{table}[h]
@@ -202,7 +208,8 @@ Raw Transactor Name & Occurrences \\
 \inlinetext$SACAT MARKS    AND$     & 33         \\
 \inlinetext$SACAT MARKS  AND$    & 16         \\
 \inlinetext$WILKINSON $          & 22         \\
-\inlinetext$WILKINSON$           & 8         
+\inlinetext$WILKINSON$           & 8  
+\inlinetext$TO A/C 00000000$\footnote{Account number removed} & 2  
 \end{tabular}
 \caption{Examples of the raw transactor names found on uploaded statements}
 \label{table:cleaningstrings}
@@ -215,16 +222,14 @@ Raw Transactor Name & Occurrences \\
     \label{fig:regex-transactor}
 \end{figure}
 
-\lstset{style=phpcolor}
+\begin{figure}
+\lstinputlisting[style=phpcolor]{code/setTransactorMethod.php}
 \begin{lstlisting}[float,floatplacement=H]
 /**
  * Checks for an existing transactor, creating a new one if not
  * @var $name The raw transactor string
  */
 public function setTransactor($name) {
-	
-	$currentUser = pegContext::GetInstance()->getUserSession()->getUser();
-	
 	// Trim off extra whitespace
 	$name = trim($name);
 	
@@ -239,7 +244,7 @@ public function setTransactor($name) {
 	
 	// If last 2+ characters are numbers and at least 2+ letters before that were letters or spaces
 	$matches = array();
-	if(preg_match('#(?:[A-z]|\s){2,}(?:[\s]+)?(\d{2,}))$#', $name, $matches, PREG_OFFSET_CAPTURE)) {
+	if(preg_match('#(?:[A-z]|\s){2,}(?:[\s]+)?(\d{2,})$#', $name, $matches, PREG_OFFSET_CAPTURE)) {
 		if($matches[1][0]) {
 			$this->setNumber($matches[1][0]);
 			$name = trim(substr($name, 0, $matches[1][1]));
@@ -248,27 +253,28 @@ public function setTransactor($name) {
 
 	// Existing global transactor mapping?
 	$globalTransactorMapping = GlobalTransactorMappingQuery::findOneByTransactorName($name);
-	if($globalTransactorMapping) {
-		return $this->setGlobalTransactorMapping($globalTransactorMapping);
+	$foundGlobalMapping = (boolean) $globalTransactorMapping;
+	if($foundGlobalMapping) {
+		$this->setGlobalTransactorMapping($globalTransactorMapping);
 	}
+	
 	// Create a new user mapping and persist it
-	else {
-		$userMapping = UserTransactorMappingQuery::findOneByTransactorNameAndUser($name, $currentUser);
+	$currentUser = pegContext::GetInstance()->getUserSession()->getUser();
+	$userMapping = UserTransactorMappingQuery::findOneByTransactorNameAndUser($name, $currentUser);
 		
-		// No existing mapping
-		if(empty($userMapping) && !empty($name)) {	
-			$userMapping = new UserTransactorMapping();
-			$userMapping->setName($name);
-			$userMapping->setUser($currentUser);
-			$userMapping->save();
-		}
-		
-		return $this->setUserTransactorMapping($userMapping);
+	if(empty($userMapping) && !empty($name) && !$foundGlobalMapping) {	
+		$userMapping = new UserTransactorMapping();
+		$userMapping->setName($name);
+		$userMapping->setUser($currentUser);
+		$userMapping->save();
 	}
+	
+	if($userMapping) $this->setUserTransactorMapping($userMapping);
 }
 \end{lstlisting}
-
-the key part of named entity resolution was how to identify 
+\label{fig:settransactor}
+\caption{PHP Transaction->setTransactor($name) method source code}
+\end{figure}
 
 \subsection{Suggestions}
 
