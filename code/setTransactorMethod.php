@@ -14,7 +14,6 @@ public function setTransactor($name) {
 	$name = trim($name, '-./\ ');
 	
 	// If last 2+ characters are numbers
-	$matches = array();
 	if(preg_match('#(?:[A-z]|\s){2,}(?:[\s]+)?(\d{2,})$#', $name, $matches, PREG_OFFSET_CAPTURE)) {
 		if($matches[1][0]) {
 			$this->setNumber($matches[1][0]);
@@ -23,22 +22,22 @@ public function setTransactor($name) {
 	}
 
 	// Existing global transactor mapping?
-	$globalTransactorMapping = GlobalTransactorMappingQuery::findOneByTransactorName($name);
-	$foundGlobalMapping = (boolean) $globalTransactorMapping;
-	if($foundGlobalMapping) {
-		$this->setGlobalTransactorMapping($globalTransactorMapping);
+	$globalTransactorMap = GlobalTransactorMappingQuery::findOneByTransactorName($name);
+	$foundGlobalMap = (boolean) $globalTransactorMap;
+	if($foundGlobalMap) {
+		$this->setGlobalTransactorMapping($globalTransactorMap);
 	}
 	
 	// Create a new user mapping and persist it
 	$currentUser = $this->getUserSession()->getUser();
-	$userMapping = UserTransactorMappingQuery::findOneByTransactorNameAndUser($name, $currentUser);
+	$userMap = UserTransactorMappingQuery::findOneByTransactorNameAndUser($name, $currentUser);
 		
-	if(empty($userMapping) && !empty($name) && !$foundGlobalMapping) {	
-		$userMapping = new UserTransactorMapping();
-		$userMapping->setName($name);
-		$userMapping->setUser($currentUser);
-		$userMapping->save();
+	if(empty($userMap) && !empty($name) && !$foundGlobalMap) {	
+		$userMap = new UserTransactorMapping();
+		$userMap->setName($name);
+		$userMap->setUser($currentUser);
+		$userMap->save();
 	}
 	
-	if($userMapping) $this->setUserTransactorMapping($userMapping);
+	if($userMap) $this->setUserTransactorMapping($userMap);
 }
