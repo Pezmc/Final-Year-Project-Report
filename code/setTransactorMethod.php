@@ -5,8 +5,6 @@
 public function setTransactor($name) {
 	// Trim off extra whitespace
 	$name = trim($name);
-	
-	// Record the original name
 	$this->setRawTransactor($name);
 	
 	// Tidy the name
@@ -15,7 +13,7 @@ public function setTransactor($name) {
 	$name = preg_replace('#[^\w\s/\\-.]#', '', $name);
 	$name = trim($name, '-./\ ');
 	
-	// If last 2+ characters are numbers and at least 2+ letters before that were letters or spaces
+	// If last 2+ characters are numbers
 	$matches = array();
 	if(preg_match('#(?:[A-z]|\s){2,}(?:[\s]+)?(\d{2,})$#', $name, $matches, PREG_OFFSET_CAPTURE)) {
 		if($matches[1][0]) {
@@ -32,7 +30,7 @@ public function setTransactor($name) {
 	}
 	
 	// Create a new user mapping and persist it
-	$currentUser = pegContext::GetInstance()->getUserSession()->getUser();
+	$currentUser = $this->getUserSession()->getUser();
 	$userMapping = UserTransactorMappingQuery::findOneByTransactorNameAndUser($name, $currentUser);
 		
 	if(empty($userMapping) && !empty($name) && !$foundGlobalMapping) {	
