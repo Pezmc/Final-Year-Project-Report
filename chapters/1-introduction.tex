@@ -17,11 +17,11 @@ This project sets out to build an online application that can be used to manage 
 \section{Motivation}
 There are four main steps when producing and using a budget: recording previous expenses, sorting these into categories, using this historical information to estimate future expenditure, and evaluating the accuracy of predictions based on the new information and adjusting accordingly.
 
-Since the liquidity crisis of 2009 \parencite{gore2010}, budgets have been squeezed and the average persons personal disposable income has fallen significantly, hitting a nine-year low in 2012 \parencite{barnard2012households}. \lorna{doesn't make sense as a new sentence}With experts suggesting that ``Budgets are essential for financial planning'' \parencite{wsj2013budget}, research suggesting that personal budgets lead to a ``positive impact'' on ``mental wellbeing'' \parencite{tlap2013budget} and guides from UCAS, the UoM SU Advice Centre and The Manchester University Crucial Guide encouraging use of budgeting, it is clear that producing a budget is of benefit. \question{Refrences inline, or in a block at the end of the paragraph?} \gavin{References inline}
+Since the liquidity crisis of 2009 \parencite{gore2010}, budgets have been squeezed and the average persons personal disposable income has fallen significantly, hitting a nine-year low in 2012 \parencite{barnard2012households}. Experts suggest that ``Budgets are essential for financial planning'' \parencite{wsj2013budget}, research suggesting that personal budgets lead to a ``positive impact'' on ``mental wellbeing'' \parencite{tlap2013budget} and guides from UCAS, the UoM SU Advice Centre and The Manchester University Crucial Guide encouraging use of budgeting, it is clear that producing a budget is of benefit. \question{Refrences inline, or in a block at the end of the paragraph?} \gavin{References inline}
 
 In an informal survey\footnote{Appendix \ref{app:budgetsurvey}} by the researchers, however, the majority of students questioned did not heed this advice, and were not following a budget. Producing an easier way to manage personal finances and predict future outflow can hopefully reduce the barriers to entry for creating budgets and increase the people using one.
 
-Increasing use of debit cards \parencite{bbc2010debit} means that bank statements contain more and more information about where people spend their money. With access to those bank statements now provided online, \lorna{too many withs}with most UK banks offering the option to export \gls{transaction} history, individual users can collate a database of their personal spending habits.
+Increasing use of debit cards \parencite{bbc2010debit} means that bank statements contain more and more information about where people spend their money. With access to those bank statements now provided online, and most UK banks offering the option to export \gls{transaction} history, individual users can collate a database of their personal spending habits.
 
 The increasing availability of this data, combined with more detailed \gls{transaction} history makes it potentially possible to automate the four main steps of producing a budget, and this is the main objective of the project.
 
@@ -32,19 +32,19 @@ The key objectives of this project can be split into three parts, the management
 \subsection{Statement Management}
 Implement an intuitive way to view and manage personal finances.
 %
-There are several key parts to this, upload\lorna{uploading?} and parsing of \glspl{transaction} from statements downloaded from a bank\lorna{the users bank?}, resolving the \glspl{reference} found on the statement to the real world business they represent and categorising the individual \glspl{transaction} to make them easier to understand. \question{Is it clear what categorising is?} \gavin{yes}
+There are several key parts to this, upload and parsing of \glspl{transaction} from statements downloaded from the users bank, resolving the \glspl{reference} found on the statement to the real world business they represent and categorising the individual \glspl{transaction} to make them easier to understand. \question{Is it clear what categorising is?} \gavin{yes}
     
 \subsection{Prediction}
-Accurately predicting the future \glspl{transaction} that a user will be based on their \glspl{transaction} history.\lorna{accurately predicting future transactions that a user will make based on their transaction history}
+Accurately predicting future \glspl{transaction} that a user will make be based on their \glspl{transaction} history.
 %
 The prediction should be made using a model that is fitted to each users individual spending patterns, and is evaluated in order to improve the model.
 %
 The application will need to predict whether or not spending will occur and how much money will be spent.
 
 \subsection{Security}
-The project should be secure and uphold the high levels of expectation from the users uploading their personal information.\lorna{i dont think this sentence makes sense}
+The project should be secure and uphold the high security expectations of users uploading their personal information.
 %
-The application will deal with information of a sensitive nature, \lorna{therefore}strong security techniques are of high importance to ensure no loss of personally identifiable information. 
+The application will deal with information of a sensitive nature, therefore strong security techniques are of high importance to ensure no loss of personally identifiable information. 
 % 
 The project should take this into account, considering possible attack vectors and taking steps to mitigate those attacks.\question{What tense should this be in? The project took or should take} \gavin{Either, be consistent}
 
