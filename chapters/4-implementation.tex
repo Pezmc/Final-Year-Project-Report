@@ -53,16 +53,16 @@ Bootstrap - framework for CSS development that provides grid and stuff
 
 jQuery - javascript development framework that abstracts differences in browser behaviour and provides shorthands to common tasks such as ajax requests
 
-Pines Nofity - alerts
+
 
 Chosen - javascript libray to make dropdown boxes better
 
 Highcharts - charting library for the UI
 
-\section{Statement Management}
+\section[Statements]{Statement Management}
 
 \subsection{Upload}
-OFX is an XML like format called SGML. PHP has inbuilt libraries for parsing XML called SimpleXML simplexml\_load\_string loads an XML file from a string. To parse the OFX, PHP attempts to parse it as an XML file and captures any exceptions. If exeptions are found it attempts to convert the SGML XML so it can be pased by PHP as per 
+OFX is an XML like format called SGML. PHP has inbuilt libraries for parsing XML called SimpleXML simplexml\_load\_string loads an XML file from a string. To parse the OFX, PHP attempts to parse it as an XML file and captures any exceptions. If exeptions are found it attempts to convert the SGML XML so it can be pased by PHP as per \todo{This needs completing}
 
 %http://stackoverflow.com/questions/15735330/how-to-parse-a-ofx-version-1-0-2-file-in-php and http://www.hanselman.com/blog/PostprocessingAutoClosedSGMLTagsWithTheSGMLReader.aspx
 
@@ -70,6 +70,7 @@ OFX is an XML like format called SGML. PHP has inbuilt libraries for parsing XML
 
 For each line of the SGML it trims whitespace including (x,y,z), converts the charset ot UTF-8 so it's valid in PHP and if no closing tag is found, appends a closing tag
 
+\begin{figure}
 \lstset{style=phpcolor}
 \begin{lstlisting}
 foreach(preg_split("/((\r?\n)|(\r\n?))/", $this->OFXContent) as $line){
@@ -87,6 +88,8 @@ foreach(preg_split("/((\r?\n)|(\r\n?))/", $this->OFXContent) as $line){
         	$buffer .= $line ."\n";
 }
 \end{lstlisting}
+\caption{Converting SGML to XML}
+\end{figure}
 
 Having parsed the SGML into objects it can just be navigated following the specification and converted to arrays of information for each transaction, refered to as movements. These movements look like XYZ; and can then be convered into the Transaction objects most of the fields are handled automatically but dates need to be handled specifically.
 
@@ -107,42 +110,40 @@ M                  & Memo           \\
 \label{table:qiffields}
 \end{table}
 
-In a similar manor to parsing the OFX files, the application loops though all the lines found in the file, switching on the identifier and sorting the information into an array representing that movement. 
+In a similar manner to parsing the OFX files, the application loops though all the lines found in the file, switching on the identifier and sorting the information into an array representing that movement. 
 
+\begin{figure}
 \lstset{style=phpcolor}
-\begin{lstlisting}[float,floatplacement=H]
-
-// QIF line identifier
+\begin{lstlisting}
 $id = substr($line, 0, 1);
-
-// Rest of the line
-$content = trim(substr($line, 1, strlen($line)));
+$content = trim(substr($line, 1));
 
 switch ($id) {
-	// End of entry
-	case '^':
-		// Completed transaction append to our list and reset
+	case '^': // End of entry
 		$this->movements[] = $newMovement;
 		$newMovement = array();
 		break;
 		
-	// Amount
-	case 'T':
+	case 'T': 	// Amount
 		$newMovement["value"] = floatval(preg_replace("/[^0-9.-]/", "", $content));
 		break;
 		
-	// Date
-	case 'D':
+	case 'D': 	// Date
 		$newMovement["date"] = $content;
 		break;
 		
 	// etc ...
 \end{lstlisting}
+\caption{Parsing QIF transactions using the line identifier}
+\end{figure}
 
-As outlined in section \ref{subsection:upload} the conversion from the array to a Transaction object is slightly more involved due to unknown date format. To implement this in PHP, before begining the conversion, all movements are tested against two regular expressions (regex), representing the possible formats of the dates, which are visualised as graphs in Fig. \ref{fig:regex-dmy} and \ref{fig:regex-mdy}. 
+As outlined in section \ref{subsection:upload} the conversion from the array to a Transaction object is slightly more involved due to unknown date format. To implement this in PHP, before beginning the conversion, all movements are tested against two regular expressions (regex), representing the possible formats of the dates, which are visualised as graphs in Fig. \ref{fig:regex-dmy} and \ref{fig:regex-mdy}. 
+%
+Having considered all the movements found in the file, the application has either decided on one of the date formats or prompts the user to decide the appropriate format, as seen in Fig. \ref{fig:dateformat-prompt}.
 
+\begin{figure}
 \lstset{style=phpcolor}
-\begin{lstlisting}[float,floatplacement=H]
+\begin{lstlisting}
 $dmy = true;
 $mdy = true;
 foreach($this->getMovements() as $movement)
@@ -152,6 +153,8 @@ foreach($this->getMovements() as $movement)
 	if(!preg_match('#(0[1-9]|1[012])[-/](0[1-9]|[12][0-9]|3[01])[-/](19|20|21)?\d\d#', $date))
 		$mdy = false;
 \end{lstlisting}
+\caption{Identifying the date format using regular expressions}
+\end{figure}
 
 \begin{figure}[h]
     \centering
@@ -166,16 +169,6 @@ foreach($this->getMovements() as $movement)
     \caption[Regular expression used to match m-d-Y]{Railroad diagram of the regex used to match format m-d-Y}
     \label{fig:regex-mdy}
 \end{figure}
-
-Having considered all the movements found in the file, the application has either decided on one of the date formats or prompts the user to decide the appropriate format, as seen in Fig. \ref{fig:dateformat-prompt}.
-
-\lstset{style=phpcolor}
-\begin{lstlisting}[float,floatplacement=H]
-if($dmy && $mdy || !$dmy && !$mdy)
-    // ... prompt the user
-else
-    // ... continue the conversion using the detected month format
-\end{lstlisting}
 
 \begin{figure}[h]
     \centering
@@ -227,7 +220,7 @@ The suggestion wizard (Fig \ref{fig:suggestion-wizard}) was added to the project
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=\textwidth]{implementation/suggestion-wizard}
+    \includegraphics[width=0.75\textwidth]{implementation/suggestion-wizard}
     \caption[Suggestion wizard UI]{Suggestion wizard UI\protect\footnotemark}
     \label{fig:suggestion-wizard}
 \end{figure}
@@ -247,7 +240,7 @@ The suggestion wizard (Fig \ref{fig:suggestion-wizard}) was added to the project
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=\textwidth]{implementation/view-reference-suggestions}
+    \includegraphics[width=0.75\textwidth]{implementation/view-reference-suggestions}
     \caption{Suggestions shown on the Transactor (reference) page}
     \label{fig:view-reference-suggestions}
 \end{figure}
@@ -255,10 +248,12 @@ The suggestion wizard (Fig \ref{fig:suggestion-wizard}) was added to the project
 The wizard was designed to streamline and speed up this process as well as making it easier for the user to follow. Each unmapped transactor is displayed in turn, starting with the one with the most transactions (encouraging the user to map the ones they shop at more often first). On each step, the user can; follow the suggestions, manually map the reference to an existing transactor, create a new transactor or ignore the reference for now. A step-by-step view of this process is shown in section \ref{subsection:suggestion-wizard-walkthrough}.
 
 During the process feedback is displayed to the user using notifications that appear over the wizard and are coloured according to validation style convention, with red warning of an error and green confirming success (Fig. \ref{fig:suggestion-notification}). 
+%
+The notifications themselves were implemented using the PNofity javascript library for jQuery which provides an API for managing alerts send to the user. PNotify was chosen as it had native support for bootstrap styles, which were already being used for the projects UI, and it was open source licensed under the GPL\footnote{GNU General Public License \parencite{gnu2007license}} \parencite{huber2014potify}.
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=\textwidth]{implementation/suggestion-notification}
+    \includegraphics[width=0.75\textwidth]{implementation/suggestion-notification}
     \caption{Notifications shown during the suggestion wizard}
     \label{fig:suggestion-notification}
 \end{figure}
@@ -268,7 +263,7 @@ By following the wizard users are able to quickly map the majority of their tran
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.6\textwidth]{implementation/suggestion-wizard-activity}
-    \caption{Activity diagram for mapping transactors using the suggestion wizard}
+    \caption{Mapping transactors using the suggestion wizard activity diagram}
     \label{fig:suggestion-wizard-activity}
     
     \begin{comment}
@@ -277,7 +272,7 @@ By following the wizard users are able to quickly map the majority of their tran
     \end{comment}
 \end{figure}
 
-The wizard itself is powered by Ajax\footnote{Asynchronous JavaScript and XML}, which sends requests to a backend RESTful API which proves access to the unmapped transactors found for the user. The requests and responses are sent as JSON\footnote{JavaScript Object Notation} which is supported natively by both PHP and JavaScript. A GET request to \lstinline{/ajax/transactor/suggestions} returns a collection of unmapped transactors including associated examples which are then added to the UI using JavaScript.
+The wizard is powered by Ajax\footnote{Asynchronous JavaScript and XML}, which sends requests to a backend RESTful API which proves access to the unmapped transactors found for the user. The requests and responses are sent as JSON\footnote{JavaScript Object Notation} which is supported natively by both PHP and JavaScript. A GET request to \lstinline{/ajax/transactor/suggestions} returns a collection of unmapped transactors including associated examples which are then added to the UI using JavaScript.
 %
 Mapping (including following a suggestion) and creating a new transactor are both handled by POST requests to the same API. Mapping sends a request to \lstinline{/ajax/transactor/map} containing the ID of the user mapping and global mapping  and creation sends a request to \lstinline{/ajax/transactor/create} including the user mapping ID to associate with the new transactor. 
 %
@@ -302,21 +297,22 @@ On the backend, all JSON serialisation is handled by implementing the \inlinephp
     \end{comment}
 \end{figure}
 
-The suggestions themselves are made by searching for known global mappings, user mappings, global transactors and user transactors\footnote{In the order of preference} that are similar to the reference name a suggestion is being made for. This is done using the Natural Language Full-Text Search functions provided by MySQL. These functions, including \inlinesql$MATCH$, use a Vector Space Model to rank the relevance of a field relative to the input and signify this relevance using a decimal number, which means it can be treated as a standard field by the database and used to order the results.  \parencite{mysql2014searches}. 
+\subsubsection{The Suggestions} \label{sec:suggestionimplementation}
+The suggestions are made by searching for known global mappings, user mappings, global transactors and user transactors\footnote{In the order of preference} that are similar to the reference name a suggestion is being made for. This is done using the Natural Language Full-Text Search functions provided by MySQL. These functions, including \inlinesql$MATCH$, use a Vector Space Model to rank the relevance of a field relative to the input and signify this relevance using a decimal number, which means it can be treated as a standard field by the database and used to order the results.  \parencite{mysql2014searches}. 
 
 When searching for suggestions the application finds the five most relevant mappings or transactors, according to full text search, loads those objects from the database using the ORM. As the ORM tool uses doesn't have support for full text search a raw SQL query was written that uses PDO's\footnote{PHP Data Objects extension for accessing databases} prepared statements functionality to send the parameters to the database server, avoiding SQL injection. The query for finding global transactor mappings as part of the \inlinephp{GetCloseTransactorMappings} method in the GlobalTransactorMappingPeer class is shown in Fig. \ref{fig:sql-match-query}, where \inlinesql{:identifier} is replaced by the server with the passed parameters.
 
 \begin{figure}
 \centering
-\begin{lstinline}[language=sql]
+\begin{lstlisting}[language=sql]
 SELECT *, MATCH(:nameColumn) AGAINST (:name) AS 'score'
 FROM :tableName
 	WHERE :transactorID IS NOT NULL
 	HAVING `score` > :minScore OR :nameColumn = :name
 ORDER BY `score` DESC
 LIMIT 5
-\end{lstinline}
-\caption{SQL Query for selecting similar mappings or transactors using PDO}
+\end{lstlisting}
+\caption{SQL Query selecting similar mappings or transactors using PDO}
 \label{fig:sql-match-query}
 \end{figure}
 
@@ -373,7 +369,7 @@ The logic for these steps is split into separate classes to improve cohesion and
     \end{comment}
 \end{figure}
 
-In order to build the Markov Chain Model the TransactionMarkovChain object takes an list of Transaction objects and counts the months where a transaction occurs, storing this in an assosiative array. This matrix is read to generate a transition table which represents the amount of time a transaction as transitioned from occurring to not occurring and visa-versa. This transition table can be converted to a transition matrix which represents the probability of such a transition occurring. An example transition table and matrix for a one of purchase are shown in Table \ref{fig:transition-matrix}.
+In order to build the Markov Chain Model the TransactionMarkovChain object takes an list of Transaction objects and counts the months where a transaction occurs, storing this in an associative array. This matrix is read to generate a transition table which represents the amount of time a transaction as transitioned from occurring to not occurring and visa-versa. This transition table can be converted to a transition matrix which represents the probability of such a transition occurring. An example transition table and matrix for a one of purchase are shown in Table \ref{table:transition-matrix}.
 %
 Considering whether or not a transaction occurred in the previous month, a sample is taken from the matrix. For example, if example event occurred last month for the probability of the event occurring next month given that it occurred last month is $0.00$ and so there is a 0\% chance the system will predict the event will occur next month. This process of sampling is repeated up to $10,000$ times for each transaction in under one second and the list of predictions is returned to the Budget class.
 
@@ -399,13 +395,13 @@ Considering whether or not a transaction occurred in the previous month, a sampl
         \caption{Transition matrix for a one off purchase}
     \end{minipage}
     
-    \label{fig:transition-matrix}
+    \label{table:transition-matrix}
     
 \end{table}
 
 Having decided whether or not a transaction will occur the Budget class uses an instance of \inlinephp{TransactionWeightedAverageCalculator} to estimate how much money would be transferred if a transaction occurs. The weighted average calculator takes a list of Transaction objects and returns an associative array containing the weighted average for each transactor. To calculate the weighted averages the calculator first selects the best weighting model for the users spending pattern in the specified category and uses the selected function to calculated the averages for each transactor in the category. \todo{Needs fixing}.
 
-Combining the output of the MCM's and the weighted average calculator the produces the systems expenditure prediction for the considered category, Table \ref{fig:predictions-combined}. This is calculated for each sample taken from the MCM and the results are passed to an instance of the PredictionEvaluator to produce an average and confidence interval, which is ultimately displayed on the UI.
+Combining the output of the MCM's and the weighted average calculator the produces the systems expenditure prediction for the considered category, Table \ref{table:predictions-combined}. This is calculated for each sample taken from the MCM and the results are passed to an instance of the PredictionEvaluator to produce an average and confidence interval, which is ultimately displayed on the UI.
 
 \begin{table}[h]
 \centering
@@ -418,22 +414,148 @@ Argos       & No         & £17                                & £0           \
             &            & \multicolumn{1}{r}{\textbf{Total}} & \textbf{£65}
 \end{tabular}
 
-\label{fig:predictions-combined}
+\label{table:predictions-combined}
 \caption{Combination of the samples from the MCM and the weighted averages}
 \end{table}
 
-\section{Security Considerations}
-\plan{How did I prevent hijacking etc...}
+\section[Security]{Security Considerations}
+The security considerations outlined in section \ref{section:security}, were implemented throughout the project including site-wide SSL, password entropy requirements, password salting and hashing and personal identifiable information encryption. In addition the application implements additional protection against account hijacking and login throttling to reduce the overall effectiveness of brute force attacks. 
 
-\subsection{Hijacking}
-\plan{How was is a model chosen for the user?}
+An overview of the techniques used during login and on every page request is shown in Fig. \ref{fig:login-security} and \ref{fig:page-request-security}.
 
-\subsection{Password Security}
-\plan{How was is a model chosen for the user?}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{implementation/login-security}
+    \caption{Steps performed during a user login}
+    \label{fig:login-security}
+    
+    \begin{comment}
+(start)->[Login Page]->(User Login)-><a>
+<a>->|b|
+<a>->(Count Recent Failed Logins)-><d>
+<d>->(Prevent Login for Threshold Time)->[Login Page]
+<d>->[Login Page]
+|b|->(Create Login Session)->(end)
+|b|->(Record FingerPrint)->(Record Session ID)->(end)
+    \end{comment}
+\end{figure}
 
-\subsection{Database Storage}
-\plan{Database storage}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{implementation/page-request-security}
+    \caption{Steps performed during every page load request}
+    \label{fig:page-request-security}
+    
+    \begin{comment}
+(start)->(Page Request)
+(Page Request)->(Compare FingerPrint)
+(Page Request)->(Redirect to HTTPS Equivalent)->(Compare FingerPrint)
+(Compare FingerPrint)->(Compare User Session ID)
+(Compare FingerPrint)->(Invalidate Session)->[Login Page]
+(Compare User Session ID)->(Invalidate Session)
+(Compare User Session ID)->[Requested Page]->(end)
+    \end{comment}
+\end{figure}
 
-\subsection{Other}
+
+\subsection{Account Hijacking}
+The users session\footnote{Stored server side} identified by the session ID in the users cookie,  includes a fingerprint of the users browser user agent, an additional user session identifier, the last time they performed an action as well as the users ID, these are validated on every page load and if incorrect the session is invalidated, to prevent further use, and the user is logged out.
+
+
+The fingerprint and session identifier provide an additional layer of protection against account hijacking and recording the last action time means that if a user leaves their computer idle or forgets to logout their session cannot be used after a certain amount of time has passed.
+
+The user session identifier is generated each time a user logs in, and stored in their user record. On each page load the recorded identifier is compared to the current one found in the users session, if they don't match the user must have an old session and their session is no longer valid. This prevents use of an old session if the user has logged in elsewhere, such as logging in from another computer or mobile device.
+
+Fingerprinting relies on the user agent string (UAS) which sent in the HTTP headers to the remote server by the users browser and contains information including their current browser version and operating system, example UAS' are shown in Fig. \ref{fig:useragentstring}. It's important to note that although the string can be manipulated using a browser extensions or modifying to string sent in the HTTP header the average user would not be doing this and for the purposed of purposes of fingerprinting the actual value is not of particular importance, as long as it doesn't change value between requests implying the user is logging in from a different device using the same session (as would be seen during account hijacking).
+
+\begin{figure}
+\centering
+\begin{subfigure}[a]{\textwidth}
+\inlinehtml{Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.131 Safari/537.36}
+\caption{Google Chrome running on OS X}
+\label{fig:uasforchrome}
+\end{subfigure}
+
+\begin{subfigure}[b]{\textwidth}
+\inlinehtml{Mozilla/5.0 (iPad; CPU OS 5_1 like Mac OS X; en-us) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9B176 Safari/7534.48.3}
+\caption{ Google Chrome running on OS X}
+\end{subfigure}
+
+\begin{subfigure}[c]{\textwidth}
+\inlinehtml{Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/6.0)}
+\caption{Internet Explorer 10 on Windows 7}
+\end{subfigure}
+
+\begin{subfigure}[d]{\textwidth}
+\inlinehtml{Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:24.0) Gecko/20100101 Firefox/24.0}
+\caption{Firefox 24 on Linux (Ubuntu)}
+\end{subfigure}
+
+\label{fig:useragentstring}
+\caption{Example User Agent String's}
+\end{figure}
+
+The use of browser fingerprinting to improve session security was suggested and evaluated by \Citeauthor{unger2013fingerprinting} who concluded that the technique was successful in preventing various attacks and hijacking attempts, including XSS and passive sniffing . The paper also demonstrated that FireSheep and WhatsApp Sniffer, discussed in sestion \ref{subsection:account-hijacking} are thwarted by fingerprinting \parencite{unger2013fingerprinting}.
+
+The actual fingerprint taken by the project is similar to that suggested in the paper. Consisting of all of the alphabetic strings found in the UAS concatenated and hashed. Only alphabetic strings are used as the likely-hood of a user updating their browser or operating system is high, particularly considering the automatic update feature which is common in many modern browsers \parencite{google2014autoupdate, firefox2014autoupdate}. The code used to build the browsers fingerprint is shown in Fig. \ref{fig:fingerprinting}.
+
+\begin{figure}
+\centering
+\begin{lstlisting}[style=phpcolor]
+$parts = preg_split( '#([^A-z]+)#', $_SERVER['HTTP_USER_AGENT'] );
+$fingerprint = "";
+foreach($parts as $part) {
+	if(strlen($part) > 1 || strlen($fingerprint) < 2)
+		$fingerprint .= $part;
+}
+\end{lstlisting}
+\caption{Generating a browsers fingerprint using the user agent string}
+\label{fig:fingerprinting}
+\end{figure}
+
+In a users browser fingerprint changes, their user session id doesn't match the one in the database or the time since their last action is over the threshold their session is both unset\footnote{Frees all session variables \parencite{php2014sessionunset}} and destroyed\footnote{All server side data associated with the session is deleted \parencite{php2014sessiondesroy}} and their which was used to idenfity the session to the server cookie is written over\footnote{Required to `kill the session altogether' \parencite{php2014sessiondesroy}}. This will cause them to be logged out and redirected to the login page, for convenience the page they were previously on is stored and they will return to it on successfully logging in.
+
+Destroying the session in this way means that even if an attacker had successfully performed a session hijack before the destruction occurred the cookie that was stolen is no longer valid and cannot be used for authentication.
+
+\subsection{Brute Force Attacks}
+
+Login throttling was implemented using a database table containing every failed login, the time of the login attempt and for reference the IP address and user the failed login attempt was for.
+
+If a user enters an incorrect username or password an entry is added to the failed login attempt table and the application checks up how many failed password attempts have occurred in the last threshold period\footnote{Defined in a config file to allow easy modification}, see Fig \ref{fig:getThrottlingWaitSeconds}.
+%
+If the number of attempts is larger than the maximum failed logins per period the user must wait for a few seconds before they can try to login again, that is, all login attempts will fail and the UI will prevent login to avoid users becoming confused.
+
+By enforcing a wait time of only a few seconds  it's likely a normal user would not notice the throttling as they would take a few seconds to login, but an attack would be seriously hampered.
+%
+The throttling is applied across all user accounts and IP addresses to ensure use of a botnet to send a distributed brute force attack is also very impractical \parencite{stackoverflow2013authentication}.
+
+\begin{figure}
+\centering
+\begin{lstlisting}[style=phpcolor]
+public function getThrottlingWaitSeconds() {
+	$throttleSteps = array(60 => 1, 120 => 2, 240 => 3);
+	$throttlePeriodMinutes = $this->getConfig()->getThrottlePeriod();
+	
+	$mostRecent = FailedLoginAttemptPeer::GetMostRecent();		
+	if($mostRecent) {
+		$mostRecentLoginTimestamp = $mostRecent->getUpdatedAt('U');
+		$attemptCount = FailedLoginAttemptPeer::GetCountInLastMinutes($throttlePeriodMinutes);
+		
+		krsort($throttleSteps);
+		foreach($throttleSteps as $attempts => $wait) {
+			if($attemptCount > $attempts) {
+				return time() - $mostRecentLoginTimestamp - $wait;
+			}
+		}
+	}
+	return 0;
+}
+\end{lstlisting}
+\caption{Function that calculates how long a user must wait following a failed login attempt}
+\label{fig:getThrottlingWaitSeconds}
+\end{figure}
+
+In the future the login throttling system could be extended to take into account the average number of logins per day and automatically adjust the throttling thresholds appropriately.
+
 
 
