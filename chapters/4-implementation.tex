@@ -382,7 +382,7 @@ Considering whether or not a transaction occurred in the previous month, a sampl
         Didn't Occur & 10           & 1       \\
         Occurred     & 1            & 0      
         \end{tabular}
-        \caption{Transition table for a one off purchase}
+        \caption{Transition table}
     \end{minipage} 
 
     \begin{minipage}{0.4\linewidth}
@@ -392,9 +392,10 @@ Considering whether or not a transaction occurred in the previous month, a sampl
         Didn't Occur & 0.91         & 0.09       \\
         Occurred     & 1.00         & 0.00     
         \end{tabular}
-        \caption{Transition matrix for a one off purchase}
+        \caption{Transition matrix}
     \end{minipage}
     
+    \caption{A one off purchase}
     \label{table:transition-matrix}
     
 \end{table}
@@ -414,8 +415,8 @@ Argos       & No         & £17                                & £0           \
             &            & \multicolumn{1}{r}{\textbf{Total}} & \textbf{£65}
 \end{tabular}
 
-\label{table:predictions-combined}
 \caption{Combination of the samples from the MCM and the weighted averages}
+\label{table:predictions-combined}
 \end{table}
 
 \section[Security]{Security Considerations}
@@ -491,8 +492,8 @@ Fingerprinting relies on the user agent string (UAS) which sent in the HTTP head
 \caption{Firefox 24 on Linux (Ubuntu)}
 \end{subfigure}
 
-\label{fig:useragentstring}
 \caption{Example User Agent String's}
+\label{fig:useragentstring}
 \end{figure}
 
 The use of browser fingerprinting to improve session security was suggested and evaluated by \Citeauthor{unger2013fingerprinting} who concluded that the technique was successful in preventing various attacks and hijacking attempts, including XSS and passive sniffing . The paper also demonstrated that FireSheep and WhatsApp Sniffer, discussed in sestion \ref{subsection:account-hijacking} are thwarted by fingerprinting \parencite{unger2013fingerprinting}.
