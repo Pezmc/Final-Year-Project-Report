@@ -43,6 +43,16 @@ Implemented in PHP, test was run on a 2.7 Ghz Intel Core i7 with 16Gb of 1600Mhz
 \caption{PHP Transaction->setTransactor(\$name) method source code}
 \end{figure}
 
+\begin{figure}
+\lstset{style=phpcolor}
+\begin{lstlisting}
+if($dmy && $mdy || !$dmy && !$mdy)
+    // ... prompt the user
+else
+    // ... continue conversion using the detected month format
+\end{lstlisting}
+\caption{Whether or not to prompt the user following month format detection}
+\end{figure}
 \chapter{Suggestion Wizard JSON}
 
 The suggestion wizard is powered by AJAX, which makes JSON requests to a RESTful API on the backend, Fig. \ref{fig:json-examples} outlines an example set of communication.
