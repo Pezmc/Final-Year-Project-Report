@@ -7,7 +7,6 @@ This chapter should give essential background information with references to pub
 \end{comment}
 
 As outlined in Chapter \ref{cha:introduction} the project consists of two major parts: a financial management service, which can be used to view historical spending and gain understanding of personal finances; and a forecasting element which predicts how much spending will occur in the future. 
-\question{Include this?} \gavin{yes} \question{Technically it's spending or receiving "transaction" but this becomes very wordy?} \gavin{It's fine}
 
 \section{Statement Management}
 There are existing applications that implement similar features to the money management aims of this project\question{Mention the current "bad" internet banking here?} \gavin{Yes}, most notably Lloyds TSB Money Manager, the first and only personal money management application provided by a UK bank and Mint.com a United States (US) only personal finance service \parencite{lloyds2014moneymanager, mint2014whatismint}.
@@ -40,9 +39,9 @@ A key advantage of the money manager is that Lloyds already have access to their
 \subsection{Mint.com}
 Mint.com offers very similar features to Lloyds but is limited to the US. However, Mint automatically logs into the users online bank account and downloads their statements authenticating with their banking username and password. It's reported that this feature relies on the use of application programming interface's (API) at each bank which Intuit (the company behind Mint) have negotiated access individually, though Intuit have published no information to support or dispute this \cite{stackoverflow2012bankingapi, stackoverflow2012bankingapi2}.
 % 
-Although this feature is clearly useful and saves time for the users, it does make Mint responsible for storing their customers Internet banking passwords and presumably involves fee payments to the banks providing these API's. \question{Should I have more detail on what mint/lloyds do?} \gavin{No}
+Although this feature is clearly useful and saves time for the users, it does make Mint responsible for storing their customers Internet banking passwords and presumably involves fee payments to the banks providing these API's.
 %
-For these reasons it was decided that automatic statement uploading was outside of the budget and scope of this project, however, the project should support manual upload of statements to avoid date entry of users. \question{Does this need backing up?} \gavin{No}
+For these reasons it was decided that automatic statement uploading was outside of the budget and scope of this project, however, the project should support manual upload of statements to avoid date entry of users.
 
 \subsection{Mobile Apps}
 Mobile applications or `apps' as they are commonly known have seen a surge in popularity since the release of smartphones and are a common target for small pieces of software, such as financial organisation \parencite{purcell2011half}.
@@ -61,7 +60,7 @@ Preifer and Carraway demonstrated that Markov Chain Models can be used to model 
 The researchers were to calculate the expected loan to value ratio (LTV) for the customer over the periods, by taking a matrix \lorna{of?}costs and gains associated with a purchase in each period and multiplying that by the probability of a purchase occurring taken from the transition matrix. This gives the expected present value for each period, which can be used to decide when to end a relationship with a customer (preventing the costs).
 %
 They demonstrate the application of Markov Chain Models (MCM) to a larger dataset, calculating the optimal policy for ending relationships with customers depending on varying costs concluding that the use of MCM's is an effective way of making customer relationship decisions. However, this paper assumes the company making predictions already knows how much money a customer will spend during each interaction and is focused around calculating the probability of a spend occurring. An implementation applied to the personal spending space will require a way to predict the value of the future transaction.
-\question{Mention what MCM's are here?} \gavin{Yes, expand on CMC's}
+{Mention what MCM's are here?} \gavin{Yes, expand on CMC's}
 
 \begin{figure}[h]
     \centering
@@ -113,7 +112,7 @@ Smoothing is typically applied to financial market data, for example the value o
 \end{figure}
 \footnotetext{A stock market index of 500 American companies, the US equivalent of the FTSE 500}
 
-These techniques can be applied to a discrete set of numerical time series data, such as personal expenditure over time in order to make an estimate of what the next value in the series will be \parencite{filliben2003nist}. A prediction can be made using the formula in Fig. \ref{fig:weightedmeanforumla}, where $w_{i}$ is the weight and $x_i$ is the value at time period $i$. Simple smoothing is the equivalent of $w_i = 1$, while exponential smoothing is based around a negative exponential law such as $w_i = e^{-n+i}$, both are examples of weighted smoothing and the weights can be decided in different ways depending on what is being predicted. Time periods with a higher weight have a greater affect on the mean, so in order to make a future prediction, the most recent time period would have a higher weight. \question{The chosen implementation details in the design section} \gavin{Not a question}
+These techniques can be applied to a discrete set of numerical time series data, such as personal expenditure over time in order to make an estimate of what the next value in the series will be \parencite{filliben2003nist}. A prediction can be made using the formula in Fig. \ref{fig:weightedmeanforumla}, where $w_{i}$ is the weight and $x_i$ is the value at time period $i$. Simple smoothing is the equivalent of $w_i = 1$, while exponential smoothing is based around a negative exponential law such as $w_i = e^{-n+i}$, both are examples of weighted smoothing and the weights can be decided in different ways depending on what is being predicted. Time periods with a higher weight have a greater affect on the mean, so in order to make a future prediction, the most recent time period would have a higher weight.
 
 \begin{figure}[h]
     \centering
@@ -130,7 +129,7 @@ Smoothing (and therefore prediction) can be extended to take into account trends
 Extending the calculation into double and triple smoothing when estimating a users future outflow was decided as a possible extension for the project. \question{Where to mention this?} 
 
 \section{Security}
-\question{Should I mention the password entropy paper here? Currently in design} \gavin{Yes}
+The project stores peoples personally identifiable information and needs to be backed by strong security standards, before designing the project and as part of the ethics application procedure common web security practice was researched.
 
 \subsection{Account Hijacking} \label{subsection:account-hijacking}
 On the web, information is sent sent between the users web browser and the remote server over HTTP information in plain text and can easily be read using a man-in-the-middle attack. This risk is compounded if accessing the Internet via an an unencrypted WiFi connection\footnote{Common at Coffee Shops and Universities} which would allow anyone in the local area to `sniff' the information by simply scanning for capturing the transmitted packet.
