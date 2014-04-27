@@ -133,7 +133,7 @@ To support this the application stores two sets of mappings and transactions, \g
 \subsection{Suggestions}
 Having mapped \glspl{reference} to entities, the system is able to use this knowledge to make suggestions of appropriate entities for unseen references in some cases to help streamline the naming process for potential users.
 %
-This is performed by taking the list of mappings and finding those with the smallest difference to the unseen reference. Difference can be calculated in several different ways, including the Levenshtein distance which calculates the number of single-character edits to transform between the two strings, implementation details for this project can be found in Section \ref{section:suggestion-implementation} \cite{levenshtein1966binary}.
+This is performed by taking the list of mappings and finding those with the smallest difference to the unseen reference. Difference can be calculated in several different ways, including the Levenshtein distance which calculates the number of single-character edits to transform between the two strings, implementation details for this project can be found in Section \ref{sec:suggestionimplementation} \parencite{levenshtein1966binary}.
 
 \section{Prediction}
 In order to make a prediction of how much money a user will spend and receive in a given period two steps need to be completed, predicting whether or not each individual transaction will occur in a given month and estimating how much money will be involved.
@@ -265,7 +265,7 @@ Assuming the results follow a normal distribution the 95\% confidence interval i
     \label{fig:confidencelevel}
 \end{figure}
 
-\section{Security Considerations}
+\section{Security Considerations} \label{section:security}
 Strong security is expected of this project, the design considers possible attack vectors and takes steps to prevent or reduce the effectiveness of those attacks.
 
 \subsection{Account Hijacking}
@@ -307,8 +307,8 @@ As detailed in section \ref{subsection:databasestorage} security considerations 
 \subsubsection{Passwords}
 Passwords are hashed and salted and different hashing functions were investigated. Traditionally functions such as MD5, SHA1 and SHA256 are used to perform the hashing, however due to advances in modern computer equipment it is possible to generate these at an incredibly fast rate, reducing the time taken to brute force a hash.
 %
-Using a deliberately slow hashing function is designed avoid this problem. Blowfish written by Bruce Schneier is commonly suggested, as it is designed as a computationally expensive operation \parencite{schneier1994description} . This was evaluated with a simple test, calculating as many hashes per possible in one second on the server hosting the project. Table \ref{tab:hashspeed}, shows the results, which found that on average Blowfish took significantly longer to generate each hash\footnote{The code used to perform the test can be found in Appendix \ref{app:hashingtest}}.
-
+Using a deliberately slow hashing function is designed avoid this problem. Blowfish written by Bruce Schneier is commonly suggested, as it is designed as a computationally expensive operation \parencite{schneier1994description} . This was evaluated with a simple test, calculating as many hashes per possible in one second on the server hosting the project. Table \ref{tab:hashingspeed}, shows the results, which found that on average Blowfish took significantly longer to generate each hash\footnote{The code used to perform the test can be found in Appendix \ref{app:hashingtest}}.
+%
 For this reason the project salts all passwords and hashes them using Blowfish.
 
 \begin{table}[h]
@@ -319,7 +319,7 @@ MD5      & \num{2296667} & \num{12923}  & $\pm 8010$   \\
 SHA1     & \num{1869725} & \num{14783}  & $\pm 9162$    \\
 BLOWFISH & 17            & 0            & $\pm 0$                 \\
 \end{tabular}
-\label{tab:hashspeed}
+\label{tab:hashingspeed}
 \caption{Average number of hashes completed per second on a 2.7Ghz i7}
 \end{table}
 
