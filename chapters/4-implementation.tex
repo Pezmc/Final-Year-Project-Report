@@ -6,13 +6,6 @@ The implementation details should be confined to the important, difficult or int
 \chapter{Implementation}
 This section is focused on particularly interesting parts of implementing the design outlined in \autoref{cha:design} and use of external libraries.
 
-\section{Languages}
-As it was decided the project would be a web application\todo{Should probably mention this in design} the user interface was written in HTML \& CSS, with the interactive elements such as the graphs in JavaScript. PHP was used on the service side to process the user requests, render the page and access the database which was implemented using MySQL.
- 
-PHP was selected because the author had extensive experience in the language, it's original intended use was web development and it is well supported. It's intention of web development means it's well coupled with HTML and provides many libraries to handle it, giving the language a significant advantage over languages such as Python and Java which can be adapted for web use. A key disadvantage of PHP is that is it weakly typed which lead to some issues during development where objects were passed into functions expecting another type, weakly typed language have no compile time validation for this mistake. This disadvantage was considered and it was decided the advantages outweighed the disadvantages.
-
-MySQL was selected as the database language because it's well supported by PHP and because it provides Natural Language Searching out of the box, which supports free-text queries and can calculate the relevance of a record in the database to a search term. This is used to power the suggestions section of the website and for user entered searches.
-
 \section[Key Libraries]{Key External Libraries}
 A full list of external libraries and frameworks used by the project can be found in \autoref{app:externallibraries}.
 
@@ -320,19 +313,20 @@ By following the wizard users are able to quickly map the majority of their tran
     \end{comment}
 \end{figure}
 
+\subsubsection{Implementation} \label{subsub:wizard-implementation}
 The wizard is powered by Ajax\footnote{Asynchronous JavaScript and XML}, which sends requests to a backend RESTful API which proves access to the unmapped transactors found for the user. The requests and responses are sent as JSON\footnote{JavaScript Object Notation} which is supported natively by both PHP and JavaScript. A GET request to \lstinline{/ajax/transactor/suggestions} returns a collection of unmapped transactors including associated examples which are then added to the UI using JavaScript.
 %
 Mapping (including following a suggestion) and creating a new transactor are both handled by POST requests to the same API. Mapping sends a request to \lstinline{/ajax/transactor/map} containing the ID of the user mapping and global mapping  and creation sends a request to \lstinline{/ajax/transactor/create} including the user mapping ID to associate with the new transactor. 
 %
 Examples of the JSON communication are shown in \autoref{app:suggestionwizard-api}.
 
-On the backend, all JSON serialisation is handled by implementing the \inlinephp{JsonSerializable} interface on all objects that need to be JSON encoded. This allows the native function \inlinephp{json_encode($object)} to correctly encode the object into JSON using the data returned by the abstract method `jsonSerialize` defined in the interface. The final inheritance diagram for the mapping, transactor and transaction objects is shown in Fig. \ref{fig:mapping-inheritance-diagram}.
+On the backend, all JSON serialisation is handled by implementing the \inlinephp{JsonSerializable} interface on all objects that need to be JSON encoded. This allows the native function \inlinephp{json_encode($object)} to correctly encode the object into JSON using the data returned by the abstract method `jsonSerialize` defined in the interface. The final inheritance diagram for the mapping, transactor and transaction objects is shown in Fig. \ref{fig:mapping-json-diagram}.
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{implementation/json-serializable}
     \caption{Inheritance diagram of JsonSerializable objects}
-    \label{fig:mapping-inheritance-diagram}
+    \label{fig:mapping-json-diagram}
     
     \begin{comment}
 [<<Interface>> JsonSerializable]^-[<<Abstract>> Transactor]
@@ -365,7 +359,7 @@ LIMIT 5
 \label{fig:sql-match-query}
 \end{figure}
 
-\section{Prediction}
+\section{Prediction} \label{section:prediction-implementation}
 The key difficulty of implementing the prediction functionality was designing a data structure that allowed predictions to be read by column or by row in order to generate the table output shown in Fig. \ref{fig:imp-categories-overview}. Ordinarily a multidimensional array or a dictionary of dictionaries would be used, however in this case it must be possible to access the data by subcategory as well as by month or date.
 %
 In order to allow accessing the data by month, category and subcategory as well as being able to generate totals the data structure shown in Fig. \ref{fig:prediction-inheritance-diagram} was used. The TransactionCollection interface defines three methods, \inlinephp{getTotalValue()}, \inlinephp{getTransactions()} and \inlinephp{addTransaction(Transaction)}. By extending this interface each level of the data structure can be treated in exactly the same way and the entire PersonalBudget object can be passed to the template engine with no controller logic or pre-calculation. Transactions are added to the PersonalBudget object and at each layer of the data structure organised into the correct collection automatically. When getting the transactions from any collection, the object calls the get \inlinephp{getTransactions()} method on any sub-collection instances it holds and returns an intersection of the results.
