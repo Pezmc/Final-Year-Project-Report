@@ -15,7 +15,7 @@ Below, an overview of the systems behaviour is given following the standard user
 \label{fig:welcomescreen}
 \end{figure}
 
-Having logged in, the application starts on a welcome screen (Fig. \ref{fig:welcomescreen}} which fills with information over time, for now the system prompts the user to upload a bank statement. The user bar appears at the top of every page\foonote{For clarity both the background and bar are not shown in the following screenshots} which identifies the currently logged in user by name and a avatar pulled using from Gravatar\parencite{gravatar2014avatars}, it provides quick access to the user settings and allows the user to logout.
+Having logged in, the application starts on a welcome screen (Fig. \ref{fig:welcomescreen}) which fills with information over time, for now the system prompts the user to upload a bank statement. The user bar appears at the top of every page\footnote{For clarity both the background and bar are not shown in the following screenshots} which identifies the currently logged in user by name and a avatar pulled using from Gravatar\parencite{gravatar2014avatars}, it provides quick access to the user settings and allows the user to logout.
 
 \begin{figure}
 \centering
@@ -64,11 +64,11 @@ In addition a further piece of information has been added to the page introducti
 \label{fig:upload-duplicate}
 \end{figure}
 
-If the user uploads a file containing no new transactions (all previously uploaded), the confirmation prompt indicates this and it uses the colour yellow to indicate a warning (Fig. \ref{fig:upload-duplicate}}).
+If the user uploads a file containing no new transactions (all previously uploaded), the confirmation prompt indicates this and it uses the colour yellow to indicate a warning (Fig. \ref{fig:upload-duplicate}).
 
 \begin{figure}
 \centering
-\includegraphics{screenshots/walkthrough/welcome-dashboard}
+\includegraphics{screenshots/walkthrough/dashboard-full}
 \caption{Welcome screen following statement uploads}
 \label{fig:welcome-full}
 \end{figure}
@@ -80,7 +80,7 @@ If the user uploads a file containing no new transactions (all previously upload
 \label{fig:piecharthover}
 \end{figure}
 
-On returning to the welcome screen, the dashboard is now full of information\footnote{Fictional information used throught out this walkthrough} (Fig. \fig{fig:welcome-full}). It provides an overview of the average income and outgoings per month, along with an indication of the users `profit' since the first transaction the application knows about. 
+On returning to the welcome screen, the dashboard is now full of information\footnote{Fictional information used throught out this walkthrough} (Fig. \ref{fig:welcome-full}). It provides an overview of the average income and outgoings per month, along with an indication of the users `profit' since the first transaction the application knows about. 
 
 Most notably, the dashboard also includes an interactive pie chart, which gives an indication as to which categories most of their money is spent. On hover the chart gives the actual percentage of the overall expenditure \ref{fig:piecharthover}, and on click opens a page which lists all the transactions in that category.
 
@@ -88,9 +88,63 @@ If the system has suggestions for uncategorised transactors, a notification sugg
 
 \section{Suggestion Wizard}
 \label{subsection:suggestion-wizard-walkthrough}.
-The suggestion wizard steps the user though all unmapped and uncategorised transactors, starting with the one they frequent the most often and prompts them to provide the mapping, either by following a suggestion, creating a new transactor or manually searching for a match.
 
+\begin{figure}
+\centering
+\includegraphics{screenshots/walkthrough/wizard-screen}
+\caption{Suggestion wizard main screen, showing suggestions for a reference to Sainsbury's}
+\label{fig:wizard-screen}
+\end{figure}
 
+The suggestion wizard steps the user though all unmapped and uncategorised references (Fig \ref{fig:wizard-screen}. It starts with the transactor they frequent the most often and prompts them to provide the mapping, either by following a suggestion, creating a new transactor or manually searching for a match.
+
+\begin{figure}
+\centering
+\includegraphics{implementation/suggestion-notification}
+\caption{Notifications following correctly completing a mapping}
+\label{fig:suggestion-complete-notification}
+\end{figure}
+
+Completing the mapping, forwards the user to the next unmapped reference, providing confirmation the new mapping has been created as a notification which disappears after a few seconds \ref{suggestion-complete-notification}, and the process repeats.
+
+\begin{figure}
+\centering
+\includegraphics{screenshots/walkthrough/wizard-create-dropdown}
+\caption{Creating a new Transactor and selecting a category}
+\label{fig:create-new-transactor}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics{screenshots/walkthrough/wizard-create}
+\caption{Selecting a category using the autocomplete feature}
+\label{fig:dropdown-autocomplete}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics{screenshots/walkthrough/wizard-map}
+\caption{Searching for an existing Transactor using autocomplete}
+\label{fig:wizard-map-dropdown}
+\end{figure}
+
+The suggestions wizard went through several iterations of user interface enhancements, designed to make it easier to use.
+%
+For example, when creating a new transactor (Fig. \ref{fig:create-new-transactor}) the system automatically fills in the name field with a pre-formatted version of the reference and the category selection is performed through an upgraded dropdown menu. The dropdown has been upgraded from the standard dropdown found on many websites using client side javascript and provides auto-completion, fuzzy matching, as well as the ability to select a category grouping instead of an exactly category, for example entertainment over Movies \& DVD's (Fig. \ref{fig:dropdown-autocomplete}. A similar dropdown is also used when searching for an existing transactor (Fig. \ref{fig:wizard-map-dropdown}.
+
+After completing the wizard, by mapping of ignoring all the unmapped references, the user is congratulated and a hint is given that they should head to the transaction summary page, which includes their monthly expenditure predictions.
+
+\section{Transaction Overview}
+
+\begin{figure}
+\centering
+\includegraphics{screenshots/walkthrough/statement-view}
+\caption{The statement view}
+\label{fig:statement-view}
+\end{figure}
+
+\section{Statements}
+The application also provides an easy way to view historical spending organised by month (Fig \ref{fig:}. The transactions in each month can be grouped by category, transactor or date to give a more detailed idea of how money is being spent.
 
 \section{Unit Tests}
 \plan{Not sure if this fits here!}
