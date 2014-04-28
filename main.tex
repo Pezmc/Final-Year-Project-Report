@@ -115,7 +115,8 @@
 \lstdefinestyle{phpcolor}{
   language        = php,
   basicstyle      = \footnotesize\ttfamily,
-  keywordstyle    = \color{keyword},
+  keywordstyle    = \bfseries\color{keyword},
+  morekeywords={public, private, function},
   stringstyle     = \color{string},
   identifierstyle = \color{default},
   commentstyle    = \color{comment},
@@ -126,7 +127,8 @@
   breaklines=true,
   upquote=true,
   tabsize=2,
-  showspaces=false
+  showspaces=false,
+  showstringspaces=true
 }
 
 \lstdefinestyle{showspaces}{
