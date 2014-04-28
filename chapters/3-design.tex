@@ -133,7 +133,7 @@ Having mapped \glspl{reference} to entities, the system is able to use this know
 %
 This is performed by taking the list of mappings and finding those with the smallest difference to the unseen reference. Difference can be calculated in several different ways, including the Levenshtein distance which calculates the number of single-character edits to transform between the two strings, implementation details for this project can be found in Section \ref{sec:suggestionimplementation} \parencite{levenshtein1966binary}.
 
-\section{Prediction}
+\section{Prediction} \label{section:prediction-system}
 In order to make a prediction of how much money a user will spend and receive in a given period, two steps need to be completed; predicting whether or not each individual transaction will occur in a given month; and estimating how much money will be involved.
 
 Drawing from the research detailed in \autoref{cha:background}, the system uses a First-order Markov Chain model to decide whether or not transactions will occur, and weighted arithmetic means to predict how much money will be spent.
@@ -336,21 +336,73 @@ In order to mitigate the possibility of XSS the project will need to escape all 
 %
 By escaping all content before displaying it to the user a maliciously crafted piece of text such as \inlinehtml$<script>alert(1);</script>$ would be sent to the users browser as \inlinehtml$&lt;script&gt;alert(1);&lt;/script&gt;$ and not interpreted as a script.
 
-
 \section{Technical Design}
-\question{Do I actually need a technical design section? The plan was to include some class diagrams of the project. Leaving this for now.}
-\gavin{Yes, some detail, ~2 pages}
-\subsection{Object Orientation}
-\plan{Patterns used}
-\subsection{Domain Class}
-\plan{Diagram and list of ALL the objects}
-\subsection{UI Design}
-\plan{Add photos showing the evolution of the UI}
-\subsection{Database Class}
-\plan{Diagram of database}
-\subsection{External Software and Frameworks}
-\plan{What frameworks were used}
-\subsection{Platform}
-\plan{I decided to use a browser based web application instead of a desktop application}
+It was decided that the project would be implemented as a web application. Use of a web application ensures the features of the project can be accessed from anywhere with Internet connectivity and that it is not tied to a particular piece of hardware or operating system.
+
+\section{Language Choice}
+As the project is a web application, the user interface was written in HTML \& CSS, with the interactive elements in JavaScript. PHP was used on the service side to process the user requests, render the page and access the database which was implemented using MySQL.
+ 
+PHP was selected because the author had extensive experience in the language, it's original intended use was web development and it is well supported. It's intention of web development means it's well coupled with HTML and provides many libraries to handle it, giving the language a significant advantage over languages such as Python and Java which can be adapted for web use. A key disadvantage of PHP is that is it weakly typed which lead to some issues during development where objects were passed into functions expecting another type, weakly typed language have no compile time validation for this mistake. This disadvantage was considered and it was decided the advantages outweighed the disadvantages.
+
+MySQL was selected as the database language because it's well supported by PHP and because it provides Natural Language Searching out of the box, which supports free-text queries and can calculate the relevance of a record in the database to a search term. This is used to power the suggestions feature of the website and for user entered searches.
+
+\subsection{Design Patterns}
+The project is implemented using object oriented programming (OOP). OOP is an example of a modular programing, where `Objects' have attributes and methods. In PHP objects are instances of classes, and these classes interact with each other to perform a task.
+
+During both the design and implementation phases the General Responsibility Assignment Software Pattern (GRASP) design principles outlined by \Citeauthor{larman1997applying}  were followed when assigning responsibility to objects within the the application, these principles were designed to encapsulate well tested principles of object-oriented design and can be used to identify `good' software \parencite{larman1997applying}. \todo{Proof read this section}
+
+\subsubsection{High Cohesion}
+Cohesion is a measure of how focused the responsibility of an object is. Every object should have a highly focus purpose and only perform tasks associated with that focus. Ensuring high cohesion throughout the project results in classes are easier to understand, maintain, reuse and adapt as modification are unlikely to affect other parts of the system. High cohesion also lends itself to low coupling, another principle, which assigns responsibility to ensure low dependency between classes, that is a particular component has as little knowledge about other components as possible.
+
+All functionality related to a particular topic has been split into separate classes and in some cases, such as the prediction system, several subclasses.
+
+\subsubsection{Controller}
+The application follows a model-view-controller pattern (MVC), which assigns responsibility of dealing with service events to a controller, encapsulates the business logic in the model and handles the user interface separately in the view. The controller is responsible for receiving the raw web requests, routing them to appropriate part of the application and then returning a rendered page to the user to be viewed in their web browser. Use of the MVC pattern is also an example of the indirection pattern, used to reduce coupling, which uses an intermediate object (the controller) as the interface between two other systems (the view and the model).
+
+In this project, the model was split into several subsections (by functionality) to encapsulate the logic even further and these sub-models handle and manipulate the shared objects in the database. The responsibility of the objects and modules was assigned following the information expert principle, objects which hold the information necessary to complete a task, should be responsible for that task. The view is handled by a templating engine that allows the user interface to be defined in template files, rather than application logic. The output of the models is passed to the view, via the controller, which returns a complete HTML page to send to the user.
+
+\subsubsection{Protected Variations}
+The Protected Variation principle states that elements of the design that are likely to change in the future should be protected from this change by being accessed through an interface. The database access system, which is abstracted from the underlying database server, is an example of  Protected Variation found in this project.
+
+\subsection{Architecture}
+The service layer of the application uses an follows a MVC request pattern, shown in Fig. \ref{fig:mvc-pattern}. A HTTP request sent to the server is handled by routing, passed to the appropriate part of the controller, which interacts with the model before generating the view and returning it to the client. 
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.6\textwidth]{design/basic-mvc}
+    \caption[The MVC Request architecture of the applications service layer]{The MVC Request architecture of the application's service layer \parencite{cakephp2014mvc}}
+    \label{fig:basic-mvc}
+\end{figure}
+
+The Transaction object, shown in Fig. \ref{fig:transactorcoupling}, which represents individual transactions on a users statement is the core of the applications model. It is coupled to the User, Import, Category and Transactor objects. The Import object is associated with an upload of a users statement, and contains a summary of the uploaded files contents including the date range that was found within the file. Transactions are (indirectly) associated with a Transactor, which represents a real world business that money can be sent to or from.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{design/transaction-architecture}
+    \caption{Classes coupled with the Transaction object}
+    \label{fig:transactorcoupling}
+    
+    \begin{comment}
+[Transaction]<>*-0..1[Transactor]
+[Transaction]++*-1[User]
+[Transaction]<>*-1[Import]
+[Transactor]<>*-1[Category]
+[Import]<>*-1[User]
+    \end{comment}
+\end{figure}
+
+A full database schema for the application is shown in \autoref{cha:databaseschema} on page \pageref{cha:databaseschema}, further examples of system architecture are shown in \autoref{subsub:wizard-implementation} and \autoref{section:prediction-implementation}.
+
 \subsection{Project Management}
-\plan{subsection stuff}
+The project was developed in an iterative manner. Key pieces of functionality identified in the planning process were designed, implemented, deployed and tested first. The functionality was then reviewed by potential users, the developer and the project supervisor using lab observations and face-to-face conversations. The results of these discussions were used to decide on the next piece of functionality to implement and to adjust the plan as appropriate, restarting the process. Using an iterative method ensured that the project was build incrementally, starting with the most important features first and that a copy of the application, with the completed stable features was always available for testing and evaluation. \todo{This needs tweaking}.
+
+The project code base was managed using the distributed version control system Git.  GitHub was selected as the host for the Git repository to keep an external backup of the code base and to access it's project management features \parencite{github2014github}.
+%
+Functionality and bug fix requests created during the testing and review phases were managed using the issues system (Fig.  \ref{fig:github-issues}). To start a new iteration, a milestone, containing a subset of the issues listed select by priority, was created, and this milestone was associated with a new git branch. Once the features were complete, the branch merged into the master branch, which contained a stable copy of the project at all times, and automatically deployed to the web server using post commit hooks. After completing the merge, the milestone, and all associated issues were marked complete and the process was repeated.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{design/github-issues}
+    \caption{Enhancement and bug fix requests as issues on GitHub}
+    \label{fig:github-issues}
+\end{figure}
