@@ -7,41 +7,35 @@ The implementation details should be confined to the important, difficult or int
 
 \plan{Limited to programming languages only}
 
-\begin{comment}
-Statement Management 
-Upload
-NamedEntityResolution
-Suggestions ........................ 19
+This section is focused on particularly interesting parts of implementing the design outlined in \autoref{cha:design} or external libraries.
 
-Prediction
-MarkovChain
-WeightedArithmeticMean
-FiveModelSystem
-Confidence
-
-Security Considerations
-AccountHijacking
-PasswordSecurity
-Database Security
-Other
-\end{comment}
-
-This section is focused on particularly interesting or troublesome parts of implementing the design outlined in \ref{cha:design} and any usage of external libraries. As it was decided the project would be a web application\todo{Should probably mention this in design} the user interface was written in HTML \& CSS, with the interactive elements such as the graphs in JavaScript. PHP was chosen as the server side language used to process the user and the database was implemented using MySQL.
-
-PHP was selected as the server side language because the author had extensive experience in the language, it's original intended use was web development and it is well supported. It's intention of web development means it's well coupled with HTML and provides many libraries to handle it, giving the language a significant advantage over languages such as Python and Java which can be adapted for web use. A key disadvantage of PHP is that is it weak typed which lead to some issues during development where objects of the wrong type were passed into functions. This disadvantage was considered and it was decided the advantages outweighed the disadvantages.
-
-The project uses a PHP Framework, written by the author \todo{This doesn't make sense} called pegFramework. Using a framework has several key advantages over writing the whole system.
-
-Frameworks:
-Provide standardised code and file organisation - pegFramework has a well defined code structure, code is organised in a predefined way and split into modules
-MVC - Model View Controller - using the MVC pattern with a framework ensures models (data structures), views (page contnet) and controllers are separate, improving cohesiveness and decreasing coupling.
-Utilities and libraries - frameworks handle all the standard web design code, including routing, security, controllers, rendering the template and caching.
+\section{Languages}
+As it was decided the project would be a web application\todo{Should probably mention this in design} the user interface was written in HTML \& CSS, with the interactive elements such as the graphs in JavaScript. PHP was used on the service side to process the user requests, render the page and access the database which was implemented using MySQL.
+ 
+PHP was selected because the author had extensive experience in the language, it's original intended use was web development and it is well supported. It's intention of web development means it's well coupled with HTML and provides many libraries to handle it, giving the language a significant advantage over languages such as Python and Java which can be adapted for web use. A key disadvantage of PHP is that is it weakly typed which lead to some issues during development where objects were passed into functions expecting another type, weakly typed language have no compile time validation for this mistake. This disadvantage was considered and it was decided the advantages outweighed the disadvantages.
 
 MySQL was selected as the database language because it's well supported by PHP and because it provides Natural Language Searching out of the box, which supports free-text queries and can calculate the relevance of a record in the database to a search term. This is used to power the suggestions section of the website and for user entered searches.
 
-Server Side Libraries:
+\section[Key Libraries]{Key External Libraries}
+A full list of external libraries and frameworks used by the project can be found in \autoref{app:externallibraries}.
 
-Twig - a template engine that takes collections of PHP objects and following a provided .html template build the output sent to the browser. In addition it provides caching of the generated templates and output, leading to significant speed increases for the end user.
+\subsection{Server Side}
+\subsubsection{Framework}
+The project uses a PHP Framework, written by the report author, to handle functionality that is common across different web applications, including request routing, template generation and caching.
+
+Using the framework has several key advantages over writing the whole system from scratch:
+
+\begin{itemize}
+\item[Model View Controller] MVC is enforced ensuring ensures models (data structures), views (page content) and controllers are separate, improving cohesion and decreasing coupling
+\item[Code Structure] Code is structured in a standardised manner, split by functionality and is not executable over the web
+\item[Rapid Code Development] Functionality such as routing, security and caching, that is common between web applications is already implemented
+\item[Vendor Libraries] External libraries supported by the framework can be used without additional code, such as Twig, the template engine
+\end{itemize}
+
+\subsubsection{Twig}
+Twig is a PHP template engine that takes collections of PHP objects and following a provided .html template generated the HTML output that is ultimately sent to the browser. A templating engine was used as PHP is .
+
+In addition it provides caching of the generated templates and output, leading to significant speed increases for the end user.
 
 Propel - an object relational mapping (ORM) library for PHP. Propel takes a database schema defined in XML and generates PHP objects that represent the schema which can be saved to and loaded from the database.
 
