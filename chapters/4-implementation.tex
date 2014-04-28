@@ -98,6 +98,7 @@ QIF is handled in a different manor as there are no native libraries to parse it
 The field types that the project was interested in and parses are shown in Table \ref{table:qiffields}.
 
 \begin{table}[h]
+\centering
 \begin{tabular}{ll}
 D                  & Date           \\
 T                  & Amount         \\
@@ -165,7 +166,7 @@ foreach($this->getMovements() as $movement)
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=\textwidth]{implementation/regex-mdy}
+    \includegraphics[width=0.75\textwidth]{implementation/regex-mdy}
     \caption[Regular expression used to match m-d-Y]{Railroad diagram of the regex used to match format m-d-Y}
     \label{fig:regex-mdy}
 \end{figure}
@@ -263,7 +264,7 @@ By following the wizard users are able to quickly map the majority of their tran
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.6\textwidth]{implementation/suggestion-wizard-activity}
-    \caption{Mapping transactors using the suggestion wizard activity diagram}
+    \caption{Mapping transactors using the suggestion wizard}
     \label{fig:suggestion-wizard-activity}
     
     \begin{comment}
@@ -304,6 +305,7 @@ When searching for suggestions the application finds the five most relevant mapp
 
 \begin{figure}
 \centering
+\lstset{style=phpcolor}
 \begin{lstlisting}[language=sql]
 SELECT *, MATCH(:nameColumn) AGAINST (:name) AS 'score'
 FROM :tableName
@@ -312,7 +314,7 @@ FROM :tableName
 ORDER BY `score` DESC
 LIMIT 5
 \end{lstlisting}
-\caption{SQL Query selecting similar mappings or transactors using PDO}
+\caption{SQL query selecting similar mappings using PDO}
 \label{fig:sql-match-query}
 \end{figure}
 
@@ -324,14 +326,14 @@ In order to allow accessing the data by month, category and subcategory as well 
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.75\textwidth]{implementation/categories-overview-2}
-    \caption{Activity diagram for mapping transactors using the suggestion wizard}
+    \caption{The budget overview screen where predictions are in red}
     \label{fig:imp-categories-overview}
 \end{figure}
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.75\textwidth]{implementation/mapping-inheritance-diagram}
-    \caption{Data structure for storing a Personal Budget by date and (sub)category}
+    \caption{Storing a Personal Budget by date and category}
     \label{fig:prediction-inheritance-diagram}
     
     \begin{comment}
@@ -358,7 +360,7 @@ The logic for these steps is split into separate classes to improve cohesion and
 \begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{implementation/prediction-activity}
-    \caption{System activity diagram when calculating the prediction a given category in a future month}
+    \caption{System activity diagram when making a prediction}
     \label{fig:prediction-activity}
     
     \begin{comment}
@@ -369,35 +371,32 @@ The logic for these steps is split into separate classes to improve cohesion and
     \end{comment}
 \end{figure}
 
-In order to build the Markov Chain Model the TransactionMarkovChain object takes an list of Transaction objects and counts the months where a transaction occurs, storing this in an associative array. This matrix is read to generate a transition table which represents the amount of time a transaction as transitioned from occurring to not occurring and visa-versa. This transition table can be converted to a transition matrix which represents the probability of such a transition occurring. An example transition table and matrix for a one of purchase are shown in Table \ref{table:transition-matrix}.
+In order to build the Markov Chain Model the TransactionMarkovChain object takes an list of Transaction objects and counts the months where a transaction occurs, storing this in an associative array. This matrix is read to generate a transition table which represents the amount of time a transaction as transitioned from occurring to not occurring and visa-versa. This transition table can be converted to a transition matrix which represents the probability of such a transition occurring. An example transition table and matrix for a one of purchase are shown in Table \ref{table:transition-matrix} and \ref{table:transition-table}.
 %
 Considering whether or not a transaction occurred in the previous month, a sample is taken from the matrix. For example, if example event occurred last month for the probability of the event occurring next month given that it occurred last month is $0.00$ and so there is a 0\% chance the system will predict the event will occur next month. This process of sampling is repeated up to $10,000$ times for each transaction in under one second and the list of predictions is returned to the Budget class.
 
+
 \begin{table}[!htb]
+  \centering
+    \begin{tabular}{lll}
+    \#           & Didn't Occur & Occurred \\
+    Didn't Occur & 10           & 1       \\
+    Occurred     & 1            & 0      
+    \end{tabular}
+    \caption{Transition table for a one off purchase}
+    \label{table:transition-table} 
+\end{table}
 
-    \begin{minipage}{0.4\linewidth}
-      \centering
-        \begin{tabular}{lll}
-        \#           & Didn't Occur & Occurred \\
-        Didn't Occur & 10           & 1       \\
-        Occurred     & 1            & 0      
-        \end{tabular}
-        \caption{Transition table}
-    \end{minipage} 
-
-    \begin{minipage}{0.4\linewidth}
-      \centering
-        \begin{tabular}{lll}
-        \#           & Didn't Occur & Occurred \\
-        Didn't Occur & 0.91         & 0.09       \\
-        Occurred     & 1.00         & 0.00     
-        \end{tabular}
-        \caption{Transition matrix}
-    \end{minipage}
-    
-    \caption{A one off purchase}
-    \label{table:transition-matrix}
-    
+\begin{table}[!htb]
+  \centering
+    \begin{tabular}{lll}
+    \#           & Didn't Occur & Occurred \\
+    Didn't Occur & 0.91         & 0.09       \\
+    Occurred     & 1.00         & 0.00     
+    \end{tabular}
+    \caption{Transition matrix for a one off purchase}
+    \ref{table:transition-matrix}
+   
 \end{table}
 
 Having decided whether or not a transaction will occur the Budget class uses an instance of \inlinephp{TransactionWeightedAverageCalculator} to estimate how much money would be transferred if a transaction occurs. The weighted average calculator takes a list of Transaction objects and returns an associative array containing the weighted average for each transactor. To calculate the weighted averages the calculator first selects the best weighting model for the users spending pattern in the specified category and uses the selected function to calculated the averages for each transactor in the category. \todo{Needs fixing}.
@@ -472,23 +471,27 @@ Fingerprinting relies on the user agent string (UAS) which sent in the HTTP head
 \begin{figure}
 \centering
 \begin{subfigure}[a]{\textwidth}
-\inlinehtml{Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.131 Safari/537.36}
+\centering
+\texttt{Mozilla/5.0 (Macintosh; Intel Mac OS X 10\_9\_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.131 Safari/537.36}
 \caption{Google Chrome running on OS X}
 \label{fig:uasforchrome}
 \end{subfigure}
 
 \begin{subfigure}[b]{\textwidth}
-\inlinehtml{Mozilla/5.0 (iPad; CPU OS 5_1 like Mac OS X; en-us) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9B176 Safari/7534.48.3}
+\centering
+\texttt{Mozilla/5.0 (iPad; CPU OS 5\_1 like Mac OS X; en-us) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9B176 Safari/7534.48.3}
 \caption{ Google Chrome running on OS X}
 \end{subfigure}
 
 \begin{subfigure}[c]{\textwidth}
-\inlinehtml{Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/6.0)}
+\centering
+\texttt{Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/6.0)}
 \caption{Internet Explorer 10 on Windows 7}
 \end{subfigure}
 
 \begin{subfigure}[d]{\textwidth}
-\inlinehtml{Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:24.0) Gecko/20100101 Firefox/24.0}
+\centering
+\texttt{Mozilla/5.0 (X11; Ubuntu; Linux x86\_64; rv:24.0) Gecko/20100101 Firefox/24.0}
 \caption{Firefox 24 on Linux (Ubuntu)}
 \end{subfigure}
 
@@ -503,7 +506,7 @@ The actual fingerprint taken by the project is similar to that suggested in the 
 \begin{figure}
 \centering
 \begin{lstlisting}[style=phpcolor]
-$parts = preg_split( '#([^A-z]+)#', $_SERVER['HTTP_USER_AGENT'] );
+$parts = preg_split('#([^A-z]+)#', $_SERVER['HTTP_USER_AGENT']);
 $fingerprint = "";
 foreach($parts as $part) {
 	if(strlen($part) > 1 || strlen($fingerprint) < 2)
@@ -552,7 +555,7 @@ public function getThrottlingWaitSeconds() {
 	return 0;
 }
 \end{lstlisting}
-\caption{Function that calculates how long a user must wait following a failed login attempt}
+\caption{Calculates wait time following a failed login attempt}
 \label{fig:getThrottlingWaitSeconds}
 \end{figure}
 
