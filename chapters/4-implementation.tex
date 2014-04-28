@@ -4,10 +4,11 @@ The implementation details should be confined to the important, difficult or int
 \end{comment}
 
 \chapter{Implementation}
+\label{cha:implementation}
 This section is focused on particularly interesting parts of implementing the design outlined in \autoref{cha:design} and use of external libraries.
 
 \section[Key Libraries]{Key External Libraries}
-A full list of external libraries and frameworks used by the project can be found in \autoref{app:externallibraries}.
+A full list of external libraries and frameworks used by the project can be found in Appendix \autoref{app:externallibraries}.
 
 \subsection{Server Side}
 \subsubsection{Framework}
@@ -15,12 +16,12 @@ The project uses a PHP Framework, written by the report author, to handle functi
 
 Using the framework has several key advantages over writing the whole system from scratch:
 
-\begin{itemize}
+\begin{description}
 \item[Model View Controller] MVC is enforced ensuring ensures models (data structures), views (page content) and controllers are separate, improving cohesion and decreasing coupling
 \item[Code Structure] Code is structured in a standardised manner, split by functionality and is not executable over the web
 \item[Rapid Code Development] Functionality such as routing, security and caching, that is common between web applications is already implemented
 \item[Vendor Libraries] External libraries supported by the framework can be used without additional code, such as Twig, the template engine
-\end{itemize}
+\end{description}
 
 \subsubsection{Twig}
 Twig is a PHP template engine that takes collections of PHP objects and following a provided .html template generated the HTML output that is ultimately sent to the browser. Although PHP itself is by design a template engine, using a dedicated templating engine allows separation of concerns and addresses the shortcomings of PHP as a template language.
@@ -131,9 +132,9 @@ foreach(preg_split("/((\r?\n)|(\r\n?))/", $this->OFXContent) as $line){
 \caption{Converting SGML to XML}
 \end{figure}
 
-Having parsed the SGML into objects it can just be navigated following the specification and converted to arrays of information for each transaction, refered to as movements. These movements look like XYZ; and can then be convered into the Transaction objects most of the fields are handled automatically but dates need to be handled specifically.
+Having parsed the SGML into objects it can just be navigated following the specification and converted to arrays of information for each transaction, referred to as movements. These movements look like XYZ; and can then be converted into the Transaction objects most of the fields are handled automatically but dates need to be handled specifically.
 
-QIF is handled in a different manor as there are no native libraries to parse it's format. As per the Fig. \ref{fig:qifofxformat} shown in section \ref{subsection:upload} shown in  the format is a list of individual movements, with each terminated a \^. Each field associated with an individual movement is identified with a letter, explaining the contents of that line.
+QIF is handled in a different manner as there are no native libraries to parse its format. As per the Fig. \ref{fig:qifofxformat} shown in section \ref{subsection:upload} shown in  the format is a list of individual movements, with each terminated a \^. Each field associated with an individual movement is identified with a letter, explaining the contents of that line.
 % 
 The field types that the project was interested in and parses are shown in Table \ref{table:qiffields}.
 
@@ -219,7 +220,7 @@ foreach($this->getMovements() as $movement) {
 \end{figure}
 
 \subsection{Named Entity Resolution}
-The implemented the mapping architecture outlined in the design, the majority of the named entity resolution is done in the \lstinline{setTransactor} method of the Transaction object, which is called when setting the name of transactor for a each transaction found in the uploaded file.   
+Following the implementation of the mapping architecture outlined in the design, the majority of the named entity resolution is done in the \lstinline{setTransactor} method of the Transaction object, which is called when setting the name of the transactor for a each transaction found in the uploaded file.   
 % 
 The method performs three key actions, tidying the string, removing common notation added by banking institutions and checking the database for known user and global transactors, otherwise creating a new one.
 % 
@@ -412,7 +413,7 @@ The logic for these steps is split into separate classes to improve cohesion and
     \end{comment}
 \end{figure}
 
-In order to build the Markov Chain Model, an instance of, the TransactionMarkovChain class takes an list of Transaction objects and counts the months where a transaction occurs, storing this in an associative array. This matrix is read to generate a transition table which represents the amount of time a transaction as transitioned from occurring to not occurring and visa-versa. This transition table can be converted to a transition matrix which represents the probability of such a transition occurring. An example transition table and matrix for a one of purchase are shown in Table \ref{table:transition-matrix} and \ref{table:transition-table}.
+In order to build the Markov Chain Model, an instance of, the TransactionMarkovChain class takes a list of Transaction objects and counts the months where a transaction occurs, storing this in an associative array. This matrix is read to generate a transition table which represents the amount of time a transaction as transitioned from occurring to not occurring and visa-versa. This transition table can be converted to a transition matrix which represents the probability of such a transition occurring. An example transition table and matrix for a one of purchase are shown in Table \ref{table:transition-matrix} and \ref{table:transition-table}.
 %
 Considering whether or not a transaction occurred in the previous month, a sample is taken from the matrix. For example, if example event occurred last month for the probability of the event occurring next month given that it occurred last month is $0.00$ and so there is a 0\% chance the system will predict the event will occur next month. This process of sampling is repeated up to $10,000$ times for each transaction in under one second and the list of predictions is returned to the Budget class.
 
@@ -500,14 +501,13 @@ An overview of the techniques used during login and on every page request is sho
 
 
 \subsection{Account Hijacking}
-The users session\footnote{Stored server side} identified by the session ID in the users cookie,  includes a fingerprint of the users browser user agent, an additional user session identifier, the last time they performed an action as well as the users ID, these are validated on every page load and if incorrect the session is invalidated, to prevent further use, and the user is logged out.
-
+The users session\footnote{Stored server side} identified by the session ID in the users cookie, includes a fingerprint of the users browser user agent, an additional user session identifier, the last time they performed an action as well as the users ID. These identifiers are validated on every page load and if incorrect the session is invalidated, to prevent further use, and the user is logged out.
 
 The fingerprint and session identifier provide an additional layer of protection against account hijacking and recording the last action time means that if a user leaves their computer idle or forgets to logout their session cannot be used after a certain amount of time has passed.
 
 The user session identifier is generated each time a user logs in, and stored in their user record. On each page load the recorded identifier is compared to the current one found in the users session, if they don't match the user must have an old session and their session is no longer valid. This prevents use of an old session if the user has logged in elsewhere, such as logging in from another computer or mobile device.
 
-Fingerprinting relies on the user agent string (UAS) which sent in the HTTP headers to the remote server by the users browser and contains information including their current browser version and operating system, example UAS' are shown in Fig. \ref{fig:useragentstring}. It's important to note that although the string can be manipulated using a browser extensions or modifying to string sent in the HTTP header the average user would not be doing this and for the purposed of purposes of fingerprinting the actual value is not of particular importance, as long as it doesn't change value between requests implying the user is logging in from a different device using the same session (as would be seen during account hijacking).
+Fingerprinting relies on the user agent string (UAS) which sent in the HTTP headers to the remote server by the users browser and contains information including their current browser version and operating system, example UAS' are shown in Fig. \ref{fig:useragentstring}. It's important to note that although the string can be manipulated using a browser extension or by modifying the string sent in the HTTP header the average user would not be doing this and for the purposes of fingerprinting the actual value is not of particular importance. As long as the fingerprint doesn't change value between requests, implying the user is logging in from a different device using the same session (as would be seen during account hijacking), the user is kept logged in.
 
 \begin{figure}
 \centering
@@ -558,7 +558,7 @@ foreach($parts as $part) {
 \label{fig:fingerprinting}
 \end{figure}
 
-In a users browser fingerprint changes, their user session id doesn't match the one in the database or the time since their last action is over the threshold their session is both unset\footnote{Frees all session variables \parencite{php2014sessionunset}} and destroyed\footnote{All server side data associated with the session is deleted \parencite{php2014sessiondesroy}} and their which was used to idenfity the session to the server cookie is written over\footnote{Required to `kill the session altogether' \parencite{php2014sessiondesroy}}. This will cause them to be logged out and redirected to the login page, for convenience the page they were previously on is stored and they will return to it on successfully logging in.
+If a users browser fingerprint changes, their user session ID doesn't match the one in the database, or the time since their last action is over the threshold, their session is both unset\footnote{Frees all session variables \parencite{php2014sessionunset}} and destroyed\footnote{All server side data associated with the session is deleted \parencite{php2014sessiondesroy}} and their cookie which was used to identify the session to the server is written over\footnote{Required to `kill the session altogether' \parencite{php2014sessiondesroy}}. This will cause them to be logged out and redirected to the login page. For convenience the page they were previously accessing is stored and they will be returned to it after successfully logging in.
 
 Destroying the session in this way means that even if an attacker had successfully performed a session hijack before the destruction occurred the cookie that was stolen is no longer valid and cannot be used for authentication.
 

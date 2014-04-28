@@ -4,6 +4,7 @@ Results that illustrate how the system designed by you works in practice, and ho
 \end{comment}
 
 \chapter[Results]{Results}
+\label{cha:results}
 
 \section{System Walkthrough}
 Below, an overview of the systems behaviour is given following the standard users use case in the form of a walk through. For further exploration of features the application can be found online at \url{https://secure.pezcuckow.com/} where an account can be registered for access.
@@ -19,18 +20,18 @@ Having logged in, the application starts on a welcome screen (Fig. \ref{fig:welc
 
 \begin{figure}
 \centering
-\includegraphics{screenshots/walkthrough/mainmenu}
+\includegraphics[width=0.3\textwidth]{screenshots/walkthrough/mainmenu}
 \caption{Application main menu}
 \label{fig:mainmenu}
 \end{figure}
 
-On the left hand side of the screen is the main menu (Fig. \ref{fig:mainmenu}), which is also displayed on all pages. It indicated the currently open page in orange, in theme with the rest of the website, and on hover with a mouse it highlights the chosen page by inverting the colors to make the selection clear.
+On the left hand side of the screen is the main menu (Fig. \ref{fig:mainmenu}), which is also displayed on all pages. It indicated the currently open page in orange, in theme with the rest of the website, and on hover with a mouse it highlights the chosen page by inverting the colours to make the selection clear.
 
 \subsection{Statement Upload}
 
 \begin{figure}
 \centering
-\includegraphics[width=0.8\textwidth]{screenshots/walkthrough/upload-empty}
+\includegraphics[width=\textwidth]{screenshots/walkthrough/upload-empty}
 \caption{The upload statement screen before any uploads}
 \label{fig:uploadempty}
 \end{figure}
@@ -44,7 +45,7 @@ Following the advice of the welcome page, the user opens the upload screen (Fig.
 \label{fig:upload-selected}
 \end{figure}
 
-After downloading a statement from their, the user uploads the statement by clicks on the select file button and browsing their computer for the file. After confirming their selection the state of the file field changes (Fig. \ref{fig:upload-selected}) to allow checking of the uploaded file and to make it clear one is currently selected. Clicking the primary\footnote{Indicated in orange} upload button uploads the file to the server, which processes it, and refreshes the page.
+After downloading a statement from their account, the user uploads it by clicking on the select file button and browsing their computer for the file. After confirming their selection the state of the file field changes (Fig. \ref{fig:upload-selected}) to allow checking of the uploaded file and to make it clear one is currently selected. Clicking the primary\footnote{Indicated in orange} upload button uploads the file to the server, which processes it, and refreshes the page.
 
 \begin{figure}
 \centering
@@ -53,7 +54,7 @@ After downloading a statement from their, the user uploads the statement by clic
 \label{fig:upload-complete}
 \end{figure}
 
-On the new page (Fig. \ref{fig:upload-complete}), the state of the file upload is indicated above the form, containing a summary of the file uploaded and the uploaded file is highlighted in the recent uploads list, which includes an option to view the transactions uploaded as part of that statement. The highlight color, green, was used to indicate success. 
+On the new page (Fig. \ref{fig:upload-complete}), the state of the file upload is indicated above the form, containing a summary of the file uploaded and the uploaded file is highlighted in the recent uploads list, which includes an option to view the transactions uploaded as part of that statement. The highlight colour, green, was used to indicate success. 
 
 In addition a further piece of information has been added to the page introduction, the most recent transaction the system knows about is marked in bold, to save the user time when selecting a statement to download.
 
@@ -68,35 +69,35 @@ If the user uploads a file containing no new transactions (all previously upload
 
 \begin{figure}
 \centering
-\includegraphics[width=0.8\textwidth]{screenshots/walkthrough/dashboard-full}
-\caption{Welcome screen following statement uploads}
+\includegraphics[width=\textwidth]{screenshots/walkthrough/dashboard-full}
+\caption{Welcome screen following statement uploads, including expenditure per category}
 \label{fig:welcome-full}
 \end{figure}
 
-\begin{figure}
-\centering
-\includegraphics[width=0.8\textwidth]{screenshots/walkthrough/piecharthover}
-\caption{Additional pie chart detail}
-\label{fig:piecharthover}
-\end{figure}
+%\begin{figure}
+%\centering
+%\includegraphics[width=0.8\textwidth]{screenshots/walkthrough/piecharthover}
+%\caption{Additional pie chart detail}
+%\label{fig:piecharthover}
+%\end{figure}
 
 On returning to the welcome screen, the dashboard is now full of information\footnote{Fictional information used throughout out this walkthrough} (Fig. \ref{fig:welcome-full}). It provides an overview of the average income and outgoings per month, along with an indication of the users `profit' since the first transaction the application knows about. 
 
-Most notably, the dashboard also includes an interactive pie chart, which gives an indication as to which categories most of their money is spent. On hover the chart gives the actual percentage of the overall expenditure \ref{fig:piecharthover}, and on click opens a page which lists all the transactions in that category.
+Most notably, the dashboard also includes an interactive pie chart, which gives an indication as to which categories most of their money is spent. On hover the chart gives the actual percentage of the overall expenditure, and on click opens a page which lists all the transactions in that category.
 
 If the system has suggestions for uncategorised transactors, a notification suggesting they visit the category (or suggestion) wizard is shown.
 
 \section{Suggestion Wizard}
-\label{subsection:suggestion-wizard-walkthrough}.
+\label{subsection:suggestion-wizard-walkthrough}
 
 \begin{figure}
 \centering
 \includegraphics[width=0.8\textwidth]{screenshots/walkthrough/wizard-screen}
-\caption[Suggestion wizard main screen]{Suggestion wizard main screen, showing suggestions for a reference to Sainsbury's}
+\caption[Suggestion wizard main screen]{Suggestion wizard main screen, showing suggestions for a reference}
 \label{fig:wizard-screen}
 \end{figure}
 
-The suggestion wizard steps the user though all unmapped and uncategorised references (Fig \ref{fig:wizard-screen}. It starts with the transactor they frequent the most often and prompts them to provide the mapping, either by following a suggestion, creating a new transactor or manually searching for a match.
+The suggestion wizard steps the user though all unmapped and uncategorised references (Fig \ref{fig:wizard-screen}). It starts with the transactor they frequent the most often and prompts them to provide the mapping, either by following a suggestion, creating a new transactor or manually searching for a match.
 
 \begin{figure}
 \centering
@@ -123,14 +124,14 @@ Completing the mapping, forwards the user to the next unmapped reference, provid
 
 \begin{figure}
 \centering
-\includegraphics[width=0.8\textwidth]{screenshots/walkthrough/wizard-map}
+\includegraphics[width=0.5\textwidth]{screenshots/walkthrough/wizard-map}
 \caption{Searching for an existing Transactor using autocomplete}
 \label{fig:wizard-map-dropdown}
 \end{figure}
 
 The suggestions wizard went through several iterations of user interface enhancements, designed to make it easier to use.
 %
-For example, when creating a new transactor (Fig. \ref{fig:create-new-transactor}) the system automatically fills in the name field with a pre-formatted version of the reference and the category selection is performed through an upgraded dropdown menu. The dropdown has been upgraded from the standard dropdown found on many websites using client side javascript and provides auto-completion, fuzzy matching, as well as the ability to select a category grouping instead of an exactly category, for example entertainment over Movies \& DVD's (Fig. \ref{fig:dropdown-autocomplete}. A similar dropdown is also used when searching for an existing transactor (Fig. \ref{fig:wizard-map-dropdown}.
+For example, when creating a new transactor (Fig. \ref{fig:create-new-transactor}) the system automatically fills in the name field with a pre-formatted version of the reference and the category selection is performed through an upgraded dropdown menu. The dropdown has been upgraded from the standard dropdown found on many websites using client side javascript and provides auto-completion, fuzzy matching, as well as the ability to select a category grouping, for example entertainment over Movies \& DVD's (Fig. \ref{fig:dropdown-autocomplete}. A similar dropdown is also used when searching for an existing transactor (Fig. \ref{fig:wizard-map-dropdown}.
 
 After completing the wizard by mapping or ignoring all the unmapped references, the user is congratulated and a hint is given that they should head to the transaction summary page, which includes their monthly expenditure predictions.
 
@@ -222,14 +223,14 @@ The differences depending on the device are highlighted in Figs. \ref{fig:respon
 \centering
 \begin{minipage}{.5\textwidth}
     \centering
-    \includegraphics[width=0.45\textwidth]{screenshots/responsive/ipad-portrait}
+    \includegraphics[width=0.8\textwidth]{screenshots/responsive/ipad-portrait}
     \captionof{figure}{Layout on a tablet in portrait}
     \label{fig:responsive-ipad2}
 \end{minipage}%
 \begin{minipage}{.5\textwidth}
     \centering
     \includegraphics[width=0.5\textwidth]{screenshots/responsive/iphone-portrait}
-    \captionof{figure}{Layout on a smaller smartphone}
+    \captionof{figure}{Layout on a smartphone}
     \label{fig:responsive-iphone}
 \end{minipage}
 \end{figure}

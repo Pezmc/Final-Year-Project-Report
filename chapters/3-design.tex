@@ -40,7 +40,7 @@ To combat this, three steps of resiliency were added to the design of the upload
     \end{comment}
 \end{figure}
 
-Having uploaded the file the system first identifies the filetype by looking inside the file and parsing its contents, ignoring the extension and rejecting the file if it matches neither format.
+Having uploaded the file the system first identifies the file type by looking inside the file and parsing its contents, ignoring the extension and rejecting the file if it matches neither format.
 
 If the file is QIF the parser parses all transactions up front and evaluates the format of the dates. If the dates are found to have the format \lstinline$00-00-0000$ the system needs to decide whether that's DD-MM-YYYY or MM-DD-YYYY, otherwise performing standard date parsing of the string.
 %(\lstinline$\d{1,2}[/-]\d{1,2}[/-]\d{2,4}$ in regular expression)
@@ -142,7 +142,7 @@ Drawing from the research detailed in \autoref{cha:background}, the system uses 
 % The probability of a transaction occurring can be calculated using Bayes' Theorem
 % Probability of spend given that we didn't spend = probability of not spend given spend * probability of spend over probability of not spend.
 
-An easy way to visualise the Markov Chain Models the system is creating is through a directed graph. Two frequent examples are shown in Fig. \ref{fig:transition-monthly} and \ref{fig:transition-one}, taken from participant data, where $0$ represents a transaction not occurring, $1$ is the opposite and the edges are labelled with the probability of transitioning from one to the other. \todo{Overuse of the word occurring}
+An easy way to visualise the Markov Chain Models the system is creating is through a directed graph. Two frequent examples are shown in Fig. \ref{fig:transition-monthly} and \ref{fig:transition-one}, taken from participant data, where $0$ represents a transaction not occurring, $1$ is the opposite and the edges are labelled with the probability of transitioning from one to the other.
 
 \begin{figure}[h]
 \centering
@@ -208,7 +208,7 @@ The weighted average calculation used is shown in Fig. \ref{fig:weighting} where
 \end{figure}
 
 \subsection{Five Model System}
-Using weighted averages is part of the story, the system needs to choose appropriate weights for each transaction and the weights chosen will have a different suitability depending on the spending patterns of the user.
+Using weighted averages is only part of the solution, the system needs to choose appropriate weights for each transaction and the weights chosen will have a different suitability depending on the spending patterns of the user.
 % 
 During initial research on weighted averages, it was observed that due to the variety of spending patterns caused by users different spending habits, there was not a `one fits all' solution to weighting.
 %
@@ -269,7 +269,7 @@ Strong security is expected of this project. The design considers possible attac
 \subsection{Account Hijacking}
 To prevent the security concerns highlighted in section \ref{subsection:account-hijacking} the entire project uses HTTPS, marks cookies as HTTPS only\footnote{Using the Secure attribute}, and redirects users to the HTTPS version if they attempt to access via HTTP. This ensures user data is sent encrypted end to end and cannot be intercepted, preventing access to their authentication details or session cookie.
 %
-In addition cookies are marked at HttpOnly, ensuring access via non-HTTPS methods such as client side javascript is not possible. This means that even if a users browser is infected with a malicious script for example using XSS (see \ref{subsection:securityother}), the contents of the cookie cannot be read.
+In addition cookies are marked as \inlinetext{HttpOnly}, ensuring access via non-HTTPS methods such as client side javascript is not possible. This means that even if a users browser is infected with a malicious script for example using XSS (see \ref{subsection:securityother}), the contents of the cookie cannot be read.
 
 \begin{figure}[h]
     \centering
@@ -287,7 +287,7 @@ In addition cookies are marked at HttpOnly, ensuring access via non-HTTPS method
 
 \subsection{Password Security}
  
-The project uses Shannon's original equation, calculating the probability of guessing each individual character using a formula that takes into account using a larger character set (such as numbers and symbols) \lorna{this sentence is wordy}decreases the likely hood of successfully guessing the next character and rejecting a password if it falls below a predefined entropy.
+The project uses Shannon's original equation, using a formula to calculate the probability of guessing each individual character. The formula takes into account that using a larger character set (such as numbers and symbols) decreases the likely hood of successfully predicting the following character and if it falls below a predefined entropy rejecting the password.
 %
 Enforcing an entropy threshold rather than enforcing a set of restricting `password rules', was preferred as it gives the user more flexibility hopefully avoiding the annoyance of rules and increases the search space of the passwords. A very long alphanumeric password such as `correct horse battery staple' would be just as valid as a short password containing numbers and symbols such as `6?@7a?Y5R='.
 
@@ -305,7 +305,7 @@ As detailed in section \ref{subsection:databasestorage}, security considerations
 \subsubsection{Passwords}
 Passwords are hashed and salted and different hashing functions were investigated. Traditionally functions such as MD5, SHA1 and SHA256 are used to perform the hashing, however due to advances in modern computer equipment it is possible to generate these at an incredibly fast rate, reducing the time taken to brute force a hash.
 %
-Using a deliberately slow hashing function is designed avoid this problem. Blowfish written by Bruce Schneier is commonly suggested, as it is designed as a computationally expensive operation \parencite{schneier1994description} . This was evaluated with a simple test, calculating as many hashes per possible \lorna{per possible?}in one second on the server hosting the project. Table \ref{tab:hashingspeed}, shows the results, which found that on average Blowfish took significantly longer to generate each hash\footnote{The code used to perform the test can be found in Appendix \ref{app:hashingtest}}.
+Using a deliberately slow hashing function is designed avoid this problem. Blowfish written by Bruce Schneier is commonly suggested, as it is designed as a computationally expensive operation \parencite{schneier1994description} . This was evaluated with a simple test, counting the number of hashes completed in one second on the server hosting the project. Table \ref{tab:hashingspeed}, shows the results, which found that, on average, Blowfish took significantly longer to generate each hash\footnote{The code used to perform the test can be found in Appendix \ref{app:hashingtest}}.
 %
 For this reason the project salts all passwords and hashes them using Blowfish.
 
@@ -342,7 +342,7 @@ It was decided that the project would be implemented as a web application. Use o
 \section{Language Choice}
 As the project is a web application, the user interface was written in HTML \& CSS, with the interactive elements in JavaScript. PHP was used on the service side to process the user requests, render the page and access the database which was implemented using MySQL.
  
-PHP was selected because the author had extensive experience in the language, it's original intended use was web development and it is well supported. It's intention of web development means it's well coupled with HTML and provides many libraries to handle it, giving the language a significant advantage over languages such as Python and Java which can be adapted for web use. A key disadvantage of PHP is that is it weakly typed which lead to some issues during development where objects were passed into functions expecting another type, weakly typed language have no compile time validation for this mistake. This disadvantage was considered and it was decided the advantages outweighed the disadvantages.
+PHP was selected because the author had extensive experience in the language, it's original intended use was web development and it is well supported. It's intention of web development means it's well coupled with HTML and provides many libraries to handle it, giving the language a significant advantage over languages such as Python and Java which can be adapted for web use. A key hindrance of PHP is that is it weakly typed which lead to issues during development where objects were passed into functions expecting another object type, weakly typed languages, such as PHP, have no compile-time validation to identity this mistake. 
 
 MySQL was selected as the database language because it's well supported by PHP and because it provides Natural Language Searching out of the box, which supports free-text queries and can calculate the relevance of a record in the database to a search term. This is used to power the suggestions feature of the website and for user entered searches.
 
@@ -362,7 +362,7 @@ The application follows a model-view-controller pattern (MVC), which assigns res
 In this project, the model was split into several subsections (by functionality) to encapsulate the logic even further and these sub-models handle and manipulate the shared objects in the database. The responsibility of the objects and modules was assigned following the information expert principle, objects which hold the information necessary to complete a task, should be responsible for that task. The view is handled by a templating engine that allows the user interface to be defined in template files, rather than application logic. The output of the models is passed to the view, via the controller, which returns a complete HTML page to send to the user.
 
 \subsubsection{Protected Variations}
-The Protected Variation principle states that elements of the design that are likely to change in the future should be protected from this change by being accessed through an interface. The database access system, which is abstracted from the underlying database server, is an example of  Protected Variation found in this project.
+The Protected Variation principle states that elements of the design that are likely to change in the future should be protected from this change by being accessed through an interface. The database access system, which is abstracted from the underlying database server, is an example of Protected Variation found in this project.
 
 \subsection{Architecture}
 The service layer of the application uses an follows a MVC request pattern, shown in Fig. \ref{fig:basic-mvc}. A HTTP request sent to the server is handled by routing, passed to the appropriate part of the controller, which interacts with the model before generating the view and returning it to the client. 
