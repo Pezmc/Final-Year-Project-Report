@@ -3,31 +3,48 @@ Chapter 5: Results
 Results that illustrate how the system designed by you works in practice, and how it is intended to be used, may be presented in this chapter. Screen shots may be useful to illustrate how the software interacts with the user.
 \end{comment}
 
-\begin{comment}
-Chapter 6: Testing and Evaluation
-This chapter should give details of how the system designed and implemented by you was tested. The data and results obtained from this testing whould be presented and consideration be given as to whether or not these results confirm that everything works correctly.
+\chapter[Results]{Results}
 
-The analysis of test results is very important and some assessment of their significance and quality must be given. Likely sources of error and inaccuracy should be mentioned. Use graphs, bar charts and histograms where appropriate, remembering to label all axes and give scales. The analysis is often done badly, thus sacrificing marks.
-\end{comment}
-
-\chapter[Results]{Results and Evaluation}
-
-\plan{Print Screen Step Through of the Main Stuff the Application Does}
-
-\section{System Walk-through}
+\section{System Walkthrough}
 Below, an overview of the systems behaviour is given following the standard users use case in the form of a walk through. For further exploration of features the application can be found online at \url{https://secure.pezcuckow.com/} where an account can be registered for access.
 
 \begin{figure}
 \centering
-\includegraphics{screenshots/dashboard-empty}
+\includegraphics{screenshots/walkthrough/dashboard-empty}
 \caption{Empty welcome screen}
 \label{fig:welcomescreen}
 \end{figure}
 
-Having logged in, the application starts on a welcome screen (Fig. \ref{fig:welcomescreen}} which fills with information over time, for now the system prompts the user to upload a bank statement. The user bar appears at the top of every page which identifies the currently logged in user by name and a avatar pulled using from Gravatar\parencite{gravatar2014avatars}, it provides quick access to the user settings and allows the user to logout.
+Having logged in, the application starts on a welcome screen (Fig. \ref{fig:welcomescreen}} which fills with information over time, for now the system prompts the user to upload a bank statement. The user bar appears at the top of every page\foonote{For clarity it is cropped from most of the following screenshots} which identifies the currently logged in user by name and a avatar pulled using from Gravatar\parencite{gravatar2014avatars}, it provides quick access to the user settings and allows the user to logout.
 
+\begin{figure}
+\centering
+\includegraphics{screenshots/walkthrough/mainmenu}
+\caption{Application main menu}
+\label{fig:welcomescreen}
+\end{figure}
 
+On the left hand side of the screen is the main menu (Fig. \ref{fig:mainmenu}), which is also displayed on all pages. It indicated the currently open page in orange, in theme with the rest of the website, and on hover with a mouse it highlights the chosen page by inverting the colors to make the selection clear.
 
+\begin{figure}
+\centering
+\includegraphics{screenshots/walkthrough/upload-empty}
+\caption{The upload statement screen before any uploads}
+\label{fig:uploadempty}
+\end{figure}
+
+Following the advice of the welcome page, the user opens the upload screen (Fig. \ref{fig:uploadempty}). As this is the first time user has opened this screen an information prompt is shown which explains the purpose of the page and reminds them that the files to upload can usually be found on their current banks Internet banking system.
+
+\begin{figure}
+\centering
+\includegraphics{screenshots/walkthrough/upload-selected}
+\caption{File field, following a file selection}
+\label{fig:upload-selected}
+\end{figure}
+
+After downloading a statement from their, the user uploads the statement by clicks on the select file button and browsing their computer for the file. After confirming their selection the state of the file field changes (Fig. \ref{fig:upload-selected}) to allow checking of the uploaded file and to make it clear one is currently selected.
+
+Clicking the primary\footnote{Indicated in orange} upload button uploads the file to the server, which processes it, and refreshes the page. 
 
 \subsection{Suggestion Wizard}
 \label{subsection:suggestion-wizard-walkthrough}.
