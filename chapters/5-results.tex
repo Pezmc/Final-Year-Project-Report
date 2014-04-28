@@ -80,7 +80,7 @@ If the user uploads a file containing no new transactions (all previously upload
 \label{fig:piecharthover}
 \end{figure}
 
-On returning to the welcome screen, the dashboard is now full of information\footnote{Fictional information used throught out this walkthrough} (Fig. \ref{fig:welcome-full}). It provides an overview of the average income and outgoings per month, along with an indication of the users `profit' since the first transaction the application knows about. 
+On returning to the welcome screen, the dashboard is now full of information\footnote{Fictional information used throughout out this walkthrough} (Fig. \ref{fig:welcome-full}). It provides an overview of the average income and outgoings per month, along with an indication of the users `profit' since the first transaction the application knows about. 
 
 Most notably, the dashboard also includes an interactive pie chart, which gives an indication as to which categories most of their money is spent. On hover the chart gives the actual percentage of the overall expenditure \ref{fig:piecharthover}, and on click opens a page which lists all the transactions in that category.
 
@@ -132,11 +132,30 @@ The suggestions wizard went through several iterations of user interface enhance
 %
 For example, when creating a new transactor (Fig. \ref{fig:create-new-transactor}) the system automatically fills in the name field with a pre-formatted version of the reference and the category selection is performed through an upgraded dropdown menu. The dropdown has been upgraded from the standard dropdown found on many websites using client side javascript and provides auto-completion, fuzzy matching, as well as the ability to select a category grouping instead of an exactly category, for example entertainment over Movies \& DVD's (Fig. \ref{fig:dropdown-autocomplete}. A similar dropdown is also used when searching for an existing transactor (Fig. \ref{fig:wizard-map-dropdown}.
 
-After completing the wizard, by mapping of ignoring all the unmapped references, the user is congratulated and a hint is given that they should head to the transaction summary page, which includes their monthly expenditure predictions.
+After completing the wizard by mapping or ignoring all the unmapped references, the user is congratulated and a hint is given that they should head to the transaction summary page, which includes their monthly expenditure predictions.
 
 \section{Transaction Overview}
 
-\section{Statements}
+\begin{figure}
+\centering
+\includegraphics[width=0.8\textwidth]{screenshots/walkthrough/transaction-overview}
+\caption{The transaction overview screen, which shows expenditure per month and a prediction (in red) for next month}
+\label{fig:transaction-overview}
+\end{figure}
+
+The transaction overview screen shows spending per month in each of the categories and a the prediction for next month made using the machine learning techniques outlined in \autoref{section:prediction-system} (Fig. \ref{fig:transaction-overview}). At the top of the screen a summary of the total income, expenditure and net profit for each month is shown. The rest of the page is split into two sections, representing money coming into and leaving the users account. In the example shown the user hasn't mapped all of their references and so some transactions are listed under uncategorised, a hint is placed at the top of the screen reminder users to visit the category wizard. 
+
+\begin{figure}
+\centering
+\includegraphics[width=0.8\textwidth]{screenshots/walkthrough/transaction-subcategories}
+\caption{The subcategories being used to make up a category in the overview}
+\label{fig:transaction-subcategories}
+\end{figure}
+.png
+
+Clicking on any of the rows in the table reveals the subcategories and their associated values that are being used to produce the row, using an animated `slide-down' effect \ref{fig:transaction-subcategories}. 
+
+\section{Viewing Statements}
 \begin{figure}
 \centering
 \includegraphics[width=0.8\textwidth]{screenshots/walkthrough/statement-view}
@@ -174,28 +193,14 @@ The application also provides an easy way to view historical spending organised 
 \label{fig:view-reference-unmapped}
 \end{figure}
 
-
 A user can also view particular transactor or reference, which includes the references category and a summary of recent transactions (Fig. \ref{fig:view-reference}). If the reference is not yet mapped, options similar to those shown in the suggestions wizard are listed enabling them to map the reference correctly (Fig. \ref{fig:view-reference-unmapped}). 
 
-\section{Unit Tests}
-\plan{Not sure if this fits here!}
-
-\section{Evaluation of the system}
-\plan{How did I check that it was working? Testing with personal data, users trying it and running tests of everything}
-
-\missingfigure{Need figures representing accuracy, error, etc}
-
-\section{User feedback}
-
-% SUPR-Q - http://www.measuringusability.com/suprq.php
-
 \section[Responsive Design]{Responsive Web Design}
-
 A key feature of the application is being able to access it at any time from any device, particularly when taking into account the rapid increase in the use of mobile devices.  Interacting with a website on a smartphone or tablet is not the same as interacting using a computer, due to the smaller screen size and use of touch over a mouse.
 
 Forbes reported that 24\% of their 2013 website visits came from mobiles and 13\% from tablets, down from a total of 15\% in 2012. particularly with the high percentage of website visits coming from mobile devices \parencite{steimle2013responsive}.
 
-In order to ensure the project is accessible from a variety of different devices the core UI uses Responsive Web Design (RWD) to layout the website differently depending on the size of the device to ensure an optimal viewing experience.
+In order to ensure the project is accessible from a variety of different devices the core UI uses Responsive Web Design (RWD) to layout the website differently depending on the screen size of the device to ensure an optimal viewing experience.
 
 The differences depending on the device are highlighted in Figs. \ref{fig:responsive-macbook}-\ref{fig:responsive-iphone}.
 
@@ -213,18 +218,20 @@ The differences depending on the device are highlighted in Figs. \ref{fig:respon
     \label{fig:responsive-ipad}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}
+\centering
+\begin{minipage}{.5\textwidth}
     \centering
-    \includegraphics[width=0.5\textwidth]{screenshots/responsive/ipad-portrait}
-    \caption{Layout on a tablet in portrait}
+    \includegraphics[width=0.45\textwidth]{screenshots/responsive/ipad-portrait}
+    \captionof{figure}{Layout on a tablet in portrait}
     \label{fig:responsive-ipad2}
-\end{figure}
-
-\begin{figure}[h]
+\end{minipage}%
+\begin{minipage}{.5\textwidth}
     \centering
     \includegraphics[width=0.5\textwidth]{screenshots/responsive/iphone-portrait}
-    \caption{Layout on a smaller smartphone}
+    \captionof{figure}{Layout on a smaller smartphone}
     \label{fig:responsive-iphone}
+\end{minipage}
 \end{figure}
 
 %\section{Uploading a Statement}
