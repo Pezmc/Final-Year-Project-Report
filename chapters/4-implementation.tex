@@ -1,13 +1,10 @@
-\chapter{Implementation}
-
 \begin{comment}
 Chapter 4: Implementation
 The implementation details should be confined to the important, difficult or interesting aspects. Large chunks of code should be avoided, and diagrams and tables should be used to present details clearly.
 \end{comment}
 
-\plan{Limited to programming languages only}
-
-This section is focused on particularly interesting parts of implementing the design outlined in \autoref{cha:design} or external libraries.
+\chapter{Implementation}
+This section is focused on particularly interesting parts of implementing the design outlined in \autoref{cha:design} and use of external libraries.
 
 \section{Languages}
 As it was decided the project would be a web application\todo{Should probably mention this in design} the user interface was written in HTML \& CSS, with the interactive elements such as the graphs in JavaScript. PHP was used on the service side to process the user requests, render the page and access the database which was implemented using MySQL.
@@ -76,7 +73,7 @@ Twig was selected over alternative engines as it is both well documented and sup
 
 \begin{table}[h]
 \begin{tabular}{llll}
-\textbf{Library} & \textbf{Time (sec)} & \textbf{Memory (Kb)} & \textbf{Templates rendered per second} \\
+\textbf{Library} & \textbf{Time (sec)} & \textbf{Memory (Kb)} & \textbf{Renders per second} \\
 Twig             & 3                   & 1,190                & 3,333                                  \\
 PHPTAL           & 3.8                 & 2,100                & 2,632                                  \\
 Dwoo             & 6.9                 & 1,870                & 1,449                                  \\
@@ -197,7 +194,7 @@ Having considered all the movements found in the file, the application has eithe
 \begin{lstlisting}
 $dmy = true;
 $mdy = true;
-foreach($this->getMovements() as $movement)
+foreach($this->getMovements() as $movement) {
 	if(!preg_match('#(0[1-9]|[12][0-9]|3[01])[-/](0[1-9]|1[012])[-/](19|20|21)?\d\d#', $date))
 		$dmy = false;
 	
@@ -329,7 +326,7 @@ Mapping (including following a suggestion) and creating a new transactor are bot
 %
 Examples of the JSON communication are shown in Fig. \ref{fig:json-examples}.
 
-On the backend, all JSON serialisation is handled by implementing the \inlinephp{JsonSerializable} interface on all objects that need to be JSON encoded. This allows the native function \inlinephp{json_encode(\$object)} to correctly encode the object into JSON using the data returned by the abstract method `jsonSerialize` defined in the interface. The final inheritance diagram for the mapping, transactor and transaction objects is shown in Fig. \ref{fig:mapping-inheritance-diagram}.
+On the backend, all JSON serialisation is handled by implementing the \inlinephp{JsonSerializable} interface on all objects that need to be JSON encoded. This allows the native function \inlinephp{json_encode($object)} to correctly encode the object into JSON using the data returned by the abstract method `jsonSerialize` defined in the interface. The final inheritance diagram for the mapping, transactor and transaction objects is shown in Fig. \ref{fig:mapping-inheritance-diagram}.
 
 \begin{figure}[h]
     \centering
@@ -371,7 +368,7 @@ LIMIT 5
 \section{Prediction}
 The key difficulty of implementing the prediction functionality was designing a data structure that allowed predictions to be read by column or by row in order to generate the table output shown in Fig. \ref{fig:imp-categories-overview}. Ordinarily a multidimensional array or a dictionary of dictionaries would be used, however in this case it must be possible to access the data by subcategory as well as by month or date.
 %
-In order to allow accessing the data by month, category and subcategory as well as being able to generate totals the data structure shown in Fig. \ref{fig:prediction-inheritance-diagram} was used. The TransactionCollection interface defines three methods, \inlinephp{getTotalValue()}, \inlinephp{getTransactions()} and \inlinephp{addTransaction(Transaction)}. Using this interface means that each level of the data structure can be treated in exactly the same way and has the advantage that the entire PersonalBudget object can be passed to the template engine with no controller logic or pre-calculation. Transactions are added to the PersonalBudget object and at each layer of the data structure organised into the correct collection automatically. When getting the transactions from any collection, the object calls the get \inlinephp{getTransactions()} method on any sub-collection instances it holds and returns an intersection of the results.
+In order to allow accessing the data by month, category and subcategory as well as being able to generate totals the data structure shown in Fig. \ref{fig:prediction-inheritance-diagram} was used. The TransactionCollection interface defines three methods, \inlinephp{getTotalValue()}, \inlinephp{getTransactions()} and \inlinephp{addTransaction(Transaction)}. By extending this interface each level of the data structure can be treated in exactly the same way and the entire PersonalBudget object can be passed to the template engine with no controller logic or pre-calculation. Transactions are added to the PersonalBudget object and at each layer of the data structure organised into the correct collection automatically. When getting the transactions from any collection, the object calls the get \inlinephp{getTransactions()} method on any sub-collection instances it holds and returns an intersection of the results.
 
 \begin{figure}[h]
     \centering
@@ -421,7 +418,7 @@ The logic for these steps is split into separate classes to improve cohesion and
     \end{comment}
 \end{figure}
 
-In order to build the Markov Chain Model the TransactionMarkovChain object takes an list of Transaction objects and counts the months where a transaction occurs, storing this in an associative array. This matrix is read to generate a transition table which represents the amount of time a transaction as transitioned from occurring to not occurring and visa-versa. This transition table can be converted to a transition matrix which represents the probability of such a transition occurring. An example transition table and matrix for a one of purchase are shown in Table \ref{table:transition-matrix} and \ref{table:transition-table}.
+In order to build the Markov Chain Model, an instance of, the TransactionMarkovChain class takes an list of Transaction objects and counts the months where a transaction occurs, storing this in an associative array. This matrix is read to generate a transition table which represents the amount of time a transaction as transitioned from occurring to not occurring and visa-versa. This transition table can be converted to a transition matrix which represents the probability of such a transition occurring. An example transition table and matrix for a one of purchase are shown in Table \ref{table:transition-matrix} and \ref{table:transition-table}.
 %
 Considering whether or not a transaction occurred in the previous month, a sample is taken from the matrix. For example, if example event occurred last month for the probability of the event occurring next month given that it occurred last month is $0.00$ and so there is a 0\% chance the system will predict the event will occur next month. This process of sampling is repeated up to $10,000$ times for each transaction in under one second and the list of predictions is returned to the Budget class.
 
@@ -464,7 +461,7 @@ Argos       & No         & £17                                & £0           \
             &            & \multicolumn{1}{r}{\textbf{Total}} & \textbf{£65}
 \end{tabular}
 
-\caption{Combination of the samples from the MCM and the weighted averages}
+\caption{Combining samples from the MCM and the weighted averages}
 \label{table:predictions-combined}
 \end{table}
 
@@ -556,7 +553,7 @@ The actual fingerprint taken by the project is similar to that suggested in the 
 \begin{figure}
 \centering
 \begin{lstlisting}[style=phpcolor]
-$parts = preg_split('#([^A-z]+)#', $_SERVER['HTTP_USER_AGENT']);
+$parts = preg_split('#[^A-z]+#', $_SERVER['HTTP_USER_AGENT']);
 $fingerprint = "";
 foreach($parts as $part) {
 	if(strlen($part) > 1 || strlen($fingerprint) < 2)
@@ -582,32 +579,6 @@ If the number of attempts is larger than the maximum failed logins per period th
 By enforcing a wait time of only a few seconds  it's likely a normal user would not notice the throttling as they would take a few seconds to login, but an attack would be seriously hampered.
 %
 The throttling is applied across all user accounts and IP addresses to ensure use of a botnet to send a distributed brute force attack is also very impractical \parencite{stackoverflow2013authentication}.
-
-\begin{figure}
-\centering
-\begin{lstlisting}[style=phpcolor]
-public function getThrottlingWaitSeconds() {
-	$throttleSteps = array(60 => 1, 120 => 2, 240 => 3);
-	$throttlePeriodMinutes = $this->getConfig()->getThrottlePeriod();
-	
-	$mostRecent = FailedLoginAttemptPeer::GetMostRecent();		
-	if($mostRecent) {
-		$mostRecentLoginTimestamp = $mostRecent->getUpdatedAt('U');
-		$attemptCount = FailedLoginAttemptPeer::GetCountInLastMinutes($throttlePeriodMinutes);
-		
-		krsort($throttleSteps);
-		foreach($throttleSteps as $attempts => $wait) {
-			if($attemptCount > $attempts) {
-				return time() - $mostRecentLoginTimestamp - $wait;
-			}
-		}
-	}
-	return 0;
-}
-\end{lstlisting}
-\caption{Calculates wait time following a failed login attempt}
-\label{fig:getThrottlingWaitSeconds}
-\end{figure}
 
 In the future the login throttling system could be extended to take into account the average number of logins per day and automatically adjust the throttling thresholds appropriately.
 
