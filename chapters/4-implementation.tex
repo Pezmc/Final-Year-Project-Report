@@ -1,6 +1,6 @@
 \begin{comment}
 Chapter 4: Implementation
-The implementation details should be confined to the important, difficult or interesting aspects. Large chunks of code should be avoided, and diagrams and tables should be used to present details clearly.
+The implementation details should be confined to the important, difficult or interesting aspects. Large chunks of code should be avoided, and diagrams and tables should be used to present details clearly. Other stuff...
 \end{comment}
 
 \chapter{Implementation}
@@ -106,7 +106,7 @@ It's used throughout the website for javascript user interface effects and power
 %
 It was chosen for the project over other JavaScript frameworks as it is; extendable, open-source, , provides method chaining and is supported by large respected companies on the web including Google and Microsoft \parencite{jquery2014jquery}.
 
-\section[Statements]{Statement Management}
+\section[Statement Management]{Statement Management}
 
 \subsection{Upload}
 OFX is an XML like format called SGML. PHP has inbuilt libraries for parsing XML called SimpleXML simplexml\_load\_string loads an XML file from a string. To parse the OFX, PHP attempts to parse it as an XML file and captures any exceptions. If exeptions are found it attempts to convert the SGML XML so it can be pased by PHP as per \todo{This needs completing}
@@ -310,7 +310,7 @@ By following the wizard users are able to quickly map the majority of their tran
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.6\textwidth]{implementation/suggestion-wizard-activity}
+    \includegraphics[width=0.5\textwidth]{implementation/suggestion-wizard-activity}
     \caption{Mapping transactors using the suggestion wizard}
     \label{fig:suggestion-wizard-activity}
     
@@ -324,7 +324,7 @@ The wizard is powered by Ajax\footnote{Asynchronous JavaScript and XML}, which s
 %
 Mapping (including following a suggestion) and creating a new transactor are both handled by POST requests to the same API. Mapping sends a request to \lstinline{/ajax/transactor/map} containing the ID of the user mapping and global mapping  and creation sends a request to \lstinline{/ajax/transactor/create} including the user mapping ID to associate with the new transactor. 
 %
-Examples of the JSON communication are shown in Fig. \ref{fig:json-examples}.
+Examples of the JSON communication are shown in \autoref{app:suggestionwizard-api}.
 
 On the backend, all JSON serialisation is handled by implementing the \inlinephp{JsonSerializable} interface on all objects that need to be JSON encoded. This allows the native function \inlinephp{json_encode($object)} to correctly encode the object into JSON using the data returned by the abstract method `jsonSerialize` defined in the interface. The final inheritance diagram for the mapping, transactor and transaction objects is shown in Fig. \ref{fig:mapping-inheritance-diagram}.
 
