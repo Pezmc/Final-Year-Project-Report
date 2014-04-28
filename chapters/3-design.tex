@@ -365,7 +365,7 @@ In this project, the model was split into several subsections (by functionality)
 The Protected Variation principle states that elements of the design that are likely to change in the future should be protected from this change by being accessed through an interface. The database access system, which is abstracted from the underlying database server, is an example of  Protected Variation found in this project.
 
 \subsection{Architecture}
-The service layer of the application uses an follows a MVC request pattern, shown in Fig. \ref{fig:mvc-pattern}. A HTTP request sent to the server is handled by routing, passed to the appropriate part of the controller, which interacts with the model before generating the view and returning it to the client. 
+The service layer of the application uses an follows a MVC request pattern, shown in Fig. \ref{fig:basic-mvc}. A HTTP request sent to the server is handled by routing, passed to the appropriate part of the controller, which interacts with the model before generating the view and returning it to the client. 
 
 \begin{figure}[h]
     \centering
