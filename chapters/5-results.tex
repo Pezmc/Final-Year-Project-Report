@@ -26,6 +26,8 @@ Having logged in, the application starts on a welcome screen (Fig. \ref{fig:welc
 
 On the left hand side of the screen is the main menu (Fig. \ref{fig:mainmenu}), which is also displayed on all pages. It indicated the currently open page in orange, in theme with the rest of the website, and on hover with a mouse it highlights the chosen page by inverting the colors to make the selection clear.
 
+\subsection{Statement Upload}
+
 \begin{figure}
 \centering
 \includegraphics{screenshots/walkthrough/upload-empty}
@@ -39,9 +41,8 @@ Following the advice of the welcome page, the user opens the upload screen (Fig.
 \centering
 \includegraphics{screenshots/walkthrough/upload-selected}
 \caption{UI update following a file selection}
-\label{fig:upload-selected.png}
+\label{fig:upload-selected}
 \end{figure}
-
 
 After downloading a statement from their, the user uploads the statement by clicks on the select file button and browsing their computer for the file. After confirming their selection the state of the file field changes (Fig. \ref{fig:upload-selected}) to allow checking of the uploaded file and to make it clear one is currently selected. Clicking the primary\footnote{Indicated in orange} upload button uploads the file to the server, which processes it, and refreshes the page.
 
@@ -63,10 +64,33 @@ In addition a further piece of information has been added to the page introducti
 \label{fig:upload-duplicate}
 \end{figure}
 
-If the user uploads a file containing no new transactions (all previously uploaded), the confirmation prompt indicates this and it uses the color yellow to indicate a warning (Fig. \ref{fig:upload-duplicate}}).
+If the user uploads a file containing no new transactions (all previously uploaded), the confirmation prompt indicates this and it uses the colour yellow to indicate a warning (Fig. \ref{fig:upload-duplicate}}).
 
-\subsection{Suggestion Wizard}
+\begin{figure}
+\centering
+\includegraphics{screenshots/walkthrough/welcome-dashboard}
+\caption{Welcome screen following statement uploads}
+\label{fig:welcome-full}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics{screenshots/walkthrough/piecharthover}
+\caption{Additional pie chart detail}
+\label{fig:piecharthover}
+\end{figure}
+
+On returning to the welcome screen, the dashboard is now full of information\footnote{Fictional information used throught out this walkthrough} (Fig. \fig{fig:welcome-full}). It provides an overview of the average income and outgoings per month, along with an indication of the users `profit' since the first transaction the application knows about. 
+
+Most notably, the dashboard also includes an interactive pie chart, which gives an indication as to which categories most of their money is spent. On hover the chart gives the actual percentage of the overall expenditure \ref{fig:piecharthover}, and on click opens a page which lists all the transactions in that category.
+
+If the system has suggestions for uncategorised transactors, a notification suggesting they visit the category (or suggestion) wizard is shown.
+
+\section{Suggestion Wizard}
 \label{subsection:suggestion-wizard-walkthrough}.
+The suggestion wizard steps the user though all unmapped and uncategorised transactors, starting with the one they frequent the most often and prompts them to provide the mapping, either by following a suggestion, creating a new transactor or manually searching for a match.
+
+
 
 \section{Unit Tests}
 \plan{Not sure if this fits here!}
