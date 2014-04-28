@@ -37,7 +37,7 @@ Implemented in PHP, the test was run on a computer with a 2.7 Ghz Intel Core i7,
 
 \chapter{External Libraries} \label{app:externallibraries}
 
-A full list of libraries and frameworks used by pegFinance.
+A full list of libraries and frameworks used by pegFinance are included below, includng licensing information.
 
 \section{Back End}
 \subsubsection{pegFramework}
@@ -57,7 +57,7 @@ CSS pre-processor that extends the CSS, adding additional features and functiona
 %
 The CSS for pegFinance is written in and compiled with Less.
 
-License - Apache 2 License
+License - open-source under the Apache 2 License
 
 \section{Front End}
 \subsubsection{jQuery}
@@ -72,7 +72,7 @@ Front-end framework for faster web development that provides a large collection 
 %
 Used for the UI of pegFinance.
 
-License - MIT license and is copyright 2014 Twitter
+License - MIT license and copyright 2014 Twitter
 
 \subsubsection{Inspiritas}
 A theme for bootstrap, that defines colors and additional elements for use on the page.
@@ -93,7 +93,7 @@ jQuery Pines Notify Plugin. Used to provide event notification in the user inter
 %
 pNotify is used in the suggestion wizard and when mapping a reference to a transactor to update the user on the status of the request
 
-Licence - Triple license under the GPL, LGPL, and MPL.
+Licence - Triple licensed under the GPL, LGPL, and MPL.
 
 \subsubsection{UserVoice JavaScript SDK}
 SDK for access to a user opinion platform, to help provide insight into the userbase and receive feedback.
@@ -156,6 +156,7 @@ public function getThrottlingWaitSeconds() {
 		$mostRecentLoginTimestamp = $mostRecent->getUpdatedAt('U');
 		$attemptCount = FailedLoginAttemptPeer::GetCountInLastMinutes($throttlePeriodMinutes);
 		
+		// ensure the largest is considered first
 		krsort($throttleSteps);
 		foreach($throttleSteps as $attempts => $wait) {
 			if($attemptCount > $attempts) {
@@ -166,46 +167,36 @@ public function getThrottlingWaitSeconds() {
 	return 0;
 }
 \end{lstlisting}
-\caption{Calculates wait time following a failed login attempt}
+\caption{Calculating wait time following a failed login attempt}
 \label{fig:getThrottlingWaitSeconds}
 \end{figure}
 
-\chapter{Suggestion Wizard JSON}
+\chapter{Suggestion Wizard API} \label{app:suggestionwizard-api}
 
-The suggestion wizard is powered by AJAX, which makes JSON requests to a RESTful API on the backend, Fig. \ref{fig:json-examples} outlines an example set of communication.
+The suggestion wizard is powered by AJAX, which makes JSON requests to a RESTful API on the backend, Figs. \ref{fig:json-post-example}, \ref{fig:json-map-example}, \ref{fig:json-create-example}  and \ref{fig:json-response-example} outline an example set of communication with the API, requesting a list of suggestions, mapping a reference to a transactor and creating a new transactor, including an example reponse from the server following a POST request.
 
 \begin{figure}
-    \begin{subfigure}[a]{\textwidth}
-        \lstinputlisting[language=json]{code/suggestions.json}
-        \caption{GET request sent \lstinline{/ajax/transactor/suggestions}}
-    \end{subfigure}
+    \lstinputlisting[language=json]{code/suggestions.json}
+    \caption{GET request sent \lstinline{/ajax/transactor/suggestions}}
+    \label{fig:json-post-example},
 \end{figure}
 
 \begin{figure}
-    \ContinuedFloat
-    \begin{subfigure}[b]{\textwidth}
-        \lstinputlisting[language=json]{code/map.json}
-        \caption{POST request sent to \lstinline{/ajax/transactor/map}}
-    \end{subfigure}
+    \lstinputlisting[language=json]{code/map.json}
+    \caption{POST request sent to \lstinline{/ajax/transactor/map}}
+    \label{fig:json-map-example}
 \end{figure}
 
 \begin{figure}
-    \ContinuedFloat   
-    \begin{subfigure}[c]{\textwidth}
-        \lstinputlisting[language=json]{code/create.json}
-        \caption{POST request sent to \lstinline{/ajax/transactor/create}}
-    \end{subfigure}
+    \lstinputlisting[language=json]{code/create.json}
+    \caption{POST request sent to \lstinline{/ajax/transactor/create}}
+    \label{fig:json-create-example}
 \end{figure}
 
 \begin{figure}
-    \ContinuedFloat  
-    \begin{subfigure}[d]{\textwidth}
-        \lstinputlisting[language=json]{code/reply.json}
-        \caption{Response from API following a successful map or create}
-    \end{subfigure}    
-
-    \caption{JSON encoded requests to the RESTful API}
-    \label{fig:json-examples}
+    \lstinputlisting[language=json]{code/reply.json}
+    \caption{Response from API following a successful map or create}
+    \label{fig:json-response-example}
 \end{figure}
 
 \end{appendices}
