@@ -55,6 +55,9 @@
 
 % URL's
 \usepackage{hyperref}
+%\def\sectionautorefname{Section}
+%\def\chapterautorefname{Chapter}
+
 \usepackage{breakurl}
 
 % Appendix
@@ -129,6 +132,19 @@
   tabsize=2,
   showspaces=false,
   showstringspaces=true
+}
+
+\lstdefinelanguage{twig}
+{
+  language = php,
+  morekeywords={
+    first, for, if
+  },
+  moredelim=[s]{\{\{}{\}\}}
+  sensitive=false,
+  breaklines=true,
+  extendedchars=true,
+  showspaces=false
 }
 
 \lstdefinestyle{showspaces}{
