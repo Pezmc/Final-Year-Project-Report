@@ -1,8 +1,11 @@
-\documentclass[11pt]{report}
+\documentclass[11pt,a4paper]{report}
+\usepackage[scale=0.7,vmarginratio={1:1},heightrounded]{geometry}
 \usepackage[utf8]{inputenc}
 
 % Line
 \newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+% \usepackage{layout}
+
 
 % Tweak texcount
 %TC:group comment 0 0
@@ -68,8 +71,8 @@
 \makeglossaries
 
 % Todos's \todo, \listoftodos, \missingfigure
-\usepackage[textwidth=4cm]{todonotes} % disable option disables notes
-\setlength{\marginparwidth}{4cm} %wider margin
+\usepackage[textwidth=50pt]{todonotes} % disable option disables notes
+\setlength{\marginparwidth}{50pt} %wider margin
 
 % insert ref's
 \newcommand{\insertref}[1]{\todo[inline,color=green!40]{#1}}
