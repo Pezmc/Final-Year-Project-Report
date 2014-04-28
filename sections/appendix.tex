@@ -156,6 +156,7 @@ public function getThrottlingWaitSeconds() {
 		$mostRecentLoginTimestamp = $mostRecent->getUpdatedAt('U');
 		$attemptCount = FailedLoginAttemptPeer::GetCountInLastMinutes($throttlePeriodMinutes);
 		
+		// ensure the largest is considered first
 		krsort($throttleSteps);
 		foreach($throttleSteps as $attempts => $wait) {
 			if($attemptCount > $attempts) {
@@ -166,7 +167,7 @@ public function getThrottlingWaitSeconds() {
 	return 0;
 }
 \end{lstlisting}
-\caption{Calculates wait time following a failed login attempt}
+\caption{Calculating wait time following a failed login attempt}
 \label{fig:getThrottlingWaitSeconds}
 \end{figure}
 
