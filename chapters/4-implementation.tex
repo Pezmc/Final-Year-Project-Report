@@ -33,25 +33,81 @@ Using the framework has several key advantages over writing the whole system fro
 \end{itemize}
 
 \subsubsection{Twig}
-Twig is a PHP template engine that takes collections of PHP objects and following a provided .html template generated the HTML output that is ultimately sent to the browser. A templating engine was used as PHP is .
+Twig is a PHP template engine that takes collections of PHP objects and following a provided .html template generated the HTML output that is ultimately sent to the browser. Although PHP itself is by design a template engine, using a dedicated templating engine allows separation of concerns and addresses the shortcomings of PHP as a template language.
 
-In addition it provides caching of the generated templates and output, leading to significant speed increases for the end user.
+Twig includes idioms for common needs including a \inlinetext{for/else} structure which loops through a list or, if that list is empty, evaluates the else clause and template inheritance; is unit tested; caches all generated templates leading to significant speed increases for the end user and provides shorthand filters such as \inlinephp{[1, 2, 3, 4]|first} but most importantly, escaping is enabled by default. In twig all data output as part of a template is converted to the equivalent HTML entity so it cannot be parsed as a script or HTML.
+% 
+A comparison of Twig and PHP for a simple page containing a for loop and output escaping is shown in Fig \ref{fig:comparephptwig}.
 
-Propel - an object relational mapping (ORM) library for PHP. Propel takes a database schema defined in XML and generates PHP objects that represent the schema which can be saved to and loaded from the database.
+\begin{figure}
+\centering
 
-Less - CSS pre-processor that extends CSS, adding additional features and inheritance. `.less` files compile to `.css`
+\begin{subfigure}[a]{\textwidth}
+\centering
+\begin{lstlisting}[style=phpcolor]
+<?php if($items): ?>
+  <?php foreach($items as $item): ?>
+    * <?php echo htmlspecialchars(strtoupper($item->name), ENT_QUOTES, 'UTF-8') ?>
+  <?php endforeach; ?>
+<?php else: ?>
+    No item has been found.
+<?php endif; ?>
+\end{lstlisting}
+\caption{PHP as a Templating Engine}
+\end{subfigure}
 
-Front End
+\begin{subfigure}[b]{\textwidth}
+\centering
+\begin{lstlisting}[style=phpcolor,language=twig]
+{% for item in items %}
+  * {{ item.name }}
+{% else %}
+  No item has been found.
+{% endfor %}
+\end{lstlisting}
+\caption{TWIG as a Templating Engine}
+\end{subfigure}
 
-Bootstrap - framework for CSS development that provides grid and stuff
+\caption{Comparison of TWIG and PHP for a simple template}
+\label{fig:comparephptwig}
+\end{figure}
 
-jQuery - javascript development framework that abstracts differences in browser behaviour and provides shorthands to common tasks such as ajax requests
+Twig was selected over alternative engines as it is both well documented and supported, supports extensions out of the box which can be used to add additional functionality and as shown in Table \ref{table:twigbenchmarked} is by far the fastest when compared to alternatives \parencite{potencier2009templating}.
 
+\begin{table}[h]
+\begin{tabular}{llll}
+\textbf{Library} & \textbf{Time (sec)} & \textbf{Memory (Kb)} & \textbf{Templates rendered per second} \\
+Twig             & 3                   & 1,190                & 3,333                                  \\
+PHPTAL           & 3.8                 & 2,100                & 2,632                                  \\
+Dwoo             & 6.9                 & 1,870                & 1,449                                  \\
+Smarty 2         & 12.9                & 2,350                & 775                                    \\
+Smarty 3         & 14.9                & 3,230                & 671                                    \\
+Calypso          & 34.3                & 620                  & 292                                    \\
+eZ Templates     & 53                  & 5,850                & 189                                   
+\end{tabular}
+\caption[PHP Templating engine benchmarks]{PHP Templating engines compiling and rendering a simple page 10,000 times \parencite{potencier2009templating}}
+\label{table:twigbenchmarked}
+\end{table}
 
+\subsubsection{Propel}
+Propel is an object relational mapping (ORM) library for PHP, which allows the storing and loading objects to and from a relational database.
+%
+Propel takes, a database schema defined in XML and generates PHP objects that representing the schema which can be saved to, and loaded from, the database \parencite{propel2014orm}.
 
-Chosen - javascript libray to make dropdown boxes better
+Use of an ORM has four main advantages, it abstracts the database layer providing a common interface protecting against change, it allows for business logic to be  encapsulated in the generated objects and not the database, it helps address the cross cutting concerns of database access and wraps common database design patterns in easy to access functions. In addition to these common ORM features, Propel wraps object inheritance in an API, for example to get all the transactions that a user has made \inlinephp{$user->getTransactions()} is called which returns an array of Transaction objects.
 
-Highcharts - charting library for the UI
+\subsection{Client Side}
+\subsubsection{Bootstrap}
+Bootstrap is a CSS framework for creating user interfaces. It provides a grid layout system, pre-designed reusable components such as buttons; implements common CSS design patterns and supports responsive web design, as well as gracefully degrading when using older browsers or mobile devices \parencite{bootstrap2014bootstrap}.
+
+An extended version of bootstrap is used for the front end of the project, though the colour scheme and layout has been heavily modified to ensure the application doesn't look like a `Bootstrap website' which is a common complaint of web designers and to ensure a common brand \parencite{kizler2013bootstrap, carrico2013bootstrap}.
+
+\subsubsection{jQuery}
+jQuery is a JavaScript development framework that abstracts differences in browser behaviour and provides shorthands to common JavaScript tasks such as AJAX requests, element selection, and HTML traversal and manipulation.
+%
+It's used throughout the website for javascript user interface effects and powers the core of the  suggestion wizard, which is detailed further in \autoref{suggestionwizard}.
+%
+It was chosen for the project over other JavaScript frameworks as it is; extendable, open-source, , provides method chaining and is supported by large respected companies on the web including Google and Microsoft \parencite{jquery2014jquery}.
 
 \section[Statements]{Statement Management}
 
@@ -210,7 +266,7 @@ Raw Transactor Name & Occurrences \\
     \label{fig:regex-transactor}
 \end{figure}
 
-\subsection{Suggestion Wizard}
+\subsection{Suggestion Wizard} \label{subsection:suggestionwizard}
 The suggestion wizard (Fig \ref{fig:suggestion-wizard}) was added to the project in response to observations during lab usability testing. Originally the suggestions were only found on each unmapped transactors page (Fig. \ref{fig:view-reference-suggestions}) to speed up the process of mapping a reference to an existing transactor.  Users appeared to spend a lot of time manually categorising each individual transactor by searching their statement for an unknown transactor, opening that transactors details and then filling in the appropriate forms or clicking on a suggestion, following an activity diagram similar to Fig. \ref{fig:transactor-mapping-activity}.
 
 \begin{figure}[h]
