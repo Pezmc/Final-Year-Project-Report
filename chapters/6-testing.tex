@@ -58,7 +58,7 @@ Unfortunately the reliability of the results for both the statement management a
 \subsection{Statement Management}
 The questionnaire posed to the research participants was split into three sections, a full copy of the questions can be found in Appendix \ref{app:questionnaire}.
 
-The first made a series of statements and asked the respondent to answer on a five point scale, ranging from 1, strongly disagree to 5, strongly agree. The questions in this sections had four main types, and were selected following the structure of the Standardized Universal Percentile Rank-Questionnaire \ref{sauro2011standardized} which is used by companies including PayPal to assess their websites. 
+The first made a series of statements and asked the respondent to answer on a five point scale, ranging from 1, strongly disagree to 5, strongly agree. The questions in this sections had four main types, and were selected following the structure of the Standardized Universal Percentile Rank-Questionnaire which is used by companies including PayPal to assess their websites \parencite{sauro2011standardized}. 
 %
 Questions on usability focused on how easy users found navigation of the website, locating the information they needed, and whether they enjoyed using it.
 %
@@ -74,26 +74,54 @@ This section was designed to assess the functionality of the website and to iden
 %
 One scale question was asked per task as research suggests that use of a single question performs just as well as breaking the task down into sub-questions \parencite{sauro2009comparison, sauro2009correlations}, however a free text field was included with each task to obtain qualitative information on the reasons behind the answer.
 
-In final section was used to identify features of the the website that users favoured and to allow for feature requests, all questions were answered in free text fields
+In final section was used to identify features of the the website that users favoured and those they disliked in order to backup the points reviewed in section two, all questions were answered in free text fields.
 
-The average respondant said the website was easy to nativate, 3.80.
+In the first section, answered on a 1-5 scale, Loyalty was the question type with the highest average score of 4.10 and a standard deviation of 1.66, which indites some uncertainly, further analysis of the answers, shown in Fig. \ref{fig:box-loyalty}, shows that the majority of answers fell between the first and third quartiles and that the median value was 5, indicating that the result is being negatively skewed and affected by outliers at the low end.
+%
+The statement with the highest average level of agreement was `If completed, I would visit this site in the future' with an average answer of 4.20, though the standard deviation again quite high at 1.79. Hopefully, this implies that the automation of budget management was of useful to the majority of participants and has potential as a real world product.
+%
+The usability questions received the lowest score, with an average agreement of 3.50 which is slightly agree. The box plot for the usability questions is shown in Fig. \ref{fig:box-usablity} which indicates that the mean is a fair measure of this data, though the data is negatively skewed, it also shows that, although the median answer was 4.00 answers ranged between 1 and 5.
+%
+The questions with the lowest agreement level, overall, were both within usability. `The website is easy to use' and `I am able to find what I need quickly' which both scored 3.00, with a standard deviation of 1.41 and 1.22 respectively. On the scale a 3 is neutral, the respondents neither agree or disagree with the statement.
+%
+The relatively low agreement level of the usability questions was a surprise. It was believed that the hints shown throughout the site and the single navigation menu had improved the usability of the website, however it's clear this area may need extra work.
 
-Comfortable using the website: 3.80
+\begin{figure}
+\centering
+\includegraphics[width=0.5\textwidth]{testing/box-plot-loyalty}
+\caption{Box plot of Loyalty questionresponses\protect\footnotemark}
+\label{fig:box-loyalty}
+\end{figure}
 
-Completed visit 4.20
-Reccoment website if complete 4.00
+\footnotetext{The whiskers indicate the minimum and maximum values}
 
-Attractive 3.80
+\begin{figure}
+\centering
+\includegraphics[width=0.5\textwidth]{testing/box-plot-usability}
+\caption{Box plot of Loyalty question responses}
+\label{fig:box-usablity}
+\end{figure}
 
-Downloading from bank 5.40
-Upload statement 6.80
-View statement 6.00
-Prediction 4.40
-Overall use: 5.60
+The responses to the task difficulty questions, shown in Fig. \ref{fig:box-difficulty}, indicated that the most difficult tasks to complete were downloading a the users statement from their online banking account and viewing their monthly predictions.
+%
+Downloading statements may be outside the control of the application, but comments including `difficult selecting the dates that you want' and `not sure which download option to choose' indicate that more detailed guidance could be provided to the users when they're told to download their statement.
+%
+The relatively low score of the monthly prediction section of the website, is supported with comments including `too much information' and `very messy screen', suggesting that further work should be done to improve it's layout and to reduce the amount of detail shown.
+%
+Overall the responses to the task difficulty questions are positive, with an average difficulty rating of 5.7, indicating that website is relatively easy to use.
+
+The textual responses to the questions in the final section were in line with the task difficulty measures, with difficult tasks noted as the least useful. Interestingly, the pie chart breaking down the expenditure per category was selected as the most useful feature by 100\% of the respondents who answered the question, which was matches the background research for existing applications.
+
+\begin{figure}
+\centering
+\includegraphics[width=0.5\textwidth]{testing/difficulty-bar}
+\caption{Responses to the task difficulty questions, the standard deviation is shown as error bars}
+\label{fig:box-difficulty}
+\end{figure}
 
 \subsection{Prediction}
+By taking the test participant data, it was possible to .
 
-\subsection{Security}
 
 % The evaluation of the application indicates that these three objectives have been met. Preliminary research demonstrates that enjoyed using the application and that the majority of participants would use it in the future if implemented as a full product. Testing with participant data shows that the average absolute error of the prediction engine was $PERCENTAGE\%$ for users with over three months historical information. Preliminary penetration testing, using both white-box and black-box testing indicated that the security protections put in place are effective.  However, the evaluation of the project was limited, due to the size of the user base, discussed further in \autoref{sec:limitations}. \todo{Complete this}
 
@@ -107,3 +135,12 @@ Overall use: 5.60
 
 
 \plan{User surveys to check what they wanted}
+
+\subsection{Security}
+The security of the application was measured using white-box and black-box penetration testing.
+%
+The author, who had a working knowledge of the internals of the application and access to the source code, performed the white-box testing. They attempted to break into the account of someone using the website through the use of session hijacking outlined in \autoref{subsection:account-hijacking}, even after disabling the encryption of the users session by temporarily allowing allow cookies to be sent over HTTP, and gaining a copy of the cookie the account couldn't be accessed as the users session was invalidated once the session hijack was detected by the fingerprinting mechanism. Even after the headers of the target user were cloned, the users session ID didn't match the one found in the database and the session was once again invalidated.
+%
+Black-box penetration testing was performed by a peer of the author, who has experience in penetration testing. The unsucesfully tried SQL injection by modifying the parameters sent in the suggestion wizards AJAX requests before uploading a bank statement that contained cross site-scripting (XSS) code designed to steal the users cookie. The uploaded statement was parsed successfully and all of the XSS was escaped, preventing the code injection. Finally, the tester attempted to upload malicious files in an attempt to break the upload feature, in all cases the 
+%
+Although this demonstration isn't able to conclude that the application is secure and resilient to all attacks, it does demonstrate that more common attacks including those outlined in \autoref{sec:back-security} are prevented.
