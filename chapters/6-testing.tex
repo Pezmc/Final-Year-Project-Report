@@ -84,8 +84,8 @@ The relatively low agreement level of the usability questions was a surprise. It
 
 \begin{figure}
 \centering
-\includegraphics[width=0.5\textwidth]{testing/box-plot-loyalty}
-\caption{Box plot of Loyalty questionresponses\protect\footnotemark}
+\includegraphics[width=0.75\textwidth]{testing/box-plot-loyalty}
+\caption{Box plot of Loyalty question responses\protect\footnotemark}
 \label{fig:box-loyalty}
 \end{figure}
 
@@ -93,7 +93,7 @@ The relatively low agreement level of the usability questions was a surprise. It
 
 \begin{figure}
 \centering
-\includegraphics[width=0.5\textwidth]{testing/box-plot-usability}
+\includegraphics[width=0.75\textwidth]{testing/box-plot-usability}
 \caption{Box plot of Loyalty question responses}
 \label{fig:box-usablity}
 \end{figure}
@@ -110,28 +110,59 @@ The textual responses to the questions in the final section were in line with th
 
 \begin{figure}
 \centering
-\includegraphics[width=0.5\textwidth]{testing/difficulty-bar}
-\caption{Responses to the task difficulty questions, the standard deviation is shown as error bars}
+\includegraphics[width=0.75\textwidth]{testing/difficulty-bar}
+\caption[Responses to the task difficulty questions]{Responses to the task difficulty questions, the standard deviation is shown as error bars}
 \label{fig:box-difficulty}
 \end{figure}
 
 \subsection{Prediction}
 By taking the test participant data, it was possible to evaluate the prediction accuracy of the application. Users with more than four months history were selected and the data was split into two halves. All but the most recent complete month was fed to the prediction engine and used to make a prediction for total spending and income in the known month. By comparing the recorded predictions to the actual values for that month it was possible to calculate the absolute and percentage error.
 
-Overall the system performed with 13\% average error, performing with a lower average error of 9\% for income. It is likely that income has a lower error as the income is often regular and for similar amounts.
+Overall the system performed with 16.7\% average error, performing with a lower average error of 14.6\% for income and a slightly higher error of 18.4\%. It is likely that income has a lower error as the income is often regular and for similar amounts.
 %
-However, as only 7 of the participants had uploaded more than four months data the scope of the testing was limited and the reliability of the results is questionable.
+However, as only 7 of the participants had uploaded more than four months data the scope of the testing was limited and the reliability of the results is questionable. In addition, three of the records were identified as outliers as the absolute error fell significantly outside of the inter quartile range, and not included in the averages. Outliers were identified using $\big[ Q_1 - 1.5 (Q_3 - Q_1) , Q_3 + 1.5 (Q_3 - Q_1) \big]$ where  $Q_1$ and $Q_3$ were the upper and lower quartiles. 
+%
+The full results of the testing data are shown in Table \ref{tab:rawtestingdata} and the quartiles are shown in Table \ref{tab:quartiles}, records that fell outside of the bounds and were ignored when calculating the averages are indicated in italics. 
+%
+It is likely that these outliers were caused by sudden changes in spending pattern or that the prediction is being affected by significant expenditure or income in January.
 
-Care must be taken when 
+\begin{table}[h]
+\centering
+\begin{tabular}{@{}lllllll@{}}
+\toprule
+     &             &  \multicolumn{2}{c}{February} & & \\
+User & Type        & Prediction (£) &  Actual (£) & Absolute Error (£)                      & Error (\%)               \\ \midrule
+1    & Income      & 1620                & 1409            & 211                                  & 15.0           \\
+     & Expenditure & 1710                & 2603            & 893                                  & 34.3           \\
+2    & Income      & 2080                & 209             & 1871                                 & \textit{895.2} \\
+     & Expenditure & 1678                & 1633            & 45                                   & 2.8            \\
+3    & Income      & 1187                & 1200            & 13                                   & 1.1            \\
+     & Expenditure & 1227                & 943             & 284                                  & 30.1           \\
+4    & Income      & 864                 & 881             & 17                                   & 1.9            \\
+     & Expenditure & 659                 & 814             & 155                                  & 19.0           \\
+5    & Income      & 1060                & 732             & 328                                  & 44.8           \\
+     & Expenditure & 1101                & 1309            & 208                                  & 15.9           \\
+7    & Income      & 243                 & 100             & 143                                  & \textit{143.0} \\
+     & Expenditure & 383                 & 51              & 332                                  & \textit{651.0} \\
+8    & Income      & 1008                & 914             & 94                                   & 10.3           \\
+     & Expenditure & 1113                & 1029            & 84                                   & 8.2            \\
+     &             &                     &                 & \multicolumn{1}{r}{\textbf{Average}} & \textbf{13.7}
+\end{tabular}
+\caption{The results of the prediction evaluation test, which compared predictions and actual values }
+\label{tab:rawtestingdata}
+\end{table}
 
-User	February Prediction	"February Actual"	"Absolute Error"	"Percentage Error"
-A: Income	1216	1200	16	1%
-A: Spending	1297	951	    346	36%
-B: Income	1908	1896	12	1%
-B: Spending	1684	1631	53	3%
-C: Income   1099	880	    219	25%
-C: Spending	925	    814	    111	14%
-		Average:	126	        13%
+\begin{table}[h]
+\centering
+\begin{tabular}{lll}
+                & Quartile & Bound  \\
+Lower Bound     & 8.7      & -172.6 \\
+Second Quartile & 17.5     &        \\
+Upper Bound     & 111.5    & 265.8 
+\end{tabular}
+\caption{First, second and third quartiles for the prediction evaluation test}
+\label{tab:quartiles}
+\end{table}
 
 \subsection{Security}
 The security of the application was measured using white-box and black-box penetration testing.
