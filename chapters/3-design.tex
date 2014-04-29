@@ -43,7 +43,7 @@ To combat this, three steps of resiliency were added to the design of the upload
 Having uploaded the file the system first identifies the file type by looking inside the file and parsing its contents, ignoring the extension and rejecting the file if it matches neither format.
 
 If the file is QIF the parser parses all transactions up front and evaluates the format of the dates. If the dates are found to have the format \lstinline$00-00-0000$ the system needs to decide whether that's DD-MM-YYYY or MM-DD-YYYY, otherwise performing standard date parsing of the string.
-%(\lstinline$\d{1,2}[/-]\d{1,2}[/-]\d{2,4}$ in regular expression)
+%
 %
 To decide between D-M-Y or M-D-Y the application goes through all the dates and attempts to parse in both formats, if a format fails it is marked as incorrect. This leaves the application in one of the four states, seen in Table \ref{table:datestates}. In the case of state 1 or 4 there is ambiguity and the application prompts the user. This ambiguity can be caused by dates that are malformed or a collection of dates falling within a range that doesn't have a day value over 12, as both formats parse correctly. 
 
@@ -60,9 +60,7 @@ State & D-M-Y & M-D-Y \\
 \label{table:datestates}
 \end{table}
 
-In provisional user testing, it was discovered that users had a tendency to upload the same file more than once or to upload statements with an overlapping date range. To account for this, before creating a new \mbox{Transaction} the application checks for an identical transaction for the current user in the database and if one is found, skips creating a new Transaction. For speed this is done using a stored unique value, resulting from a SHA512 hash of date posted, transaction value, transactor, memo and transaction id\footnote{If a one was provided by the users bank}, which is generated when saving a Transaction to the database.
-
-% 
+In provisional user testing, it was discovered that users had a tendency to upload the same file more than once or to upload statements with an overlapping date range. To account for this, before creating a new Transaction the application checks for an identical transaction for the current user in the database and if one is found, skips creating a new Transaction. For speed this is done using a stored unique value, resulting from a SHA512 hash of date posted, transaction value, transactor, memo and transaction id\footnote{If a one was provided by the users bank}, which is generated when saving a Transaction to the database.
 
 \subsection{Named Entity Resolution}
 Almost all functionality of the project relies on successfully mapping the text found on a bank statement that represents a business or person to a single entity in the application, known as a \gls{transactor} by the system. After a cleanup of different suffixes that banks append it was found that \glspl{transactor} are often referenced using several names.
@@ -94,17 +92,10 @@ In consideration of this, the concept of mappings was added to the system. A \gl
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=\textwidth]{design/simple-mappings}
-    \caption{Overview of Mappings}
+    \includegraphics[width=0.75\textwidth]{design/simple-mappings}
+    \caption{Overview of Mapping objects}
     \label{fig:mapping}
-    
-    \begin{comment}
-%[User]-*<>[Transaction]
-[Transaction]<>*-[TransactorMapping]
-[TransactorMapping]<>*-[Transactor]
-    \end{comment}
 \end{figure}
-
 
 \subsubsection{Global vs User}
 As identified in the background research, it should be possible for users to both categorise and organise transactions according to their preferences and override existing categories, however categories chosen by a particular user should not affect other users. 
@@ -273,14 +264,14 @@ In addition cookies are marked as \inlinetext{HttpOnly}, ensuring access via non
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.6\textwidth]{design/security/sniffing}
+    \includegraphics[width=0.5\textwidth]{design/security/sniffing}
     \caption[Obtaining a users cookie using a MitM attack or sniffing]{Obtaining a users cookie using a MitM attack or Sniffing \parencite{owasp2011sessionhihacking}}
     \label{fig:securitysniffing}
 \end{figure}
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.6\textwidth]{design/security/hijacking}
+    \includegraphics[width=0.5\textwidth]{design/security/hijacking}
     \caption[Performing a session hijack using another users cookie]{Performing a session hijack using another users cookie \parencite{owasp2011sessionhihacking}}
     \label{fig:securityhijacking}
 \end{figure}
