@@ -103,13 +103,13 @@ It was chosen for the project over other JavaScript frameworks as it is; extenda
 \section[Statement Management]{Statement Management}
 
 \subsection{Upload}
-OFX is an XML like format called SGML. PHP has inbuilt libraries for parsing XML called SimpleXML simplexml\_load\_string loads an XML file from a string. To parse the OFX, PHP attempts to parse it as an XML file and captures any exceptions. If exeptions are found it attempts to convert the SGML XML so it can be pased by PHP as per \todo{This needs completing}
+OFX is stored an XML like format called Standard Generalized Markup Language (SGML). XML is a subset of SGML that relies on opening and closing tags to idenfity information. PHP has inbuilt libraries for parsing XML such as SimpleXML and using those existing functions was preferred to implementing a custom parser for SGML. As SGML is similar in structure to XML it is possible to convert an SGML file to XML using post processing to modify the tag structure \parencite{stackoverflow2013sgml, Hanselman2006sgml}. 
 
-%http://stackoverflow.com/questions/15735330/how-to-parse-a-ofx-version-1-0-2-file-in-php and http://www.hanselman.com/blog/PostprocessingAutoClosedSGMLTagsWithTheSGMLReader.aspx
-
-\todo{Comparison of SGML and XML}
-
-For each line of the SGML it trims whitespace including (x,y,z), converts the charset ot UTF-8 so it's valid in PHP and if no closing tag is found, appends a closing tag
+When parsing the OFX, the application first attempts to parse it as an XML file and captures any exceptions. If exceptions are found it attempts to convert the OFX file to XML and repeats the process.
+%
+The conversion is performed by considering each line of the SGML, trimming the whitespace on either side, converting the contents to UTF-8 so it's valid in XML and if no closing tag is found, which is a requirement of XML, appending the closing tag.
+%
+The implementation is shown in Fig. \ref{fig:sgmlxml}.
 
 \begin{figure}
 \lstset{style=phpcolor}
@@ -130,6 +130,7 @@ foreach(preg_split("/((\r?\n)|(\r\n?))/", $this->OFXContent) as $line){
 }
 \end{lstlisting}
 \caption{Converting SGML to XML}
+\label{fig:sgmlxml}
 \end{figure}
 
 Having parsed the SGML into objects it can just be navigated following the specification and converted to arrays of information for each transaction, referred to as movements. These movements look like XYZ; and can then be converted into the Transaction objects most of the fields are handled automatically but dates need to be handled specifically.
@@ -397,7 +398,7 @@ In order to allow accessing the data by month, category and subcategory as well 
 
 The Budget object (representing expenditure or income) provides the \inlinephp{getCategoryPrediction()} method which takes a month and a category and returns the systems prediction for that month. It's this method that builds and samples from the Markov Chain Models, calculates the Weighted Arithmetic Mean, and chooses the Weighting Model which provides the least absolute error for the historical data in order to make the prediction. The class also calculates the confidence interval which is displayed in the UI.
 
-The logic for these steps is split into separate classes to improve cohesion and the overall process is shown in Fig \ref{fig:prediction-activity}. \todo{Fix}
+The logic for these steps is split into separate classes to improve cohesion and the overall process is shown in Fig \ref{fig:prediction-activity}.
 
 \begin{figure}[h]
     \centering
@@ -441,7 +442,7 @@ Considering whether or not a transaction occurred in the previous month, a sampl
    
 \end{table}
 
-Having decided whether or not a transaction will occur the Budget class uses an instance of \inlinephp{TransactionWeightedAverageCalculator} to estimate how much money would be transferred if a transaction occurs. The weighted average calculator takes a list of Transaction objects and returns an associative array containing the weighted average for each transactor. To calculate the weighted averages the calculator first selects the best weighting model for the users spending pattern in the specified category and uses the selected function to calculated the averages for each transactor in the category. \todo{Needs fixing}.
+Having decided whether or not a transaction will occur the Budget class uses an instance of \inlinephp{TransactionWeightedAverageCalculator} to estimate how much money would be transferred if a transaction occurs. The weighted average calculator takes a list of Transaction objects and returns an associative array containing the weighted average for each transactor. To calculate the weighted averages the calculator first selects the best weighting model for the users spending pattern in the specified category and uses the selected function to calculated the averages for each transactor in the category.
 
 Combining the output of the MCM's and the weighted average calculator the produces the systems expenditure prediction for the considered category, Table \ref{table:predictions-combined}. This is calculated for each sample taken from the MCM and the results are passed to an instance of the PredictionEvaluator to produce an average and confidence interval, which is ultimately displayed on the UI.
 

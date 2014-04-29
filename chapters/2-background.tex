@@ -60,7 +60,7 @@ The researchers were to calculate the expected loan to value ratio (LTV) for the
 %
 They demonstrate the application of Markov Chain Models (MCM's) to a larger dataset, calculating the optimal policy for ending relationships with customers depending on varying costs concluding that the use of MCM's is an effective way of making customer relationship decisions. However, this paper assumes the company making predictions already knows how much money a customer will spend during each interaction and is focused around calculating the probability of a spend occurring. An implementation applied to the personal spending space will require a way to predict the value of the future transaction.
 
-A MCM is a mathematical model that is defined by a collection of states and the set of probabilities of a transition occurring between those states. The model visualised as a graph shown in Fig. \ref{fig:preifermarkovchain} defines five states, and shows the probability of the transitions occurring those states on the edges. As the likely hood of transitions are known, the probability of a particular sequence occurring can be calculated, for example the probability of the sequence 11234 in the figure is $p(11234) = p(1)p(1|1)p(2|1)p(3|2)p(4|3)$. \todo{This definition needs improving}
+A MCM is a mathematical model that is defined by a collection of states and the set of probabilities of a transition occurring between those states. The model visualised as a graph shown in Fig. \ref{fig:preifermarkovchain} defines five states, and shows the probability of the transitions occurring those states on the edges. As the likely hood of transitions are known, the probability of a particular sequence occurring can be calculated, for example the probability of the sequence 11234 in the figure is $p(11234) = p(1)p(1|1)p(2|1)p(3|2)p(4|3)$.
 
 \begin{figure}[h]
     \centering
@@ -128,7 +128,7 @@ Smoothing (and therefore prediction) can be extended to take into account trends
 % 
 Extending the calculation into double and triple smoothing when estimating a users future outflow was decided as a possible extension for the project. A discussion of this technique can be found in \autoref{section:triplesmoothing}.
 
-\section{Security}
+\section{Security} \label{sec:back-security}
 As the project stores peoples personally identifiable information and needs to be backed by strong security standards, before designing the project and as part of the ethics application procedure common web security practice was researched.
 
 \subsection{Account Hijacking} \label{subsection:account-hijacking}
