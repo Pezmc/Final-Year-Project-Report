@@ -58,15 +58,11 @@ Unfortunately the reliability of the results for both the statement management a
 \subsection{Statement Management}
 The questionnaire posed to the research participants was split into three sections, a full copy of the questions can be found in Appendix \ref{app:questionnaire}.
 
-The first made a series of statements and asked the respondent to answer on a five point scale, ranging from 1, strongly disagree to 5, strongly agree. The questions in this sections had four main types, and were selected following the structure of the Standardized Universal Percentile Rank-Questionnaire which is used by companies including PayPal to assess their websites \parencite{sauro2011standardized}. 
+The first made a series of statements and asked the respondent to answer on a five point scale, ranging from 1, strongly disagree to 5, strongly agree. The questions in this section had four main types, and were selected following the structure of the Standardized Universal Percentile Rank-Questionnaire which is used by companies including PayPal to assess their websites \parencite{sauro2011standardized}. 
 %
 Questions on usability focused on how easy users found navigation of the website, locating the information they needed, and whether they enjoyed using it.
 %
-Credibility questions focused on whether the user trusted the website having uploaded their personal information.
-%
-The likely hood of a user recommending the site to their colleagues and friends or returning to the site in the future gave an idea of the potential loyalty the participants expressed.
-%
-The last focused on the user interface to gain an idea of whether the website appealed to the users.
+The potential loyalty of the participants was judged by using the likely hood of a user recommending the site to their colleagues and friends or returning to the site in the future.
 
 The second section focused on task completion, participants were asked to complete a task and then rate the how difficult or easy they found that on a seven point scale.
 %
@@ -120,21 +116,22 @@ The textual responses to the questions in the final section were in line with th
 \end{figure}
 
 \subsection{Prediction}
-By taking the test participant data, it was possible to .
+By taking the test participant data, it was possible to evaluate the prediction accuracy of the application. Users with more than four months history were selected and the data was split into two halves. All but the most recent complete month was fed to the prediction engine and used to make a prediction for total spending and income in the known month. By comparing the recorded predictions to the actual values for that month it was possible to calculate the absolute and percentage error.
 
+Overall the system performed with 13\% average error, performing with a lower average error of 9\% for income. It is likely that income has a lower error as the income is often regular and for similar amounts.
+%
+However, as only 7 of the participants had uploaded more than four months data the scope of the testing was limited and the reliability of the results is questionable.
 
-% The evaluation of the application indicates that these three objectives have been met. Preliminary research demonstrates that enjoyed using the application and that the majority of participants would use it in the future if implemented as a full product. Testing with participant data shows that the average absolute error of the prediction engine was $PERCENTAGE\%$ for users with over three months historical information. Preliminary penetration testing, using both white-box and black-box testing indicated that the security protections put in place are effective.  However, the evaluation of the project was limited, due to the size of the user base, discussed further in \autoref{sec:limitations}. \todo{Complete this}
+Care must be taken when 
 
-\plan{How did I check that it was working? Testing with personal data, users trying it and running tests of everything}
-
-\missingfigure{Need figures representing accuracy, error, etc}
-
-\section{User feedback}
-
-% SUPR-Q - http://www.measuringusability.com/suprq.php
-
-
-\plan{User surveys to check what they wanted}
+User	February Prediction	"February Actual"	"Absolute Error"	"Percentage Error"
+A: Income	1216	1200	16	1%
+A: Spending	1297	951	    346	36%
+B: Income	1908	1896	12	1%
+B: Spending	1684	1631	53	3%
+C: Income   1099	880	    219	25%
+C: Spending	925	    814	    111	14%
+		Average:	126	        13%
 
 \subsection{Security}
 The security of the application was measured using white-box and black-box penetration testing.
