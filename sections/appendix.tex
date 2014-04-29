@@ -183,22 +183,24 @@ public function getThrottlingWaitSeconds() {
 
 \chapter{Suggestion Wizard API} \label{app:suggestionwizard-api}
 
-The suggestion wizard is powered by AJAX, which makes JSON requests to a RESTful API on the backend, Figs. \ref{fig:json-post-example}, \ref{fig:json-map-example}, \ref{fig:json-create-example}  and \ref{fig:json-response-example} outline an example set of communication with the API, requesting a list of suggestions, mapping a reference to a transactor and creating a new transactor, including an example reponse from the server following a POST request.
+The suggestion wizard is powered by AJAX, which makes JSON requests to a RESTful API on the backend. The figures in the section outline an example set of communication with the API, requesting the list of suggestions (Fig. \ref{fig:json-post-example}), mapping a reference to a transactor (Fig. \ref{fig:json-map-example}) and creating a new transactor (Fig. \ref{fig:json-create-example}), including an example response from the server following a POST request (Fig. \ref{fig:json-response-example}).  
+
 
 \begin{figure}
-    \lstinputlisting[language=json]{code/suggestions.json}
-    \caption{GET request sent to\lstinline{/ajax/transactor/suggestions}}
-    \label{fig:json-post-example},
+    \lstinputlisting[language=json]{code/reply.json}
+    \caption{Response from API following a successful map or create}
+    \label{fig:json-response-example}
 \end{figure}
 
 \begin{figure}
-\begin{minipage}{.5\textwidth}
+\begin{minipage}{.4\textwidth}
     \centering
     \lstinputlisting[language=json]{code/map.json}
     \caption{POST request sent to \lstinline{/ajax/transactor/map}}
     \label{fig:json-map-example}
 \end{minipage}%
-\begin{minipage}{.5\textwidth}
+\hspace{.1\textwidth}
+\begin{minipage}{.4\textwidth}
     \centering
     \lstinputlisting[language=json]{code/create.json}
     \caption{POST request sent to \lstinline{/ajax/transactor/create}}
@@ -207,9 +209,51 @@ The suggestion wizard is powered by AJAX, which makes JSON requests to a RESTful
 \end{figure}
 
 \begin{figure}
-    \lstinputlisting[language=json]{code/reply.json}
-    \caption{Response from API following a successful map or create}
-    \label{fig:json-response-example}
+    \lstinputlisting[language=json]{code/suggestions.json}
+    \caption{GET request sent to\lstinline{/ajax/transactor/suggestions}}
+    \label{fig:json-post-example},
 \end{figure}
+
+\chapter{Questionnaire} \label{app:questionnaire}
+
+\subsubsection{Part 1}
+Answers on a 5 point scale, from strongly disagree to strongly agree. The questions were adapted from The Standardized Universal Percentile Rank Questionnaire \parencite{sauro2011standardized}.
+
+\begin{enumerate}
+\item I am able to find what I need quickly.
+\item I enjoy using the website.
+\item It is easy to navigate.
+\item This website keeps the promises it makes to me.
+\item I feel comfortable using the site.
+\item I can count on the information provided on the site.
+\item I feel confident uploading my statements to this website.
+\item The information on this website is valuable.
+\item If the website were completed, I would be likely to recommend this website to a friend or colleague.
+\item If the website were completed, I would visit this site in the future.
+\item I find the website to be attractive.
+\item The website has a clean and simple presentation.
+\end{enumerate}
+
+\subsubsection{Part 2}
+Answers on a 7 point scale from very difficult to very easy, each question was paired with a free text field where users could provide additional information why. The questions were designed following the Single Ease Question format \parencite{sauro2009comparison}. 
+
+\noindent
+How easy or difficult did you find it to:
+\begin{enumerate}
+\item Download your statement from your bank? Why?
+\item Upload your statement? Why?
+\item View and understand your statement (on pegFinance)? Why?	\item View you monthly predictions?	Why?
+\item Overall, use the website?	Why?
+\end{enumerate}
+
+\subsubsection{Part 3}
+The final part of the questionnaire was used to identify features of the the website that users favoured and to allow for feature requests, all questions were answered in free text fields. 
+
+\begin{enumerate}
+\item What single feature of the website would you change?
+\item Which feature(s) do you find the most useful?
+\item What feature(s) would you like to see added?
+\item Any other comments?
+\end{enumerate}
 
 \end{appendices}
