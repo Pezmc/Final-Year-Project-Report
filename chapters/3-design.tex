@@ -207,7 +207,7 @@ The weighted average calculation used is shown in Fig. \ref{fig:weighting} where
     \label{fig:weighting}
 \end{figure}
 
-\subsection{Five Model System}
+\subsection{Five Model System} \label{sub:fivemodelsystem}
 Using weighted averages is only part of the solution, the system needs to choose appropriate weights for each transaction and the weights chosen will have a different suitability depending on the spending patterns of the user.
 % 
 During initial research on weighted averages, it was observed that due to the variety of spending patterns caused by users different spending habits, there was not a `one fits all' solution to weighting.
@@ -231,7 +231,7 @@ If less than four months are available the most recent month is used for testing
 
 Having split the data, the application loops through all the weighting functions available, calculating the weighted average of the testing data and evaluating the mean absolute error (Fig. \ref{fig:absoluteerror}) on the training data, by comparing the prediction to the actual value. The function with the least absolute error is best fit to the users overall spending pattern, and so it is selected.
 
-In testing it was discovered that users spending money in similar categories often best suited the same weighting model. Upon further investigation it was discovered that by finding the best weighting model per category in addition to user, on average the absolute error was less. For this reason the most recent implementation of the five model system goes through a users spending in each category, selects the best model for each and uses that to make the prediction in the category. Further research could be done into different levels of modelling and the effect of this level on overfitting, this is discussed in Section \ref{section:overfittingmodels}.
+In testing it was discovered that users spending money in similar categories often best suited the same weighting model. Upon further investigation it was discovered that by finding the best weighting model per category in addition to user, on average the absolute error was less. For this reason the most recent implementation of the five model system goes through a users spending in each category, selects the best model for each and uses that to make the prediction in the category. Further research could be done into different levels of modelling and the effect of this on the fit of the model to the user, this is discussed in Section \ref{section:overfittingmodels}.
 
 \begin{figure}[h]
     \centering
@@ -300,7 +300,7 @@ In addition, to limit the overall effectiveness of brute force attacks, the webs
 Rate limiting was chosen over CAPCHA\footnote{Completely Automated Public Turing test to tell Computers and Humans Apart} found on many websites as CAPCHA's slow down users, are often illegible and visual CAPCHA's can prevent visually impaired users from accessing the website \parencite{matt2005inaccessibility, hegarty2012onlinesecurity}. Additionally CAPCHA's can now be solved automatically with a very high success rate using computer vision techniques, and these techniques are already being integrated into brute force software available online \parencite{goodfellow2013neuralnetwork, 9kweu2014captchasolver, danchev2014captcha, savinkin2012captchasolvers}. 
 
 \subsection{Database Storage}
-As detailed in section \ref{subsection:databasestorage}, security considerations of storing information in a database were considered, the project uses three techniques to help ensure the security of the users information stored in the database. \todo{Broken sentence}
+As detailed in section \ref{subsection:databasestorage}, security considerations of storing information in a database were considered. Three main techniques for ensuring the security of the users information stored in the database were employed.
 
 \subsubsection{Passwords}
 Passwords are hashed and salted and different hashing functions were investigated. Traditionally functions such as MD5, SHA1 and SHA256 are used to perform the hashing, however due to advances in modern computer equipment it is possible to generate these at an incredibly fast rate, reducing the time taken to brute force a hash.
@@ -349,7 +349,7 @@ MySQL was selected as the database language because it's well supported by PHP a
 \subsection{Design Patterns}
 The project is implemented using object oriented programming (OOP). OOP is an example of a modular programing, where `Objects' have attributes and methods. In PHP objects are instances of classes, and these classes interact with each other to perform a task.
 
-During both the design and implementation phases the General Responsibility Assignment Software Pattern (GRASP) design principles outlined by \Citeauthor{larman1997applying}  were followed when assigning responsibility to objects within the the application, these principles were designed to encapsulate well tested principles of object-oriented design and can be used to identify `good' software \parencite{larman1997applying}. \todo{Proof read this section}
+During both the design and implementation phases the General Responsibility Assignment Software Pattern (GRASP) design principles outlined by \Citeauthor{larman1997applying}  were followed when assigning responsibility to objects within the application. These principles were designed to encapsulate well tested principles of object-oriented design used to identify `good' software \parencite{larman1997applying}.
 
 \subsubsection{High Cohesion}
 Cohesion is a measure of how focused the responsibility of an object is. Every object should have a highly focus purpose and only perform tasks associated with that focus. Ensuring high cohesion throughout the project results in classes are easier to understand, maintain, reuse and adapt as modification are unlikely to affect other parts of the system. High cohesion also lends itself to low coupling, another principle, which assigns responsibility to ensure low dependency between classes, that is a particular component has as little knowledge about other components as possible.
