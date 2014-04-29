@@ -109,7 +109,7 @@ When parsing the OFX, the application first attempts to parse it as an XML file 
 %
 The conversion is performed by considering each line of the SGML, trimming the whitespace on either side, converting the contents to UTF-8 so it's valid in XML and if no closing tag is found, which is a requirement of XML, appending the closing tag.
 %
-The implementation is shown in Fig. \ref{fig:sgmlxml}.
+This implementation is shown in Fig. \ref{fig:sgmlxml}.
 
 \begin{figure}
 \lstset{style=phpcolor}
@@ -149,7 +149,7 @@ P                  & Payee          \\
 M                  & Memo           \\
 \textasciicircum   & End of entry  
 \end{tabular}
-\caption{QIF fields parsed by the project}
+\caption{QIF fields parsed}
 \label{table:qiffields}
 \end{table}
 
@@ -227,11 +227,11 @@ The method performs three key actions, tidying the string, removing common notat
 % 
 To avoid unnecessary duplication in the mappings table the \gls{transactor} names are normalised before checking for an existing name, this normalisation was added to combat the various different ways which banks store the transactor names which were discovered during testing. The modifications included: padding with spaces, replacing spaces with underscores/tabs, or including non alphanumeric letters; some examples are shown in Table \ref{table:cleaningstrings}.
 %
-Having normalised the input, the next step was to remove any numeric identifiers which had been added and move that detail to another field. Examples of such identifiers included store id's for shops with multiple outlets and account numbers for transfers between accounts, if this detail wasn't removed a separate mapping would be created for transactions referencing the same entity, leading to unnecessary duplication. The identifiers were removed using a regex, expressed in Fig. \ref{fig:regex-transactor} which only captures numbers found at the end of the string requiring at least two digits, these additional constraints were added to preserve \glspl{transactor} with numbers in their name, such as \inlinetext$H3G$ and \inlinetext$SUPERMERCADO 3$.
+Having normalised the input, the next step was to remove any numeric identifiers which had been added and move that detail to another field. Examples of such identifiers included store id's for shops with multiple outlets and account numbers for transfers between accounts, if this detail wasn't removed a separate mapping would be created for transactions referencing the same entity, leading to unnecessary duplication. The identifiers were removed using a regex, expressed in Fig. \ref{fig:regex-transactor} which only captures numbers found at the end of the string requiring at least two digits, these additional constraints were added to preserve \glspl{transactor} with numbers in their name, such as \inlinetext$H3G$ and \inlinetext$SUPERMERCADO 3$. 
 %
-The final step checks for existing \glslink{globaltransactor}{GlobalMapping} or \glslink{usertransactor}{UserMapping} objects in the database and if found associates that mapping with this transaction. If neither mapping's are found a new \glslink{usertransactor}{UserMapping} object is created, persisted and associated with the transaction. Differing from the original plan, fuzzy matching\footnote{ Finding strings that approximately rather than exactly match} of the transactor name when searching for existing transactors is not performed as this functionality was moved to the suggestion wizard.
+The final step checks for existing \glslink{globaltransactor}{GlobalMapping} or \glslink{usertransactor}{UserMapping} objects in the database and if found associates that mapping with this transaction. If neither mapping's are found a new \glslink{usertransactor}{UserMapping} object is created, persisted and associated with the transaction. Differing from the original plan, fuzzy matching\footnote{ Finding strings that approximately rather than exactly match} of the transactor name when searching for existing transactors is not performed as this functionality was moved to the suggestion wizard. \enlargethispage{\baselineskip}
 %
-The full code for the `setTransactor` method is shown in Fig. \ref{fig:settransactor}.
+The full code for the `setTransactor` method is shown in~Fig.~\ref{fig:settransactor}.
 
 \lstset{language=textwithspaces,style=showspaces}
 \begin{table}[h]
