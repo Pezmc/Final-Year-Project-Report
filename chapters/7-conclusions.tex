@@ -46,7 +46,7 @@ If the project were to continue, a more open approach for recruiting participant
 
 During the testing and evaluation there were many features suggested by users to improve the application to their individual preferences. Due to time restraints the majority of these were not implemented and it was decided it was more imperative to focus on the most important and most frequently requested features first. Further development could include the additional requested features to suit a greater variety of users.
 
-Although the majority of the application was unit tested, tests of the business logic in the prediction engine were limited. This limitation was due to the heavy reliance on data, and because the engine performs differently depending on the users history. To test this functionality in the future data with pre-calculated attributes would be need to be prepared and a separate database access for storing this testing data would need to be implemented.
+Although the key functionality of the application was unit tested, tests of the business logic in the prediction engine and on key objects was limited. This limitation was due to the heavy reliance on data, and because the engine performs differently depending on the users history. To test this functionality in the future data with pre-calculated attributes would be need to be prepared and a separate database access for storing this testing data would need to be implemented.
 
 \begin{comment}
 SELECT user_id, MAX(  `dateposted` ) , MIN(  `dateposted` ) , DATEDIFF( MAX(  `dateposted` ) , MIN(  `dateposted` ) ) /30
@@ -62,14 +62,19 @@ Due to the nature and size of this project a wide variety of further research op
 Currently, the application selects most appropriate weighting model to use for each users transactions by evaluating the pre-defined weighting models via their historical data, and selecting the one with the least total overall error.
 
 \subsubsection{User Classification}
-\plan{Would like to classify users, would like to take into account global spending patterns}
 Given the wealth of information the application holds about the users, higher accuracy could potentially be achieved by classifying each user. The users could be classified in two different ways; using pre-defined groups, or using cluster analysis. 
 
-into a set of pre-defined groups that the researchers believed would exhibit similar spending patterns along their particular characteristics. Alternatively the use of cluster analysis could be employed to determine the number of groups as well as classifying each user into those groups.
+To split the users into existing groups, the researchers could identify groups that they believed would exhibit similar spending patterns and characteristics. Users would identify which group they felt they fit into when signing up and this information would be used to define the characteritics of each group. Having chosen features that identify each group, the researchers could automatically classify the users without prompting them
 
-\subsection{Fitting models}
+Alternatively, the use of cluster analysis could be employed to determine the number of groups, as well as the members of groups. The objective of the clustering would be to group users that exhibited similar spending patterns together, so those that were most similar were together and more similar to those in other clusters. 
+
+Having classified the users, the parameters in the prediction engine could be configured for each individual group rather than by user. In addition, it would allow similar users to be compared, which would allow statements such as `users similar to you spend, on average, 10\% more' to be made, and could perhaps be used to make savings suggestions to each user.  
+
+Further research could investigate the reliability of the classification using different clustering algorithms and whether configuring the prediction engine per group leads to better results than per user.
+
+\subsubsection{Model Selection}
 \label{section:overfittingmodels}
-Weighting models are currently selected by category. The users total transactions per month in a particular category are evaluated and the weighting model with the best fit is chosen for that category.  Transactions are considered by category and by month. Data was split by category which was chosen as the number of transactions in each subcategory was low, and preliminary experimentation showed that  sub-categories would suit the same model as their category. Using months as the time period was selected as the majority of participant data contained regular monthly transactions such as household and mobile phone bills, and so considering the transactions at smaller time steps led to errors in the Markov Chain Model as the probability of a transaction not occurring increased.
+Weighting models were currently selected by category. The users total transactions per month in a particular category were evaluated and the weighting model with the best fit is chosen for that category. Transactions were considered by category and by month. Data was split by category which was chosen as the number of transactions in each subcategory was low, and preliminary experimentation showed that  sub-categories would suit the same model as their category. Using months as the time period was selected as the majority of participant data contained regular monthly transactions such as household and mobile phone bills, and so considering the transactions at smaller time steps led to errors in the Markov Chain Model as the probability of a transaction not occurring increased.
 
 However, different time periods and methods of splitting the data could be investigated. For example transactions at each individual transactor could be assigned their own model, or all spending below a certain value could use the same model. The time periods used to build the model, could be by month, weeks, days or perhaps even by day of the week. Use of a time period such as a day of the week would result in a more complected Markov Chain Model where samples such as `given that the last purchase was on a Wednesday' could be taken.
 
@@ -77,22 +82,30 @@ Further research could investigate the effects of using different grouping metho
 
 \subsection{Alternative Forecasting Techniques}
 \label{section:triplesmoothing}
-The system currently uses techniques adapted from exponential smoothing to forecast and predict the value of a future transaction. Currently this is limited to a weighted arithmetic mean in the form $\bar{x} = \frac{\sum^{n-1}_{t=0}{w(t) \times x_{t}}}{\sum_{t=0}^{n-1}{w(t)}}$. Use of a mean to forecast the value of the next period performs poorly when there is a trend in the data \parencite{filliben2003nist}.
+The system currently uses techniques adapted from exponential smoothing to forecast and predict the value of a future transaction. Currently this is limited to a weighted arithmetic mean in the form shown in Fig. \ref{fig:weighted-mean}. Use of a mean to forecast the value of the next period performs poorly when there is a trend in the data \parencite{filliben2003nist}.
+
+\begin{figure}
+\centering
+$\bar{x} = \frac{\sum^{n-1}_{t=0}{w(t) \times x_{t}}}{\sum_{t=0}^{n-1}{w(t)}}$
+\caption{Weighted arithmetic mean}
+\label{fig:weighted-mean}
+\end{figure}
 
 Second order or double exponential smoothing can be used to take into account trends and seasonal changes in data, such as the average value of an individuals weekly shop increasing over time, or the increase of purchases during Christmas. 
 %
-Double exponential smoothing involves two steps, calculating the weighted mean as before, and then adjusting that mean by the difference between the previous value and it's associated prediction, shown in Fig. \ref{fig:second-order-math}, the comparison between the weighted mean and second order forecasting transaction that is increasing in value by 10, for each time period is shown in Fig. \ref{fig:prediction-single}. 
+Double exponential smoothing involves two steps, calculating the weighted mean as before, and then adjusting that mean by the difference between the previous value and it's associated prediction, shown in Fig. \ref{fig:second-order-math}, the comparison between the weighted mean and second order forecasting transaction that is increasing in value by 10, for each time period is shown in Fig. \ref{fig:prediction-second}. 
 %
 Triple exponential smoothing extends the trend calculation to include a seasonal index. Assuming at least one complete seasons data is available the value of $x_t$ of scaled by this seasonal index, which is calculated using by taking the average value of this period historically and dividing it by the average value for the year that the period occurred or $S_{t} = \frac{x_t}{\bar{x}_p}$ and $\bar{x}_p = \frac{\sum_{i=1}^{p} x_i}{p}$ where $p$ is the number of periods in a year, and $x_i$ is the value of the period $i$ in the year considered. Fig. \ref{fig:prediction-third} shows the performance on some data that follows a similar trend to the previous year \parencite{kalekar2004holtwinters,dash2012movingaverages}.
 
 Further research could investigate the effect of applying double order and triple exponential smoothing to forecast the values of transactions on the final prediction and how seasonal indexes could be calculated. Seasonal indexes, for example, could be calculated per transactor, category, user or globally across the application. The research would need access to historical transaction data for the users to be able to make these assessments.
 
 \begin{figure}
-$\bar{x}_t = \alpha(t) \times \bar{x}_t + (1 - \alpha(t))(\bar{x}_{t-1} + b_t-1)$
-$b_t = \alpha(t)(\bar{x}_t - \bar{x}_{t-1}) + (1 - \alpha(t))b_{t-1}$
+\centering
+\[\bar{x}_t = \alpha(t) \times \bar{x}_t + (1 - \alpha(t))(\bar{x}_{t-1} + b_t-1)\]
+\[b_t = \alpha(t)(\bar{x}_t - \bar{x}_{t-1}) + (1 - \alpha(t))b_{t-1}\]
 
-Where $\alpha(t) = \frac{w(t)}{\sum_{t=0}^{n-1}{w(t)}}$ representing the final weight
-And in general the starting values are set as $\bar{x}_1 = x_1$ and $b_1 = x_2 - x_1$
+Where $\alpha(t) = \frac{w(t)}{\sum_{t=0}^{n-1}{w(t)}}$ representing the final weight\\
+In general, the starting values are set as $\bar{x}_1 = x_1$ and $b_1 = x_2 - x_1$
 
 \caption{Calculating the second order weighted arithmetic mean}
 \label{fig:second-order-math}
@@ -116,5 +129,5 @@ And in general the starting values are set as $\bar{x}_1 = x_1$ and $b_1 = x_2 -
 \label{section:learningscalingparameter}
 It was mentioned in section \ref{sub:fivemodelsystem} that the speed of the decay in the weighting functions could adjusted by using a scaling constant. Instead of choosing the best weighting model from a pre-defined selection, the application could apply non-linear optimisation techniques to adjust the rate of the decay, and select a customised model for each user. 
 
-Further research could investigate different implementations of these optimisation techniques, and how the use of custom models affects the prediction accuracy for the user.
+Further research could investigate different implementations of these optimisation techniques, and how the use of custom models affects the prediction accuracy for each user.
 
