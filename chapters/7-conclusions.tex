@@ -8,21 +8,21 @@ This can be a short chapter summarizing what you have achieved and what you have
 
 The project set out to build an application that made personal finances easier to manage through the automation of the common steps that people go through when making a budget.
 
-Existing finance applications were researched, highlighting the advantages and disadvantages of each, as well as identifying the features that users found useful, through use of reviews.
+Existing finance applications were researched, highlighting the advantages and disadvantages of each, as well as identifying the features that users found useful through the use of reviews.
 %
 A key piece of the functionality, the prediction engine, was discussed, investigating a combination of existing techniques used to forecast financial spending, including MCMs and Weighted Arithmetic Means. 
 %
 The ethical implications of storing high risk personally identifiable information was assessed and considered with reference to application security and strong security practice.
 %
-This research was then used decide on the functionality of the application, the design and implementation of the prediction engine and used to ensure high security standards were met throughout the application.
+This research was then used to decide on the functionality of the application, the design and implementation of the prediction engine and used to ensure high security standards were met throughout the application.
 
 Specific design and implementation challenges were discussed, highlighting the key background and technical knowledge that was gained in order to overcome the challenges faced.
 
-The aim of the project was to build an application that implemented an intuitive way to view and manage personal finances, accurately predict a users future \glspl{transaction} based on their history, as well as upholding the high security expectations of such a service.
+The aim of the project was to build an application that implemented an intuitive way to view and manage personal finances and accurately predict a users future \glspl{transaction} based on their history, while upholding the high security expectations of such a service.
 %
-The final application was reviewed following the usage pattern of the average user, to outline the key features implemented and to give an idea of how it works.
+The final application was reviewed, following the usage pattern of the average user, to outline the key features implemented and to give an idea of how it works.
 
-The evaluation of the application indicates that these three objectives have been met. Preliminary research demonstrates that users enjoyed using the application and indicates the majority of participants would use it in the future if implemented as a full product. Testing with participant data shows that the average percentage error of the prediction engine was 16.7\% for users with over four months historical information. Preliminary penetration testing, using both white-box and black-box testing indicated that the security protections put in place are effective.  However, the evaluation of the project was limited, due to the size of the user base, discussed further in \autoref{sec:limitations}.
+The evaluation of the application indicates that these three objectives have been met. Preliminary research demonstrates that users enjoyed using the application and indicates the majority of participants would use it in the future if released as a full product. Testing with participant data shows that the average percentage error of the prediction engine was 16.7\% for users with over four months historical information. Preliminary penetration testing, using both white-box and black-box testing indicated that the security protections put in place are effective.  However, the evaluation of the project was limited, due to the size of the user base, discussed further in \autoref{sec:limitations}.
 
 %\subsection{Does it do what it's supposed to?}
 %\plan{Does it make accurate predictions (summarise the evaluation section)}
@@ -36,7 +36,7 @@ The evaluation of the application indicates that these three objectives have bee
 %\plan{How to do prediction, password entropy, other stuff}
 
 \section{Limitations} \label{sec:limitations}
-The main limitation of the project was the scope of the test participants. A total of 20 testers signed up to participate in the project during it's development, uploading at least one month of transaction data. However, only 7 of these individuals uploaded more than 3 months of transaction history, which was the threshold for using training and testing to select a best fit weighting model. In addition the majority of the participants were peers of the author, which meant that the majority of evaluation and testing was performed using students.
+The main limitation of the project was the scope of the test participants. A total of 20 testers signed up to participate in the project during it's development, uploading at least one month of transaction data. However, only 7 of these individuals uploaded more than four months of transaction history, which was the threshold for using training and testing to select a best fit weighting model. In addition the majority of the participants were peers of the author, which meant that the majority of evaluation and testing was performed using students.
 
 More extensive testing using a broader spectrum of testers, who may require a variety of different features, or use the system in a different way, may provide a greater level of evaluation for the system.
 
