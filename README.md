@@ -1,4 +1,6 @@
-A complete understanding of personal finances is becoming increasingly important as the average persons disposable income has decreased due to a changing financial climate.
+### Using Machine Learning to Predict Personal Expenditure
+
+A complete understanding of personal finances is becoming increasingly important as the average persons disposable  income has decreased due to a changing financial climate.
 
 The aim of this project is to build an application that makes it easier to manage a users personal finances. This is split into two halves, accessing historical information in an easy to understand way and using machine learning techniques to predict future financial transactions. The security considerations of storing personal finance information are also considered.
 
