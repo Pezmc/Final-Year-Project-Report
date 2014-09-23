@@ -18,3 +18,5 @@ Having completed the application, the performance of selected techniques is revi
 **Supervisor**: Dr Gavin Brown
 
 *Keywords: Markov Chain Models, Weighted Arithmetic Mean, Responsive Web Design, Web System Security*
+
+Content, ideas and output all copyright Pez Cuckow.
